@@ -1,0 +1,9 @@
+[
+  {
+    "role": "PARENT",
+    "pages": 20,
+    "errors": [],
+    "unknownRoutes": [],
+    "calledMockOnlyEndpoints": []
+  }
+]

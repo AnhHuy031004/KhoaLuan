@@ -1,0 +1,48 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createApiClient} from '../src/services/httpClient.js';import {createLiveAdapter} from '../src/services/live/liveAdapter.js';import {liveMatrix,packBody,fieldsFor,configureModules} from '../src/services/live/livePolicy.js';import {modules} from '../src/routes/routeConfig.js';import {can} from '../src/utils/permissions.js';
+const store=()=>{const map=new Map();return{getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)}};
+function fixture(role='ADMIN') {const calls=[];const user={id:'api-user-'+role,email:role.toLowerCase()+'@club.test',role,isActive:true};let failStudents=false;const fetchImpl=async(url,options={})=>{const u=new URL(url),p=u.pathname.replace('/api/v1','');const body=options.body?JSON.parse(options.body):undefined;calls.push({path:p,method:options.method||'GET',query:Object.fromEntries(u.searchParams),body});let data,code=200;
+ const student={id:'real-student',fullName:'Võ sinh API',dob:'2008-01-01',currentBeltRankId:1,status:'ACTIVE',phone:'0900000000',joinedAt:'2026-09-01T00:00:00.000Z'};
+ if(p==='/auth/login')data={mfaRequired:false,user,tokens:{accessToken:'server-token',refreshToken:'server-refresh'}};
+ else if(p==='/auth/me')data=user;
+ else if(options.method&&options.method!=='GET')data={id:'server-created',...body};
+ else if(p==='/students/me')data=student;
+ else if(p==='/students'){if(failStudents){code=503;data=null;}else data={items:[student],total:1};}
+ else if(p==='/parents/me/children')data={items:[student],total:1};
+ else if(p==='/classes')data={items:[{id:'real-class',name:'Lớp API',instructorId:user.id,status:'ACTIVE',schedules:[{id:'real-schedule',weekday:2,startTime:'18:00',endTime:'19:30',effectiveFrom:'2026-01-01'}]}],total:1};
+ else if(p==='/belt-ranks')data=[{id:1,code:'LAM_1',name:'Lam đai',rankGroup:'LAM',orderIndex:1,isActive:true}];
+ else if(p==='/belt-exams')data={items:[],total:0};
+ else if(p==='/users')data={items:[{...user,role:'INSTRUCTOR'}],total:1};
+ else if(p==='/enrollments')data={items:[{id:'en-real',student, classId:'real-class',className:'Lớp API',enrolledAt:'2026-01-01',leftAt:null}],total:1};
+ else if(p==='/invoices')data={items:[{id:'invoice-real',invoiceNo:'HD-API',studentId:student.id,status:'UNPAID',total:500000,periodMonth:10,periodYear:2026,dueDate:'2026-10-28'}],total:1};
+ else if(p==='/admin/billing/settings')data={tuitionRates:{'real-class':500000},bankAccount:null};
+ else data={items:[],total:0};
+ return new Response(JSON.stringify({code,message:code===200?'OK':'Unavailable',data}),{status:code,headers:{'Content-Type':'application/json'}});
+ };const client=createApiClient({baseUrl:'https://api.test/api/v1',storage:store(),fetchImpl});client.save({user,tokens:{accessToken:'server-token',refreshToken:'server-refresh'}});return {api:createLiveAdapter(client),calls,client,fail:()=>failStudents=true};}
+test('API permissions use server roles and never grant MASTER or unsupported matrix mutation',async()=>{const matrix=liveMatrix(modules);assert.equal(matrix.masters.ADMIN,'');assert.equal(matrix.students.MASTER,'');assert.equal(matrix.students.STUDENT,'VE');assert.equal(matrix.users.PARENT,'');assert.equal(matrix.roles.ADMIN,'V');const {api,calls}=fixture();assert((await api.request('/permissions')).roles.some(r=>r.code==='PARENT'));assert.equal(calls.length,0);await assert.rejects(api.request('/permissions',{method:'PATCH',body:{}}),/không có endpoint/)});
+test('lookups and student normalization use actual API payloads, not mock seed',async()=>{const {api,calls}=fixture();const l=await api.request('/lookups');assert.equal(l.students[0].id,'real-student');assert.equal(l.students[0].rankId,'1');assert.equal(l.students[0].classId,'real-class');assert.equal(l.students[0].createdAt,'2026-09-01T00:00:00.000Z');assert.equal(l.ranks[0].id,'1');assert.equal(l.invoices[0].amount,500000);assert(calls.every(c=>!['/lookups','/permissions','/dashboard'].includes(c.path)))});
+test('student account fetches own profile and saves only supported contact DTO',async()=>{const {api,calls}=fixture('STUDENT');const rows=await api.request('/students');assert.equal(rows.total,1);assert(calls.some(c=>c.path==='/students/me'));await api.request('/students/real-student',{method:'PATCH',body:{phone:'0999999999',address:'Đồng Nai',fullName:'forbidden',email:'not-supported@test.com'}});const call=calls.at(-1);assert.equal(call.path,'/students/me');assert.deepEqual(call.body,{phone:'0999999999',address:'Đồng Nai'})});
+test('create and update DTOs omit mock fields, convert booleans/numbers and preserve line items',()=>{assert.deepEqual(packBody('POST','/students',{fullName:'API',dob:'2008-01-01',gender:'MALE',rankId:'r-1',classId:'fake',currentBeltRankId:'1'}),{fullName:'API',dob:'2008-01-01',gender:'MALE',currentBeltRankId:1});assert.deepEqual(packBody('PATCH','/users/{id}',{fullName:'fake',isActive:'false',newPassword:'NewPass123!'}),{isActive:false,newPassword:'NewPass123!'});const invoice=packBody('POST','/invoices',{studentId:'s',type:'OTHER',items:[{description:'Võ phục',quantity:1,unitAmount:200000}],periodMonth:10,periodYear:2026});assert.equal(invoice.items[0].unitAmount,200000);assert(!('periodMonth'in invoice));assert(fieldsFor('POST','/classes/{id}/schedules').some(f=>f.key==='weekday'))});
+test('resource writes map to declared live routes and encode score DTO for legacy backend',async()=>{const {api,calls}=fixture();await api.request('/leaves/l-1/actions/approve',{method:'POST'});assert.equal(calls.at(-1).path,'/leave-requests/l-1/review');assert.equal(calls.at(-1).body.status,'APPROVED');await api.request('/exam-results/result-1',{method:'PATCH',body:{status:'RESULT_PASS',quyenScore:8,theoryFitnessScore:7,basicScore:8,sparringScore:7,note:'Đạt'}});assert.equal(calls.at(-1).path,'/exam-registrations/result-1/result');assert(calls.at(-1).body.resultNote.startsWith('VOVINAM_SCORE_V1:'));assert.equal(calls.at(-1).method,'POST');await api.request('/schedules/real-class~real-schedule',{method:'DELETE'});assert.equal(calls.at(-1).path,'/classes/real-class/schedules/real-schedule')});
+test('API outage yields visible warning and never fabricates student records',async()=>{const {api,fail}=fixture();fail();const l=await api.request('/lookups');assert.equal(l.students.length,0);assert(l.warnings.length>0)});
+test('lookup cache is separated when account changes',async()=>{const {api,client,calls}=fixture('ADMIN');await api.request('/lookups');client.save({user:{id:'new-student',role:'STUDENT',email:'s@club.test'},tokens:{accessToken:'new-token',refreshToken:'new-refresh'}});const l=await api.request('/lookups');assert.equal(l.students.length,1);assert(calls.some(c=>c.path==='/students/me'));assert.equal(l.instructors.length,0)});
+test('password change sends only the API DTO fields including MFA code',async()=>{const {api,calls}=fixture();await api.request('/auth/change-password',{method:'POST',body:{currentPassword:'OldPassword1!',newPassword:'NewPassword2!',confirm:'NewPassword2!',code:'654321'}});assert.deepEqual(calls.at(-1).body,{currentPassword:'OldPassword1!',newPassword:'NewPassword2!',code:'654321'})});
+test('live adapter serves /report-charts/* for visual report pages and configureModules unlocks ADMIN discount CRUD in apiMode',async()=>{
+ const {api}=fixture('ADMIN');
+ for(const id of ['student-report','attendance-report','tuition-report','promotion-report']){
+  const chartData=await api.request('/report-charts/'+id,{query:{}});
+  assert.equal(chartData.cards.length,4);
+  assert.equal(chartData.charts.length,4);
+ }
+ const studentChart=await api.request('/report-charts/student-report',{query:{month:'2026-09'}});
+ assert.equal(studentChart.recordCount,1);
+ const tuitionChart=await api.request('/report-charts/tuition-report',{query:{month:'2026-10'}});
+ assert.equal(tuitionChart.cards[0].value,500000);
+ const cloned=modules.map(m=>({...m,permissions:{...m.permissions}}));
+ configureModules(cloned);
+ const discounts=cloned.find(m=>m.id==='discounts');
+ assert.equal(discounts.apiMode,true);
+ assert.equal(can(discounts,'ADMIN','C'),true);
+ assert.equal(can(discounts,'ADMIN','E'),true);
+ assert.equal(can(discounts,'ADMIN','D'),true);
+});

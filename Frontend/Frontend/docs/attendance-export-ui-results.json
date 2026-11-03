@@ -1,0 +1,30 @@
+[
+  {
+    "role": "ADMIN",
+    "workbookSheets": 35,
+    "exportedStudents": 24,
+    "errors": [],
+    "network": []
+  },
+  {
+    "role": "MASTER",
+    "workbookSheets": 31,
+    "exportedStudents": 24,
+    "errors": [],
+    "network": []
+  },
+  {
+    "role": "INSTRUCTOR",
+    "workbookSheets": 25,
+    "exportedStudents": 8,
+    "errors": [],
+    "network": []
+  },
+  {
+    "role": "STUDENT",
+    "workbookSheets": 22,
+    "exportedStudents": 1,
+    "errors": [],
+    "network": []
+  }
+]

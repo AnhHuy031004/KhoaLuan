@@ -1,0 +1,26 @@
+[
+  {
+    "role": "ADMIN",
+    "pages": 29,
+    "errors": [],
+    "networkApiRequests": []
+  },
+  {
+    "role": "MASTER",
+    "pages": 26,
+    "errors": [],
+    "networkApiRequests": []
+  },
+  {
+    "role": "INSTRUCTOR",
+    "pages": 20,
+    "errors": [],
+    "networkApiRequests": []
+  },
+  {
+    "role": "STUDENT",
+    "pages": 18,
+    "errors": [],
+    "networkApiRequests": []
+  }
+]

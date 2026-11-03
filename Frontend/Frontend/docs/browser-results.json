@@ -1,0 +1,26 @@
+[
+  {
+    "role": "ADMIN",
+    "featurePages": 29,
+    "errors": [],
+    "liveApiRequests": 0
+  },
+  {
+    "role": "MASTER",
+    "featurePages": 26,
+    "errors": [],
+    "liveApiRequests": 0
+  },
+  {
+    "role": "INSTRUCTOR",
+    "featurePages": 20,
+    "errors": [],
+    "liveApiRequests": 0
+  },
+  {
+    "role": "STUDENT",
+    "featurePages": 18,
+    "errors": [],
+    "liveApiRequests": 0
+  }
+]

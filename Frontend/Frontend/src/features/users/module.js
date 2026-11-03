@@ -1,0 +1,61 @@
+export default {
+  id: 'users',
+  title: 'Tài khoản người dùng',
+  group: 'HỆ THỐNG',
+  icon: 'Shield',
+  permissions: {
+    ADMIN: 'VCED',
+    MASTER: '',
+    INSTRUCTOR: '',
+    STUDENT: '',
+  },
+  fields: [
+    {
+      key: 'fullName',
+      label: 'Họ và tên',
+      type: 'text',
+      required: true,
+    },
+    {
+      key: 'email',
+      label: 'Email',
+      type: 'email',
+      required: true,
+    },
+    {
+      key: 'role',
+      label: 'Vai trò',
+      type: 'select',
+      required: true,
+      options: [
+        ['ADMIN', 'Quản trị viên'],
+        ['MASTER', 'Võ sư'],
+        ['INSTRUCTOR', 'Huấn luyện viên'],
+        ['STUDENT', 'Võ sinh'],
+      ],
+    },
+    {key:'masterLevel',label:'Cấp quản lý Võ sư',type:'select',required:true,options:[['PROVINCE','Võ sư cấp tỉnh'],['WARD','Võ sư cấp phường'],['CLUB','Võ sư phụ trách câu lạc bộ']]},
+    {key:'wardId',label:'Phường phụ trách',type:'ward',required:true},
+    {key:'clubId',label:'Câu lạc bộ phụ trách',type:'club',required:true},
+    {
+      key: 'password',
+      label: 'Mật khẩu',
+      type: 'password',
+      required: true,
+    },
+    {
+      key: 'status',
+      label: 'Trạng thái',
+      type: 'select',
+      required: true,
+      options: [
+        ['ACTIVE', 'Đang hoạt động'],
+        ['PAUSED', 'Tạm dừng'],
+      ],
+    },
+  ],
+  columns: ['fullName', 'email', 'role', 'masterLevel', 'wardId', 'clubId', 'status'],
+  description: 'Admin cấp tỉnh cấp tài khoản, chọn cấp Võ sư và đơn vị phụ trách.',
+  endpoint: '/users',
+  component: 'UsersPage',
+};

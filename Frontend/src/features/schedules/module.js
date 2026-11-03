@@ -1,0 +1,67 @@
+export default {
+  id: 'schedules',
+  title: 'Lịch tập',
+  group: 'ĐÀO TẠO',
+  icon: 'CalendarDays',
+  permissions: {
+    ADMIN: 'VCED',
+    MASTER: 'VCE',
+    INSTRUCTOR: 'VCE',
+    STUDENT: 'V',
+  },
+  fields: [
+    {
+      key: 'classId',
+      label: 'Lớp học',
+      type: 'class',
+      required: true,
+    },
+    {
+      key: 'sessionDate',
+      label: 'Ngày tập',
+      type: 'date',
+      required: true,
+    },
+    {
+      key: 'startTime',
+      label: 'Giờ bắt đầu',
+      type: 'time',
+      required: true,
+    },
+    {
+      key: 'endTime',
+      label: 'Giờ kết thúc',
+      type: 'time',
+      required: true,
+    },
+    {
+      key: 'location',
+      label: 'Địa điểm',
+      type: 'text',
+      required: true,
+    },
+    {
+      key: 'status',
+      label: 'Trạng thái',
+      type: 'select',
+      required: true,
+      options: [
+        ['SCHEDULED', 'Sắp diễn ra'],
+        ['COMPLETED', 'Đã hoàn thành'],
+        ['CANCELLED', 'Đã hủy'],
+      ],
+    },
+  ],
+  columns: [
+    'classId',
+    'sessionDate',
+    'startTime',
+    'endTime',
+    'location',
+    'status',
+  ],
+  description: 'Lịch huấn luyện rõ ràng cho từng lớp.',
+  endpoint: '/schedules',
+  custom: 'schedules',
+  component: 'SchedulesPage',
+};

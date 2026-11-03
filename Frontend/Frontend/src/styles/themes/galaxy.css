@@ -1,0 +1,66 @@
+:root[data-theme='galaxy'] {
+  color-scheme:dark;
+  --canvas:#080b1c;--surface:#15182e;--surface-raised:#22243f;--surface-soft:#11162b;--field:#0e1327;
+  --text:#d2d6ec;--heading:#f0efff;--muted:#aaaecb;--border:#393d60;
+  --primary:#b9adff;--primary-dark:#6350c6;--primary-soft:#30294c;--button-primary:#6d58d8;--on-brand:#faf7ff;
+  --gold:#efcd83;--gold-soft:#443724;--red:#efafbd;--navy:#090c21;
+  --positive:#9cddc1;--positive-soft:#1a4037;--positive-border:#3c7863;
+  --warning:#edcf82;--warning-soft:#463e27;--warning-border:#877342;
+  --negative:#efb2bf;--negative-soft:#492b38;--negative-border:#925469;
+  --info:#9dd5f2;--info-soft:#1a405b;--info-border:#3b7292;
+  --violet:#d1b9f7;--violet-soft:#342b50;
+  --shadow:0 8px 24px #02040d45;--panel-fill:linear-gradient(145deg,#1b1b38,#111a2b);
+  --topbar:#11152bed;--workspace-glow:#633ca845;--overlay:#030313b8;--chart-track:#2e3150;
+}
+
+/* Galaxy is an independent appearance alongside the navy Dark palette. */
+:root[data-theme='galaxy'] .workspace {
+  background:
+    radial-gradient(1px 1px at 12% 17%,#d4d7ff99 95%,transparent),
+    radial-gradient(1px 1px at 87% 23%,#d4d7ff80 95%,transparent),
+    radial-gradient(1.5px 1.5px at 64% 9%,#b5a7ff80 95%,transparent),
+    radial-gradient(1px 1px at 44% 43%,#c5e8ff70 95%,transparent),
+    radial-gradient(1px 1px at 94% 62%,#c5e8ff80 95%,transparent),
+    radial-gradient(1px 1px at 20% 77%,#b8b8ff80 95%,transparent),
+    radial-gradient(1.5px 1.5px at 76% 84%,#d7c7ff66 95%,transparent),
+    radial-gradient(1px 1px at 57% 94%,#beeaff66 95%,transparent),
+    radial-gradient(ellipse at 80% 3%,#6f3fa638 0%,transparent 49%),
+    radial-gradient(ellipse at 4% 65%,#1a63852b 0%,transparent 45%),
+    radial-gradient(ellipse at 95% 90%,#36337830 0%,transparent 48%),
+    linear-gradient(145deg,#090c1e 0%,#100e25 54%,#081526 100%);
+}
+:root[data-theme='galaxy'] .sidebar{background:radial-gradient(ellipse at 5% 3%,#5140782e,transparent 55%),linear-gradient(180deg,#101127,#080d1e);border-color:#36354e}
+:root[data-theme='galaxy'] .topbar{background:#10132be8;border-color:#45406588;backdrop-filter:blur(18px)}
+:root[data-theme='galaxy'] .sidebar .nav-item.active{background:linear-gradient(100deg,#59418b66,#1e48604a);color:#ded3ff;box-shadow:inset 0 0 0 1px #75639933}
+:root[data-theme='galaxy'] .sidebar :is(.avatar,.workspace-symbol){background:#2a294a;color:#c9b9ff}
+:root[data-theme='galaxy'] .workspace-switch{background:#1c1c3655;border-color:#52466b66}
+:root[data-theme='galaxy'] .sidebar-account{background:#0c1024;border-color:#37344e}
+:root[data-theme='galaxy'] .sidebar-motto{background:#241f3755;border-color:#63526e66}
+:root[data-theme='galaxy'] .theme-toggle{background:linear-gradient(120deg,#483468,#233751);border-color:#8973bc99;color:#e2d9ff;box-shadow:0 0 16px #8061ca21}
+:root[data-theme='galaxy'] .theme-toggle:hover{background:linear-gradient(120deg,#5b4282,#2c4662);color:#f4edff}
+:root[data-theme='galaxy'] :is(.panel,.metric-card,.unit-card,.report-chart-card,.promotion-panel,.schedule-card,.announcement-card,.rank-card){border-color:#5b517c80;box-shadow:0 12px 35px #02040d38,inset 0 1px 0 #c2a9ff0a}
+:root[data-theme='galaxy'] .unit-card{background:radial-gradient(ellipse at 100% 0,#8f58c51c,transparent 65%),linear-gradient(135deg,#1d1d39f5,#122034f5);border-radius:20px}
+:root[data-theme='galaxy'] .unit-card:hover{border-color:#b19be5;box-shadow:0 12px 38px #03051355,0 0 24px #8063c224,inset 0 1px 0 #dfd3ff22}
+:root[data-theme='galaxy'] .unit-card-footer{border-color:#69577d66}
+:root[data-theme='galaxy'] .unit-card .unit-card-icon{background:linear-gradient(135deg,#4a3769,#254760)!important;border-color:#8d74b373;color:#d6c6ff;box-shadow:0 0 20px #8c68cd13}
+:root[data-theme='galaxy'] .club-card .unit-card-icon{background:linear-gradient(135deg,#55422f,#3e294f)!important;color:#edcf98;border-color:#a4896c73}
+:root[data-theme='galaxy'] .unit-function-card{background:linear-gradient(120deg,#1b1c35e8,#141f31eb);border-color:#4c486a}
+:root[data-theme='galaxy'] .unit-function-card:hover{background:linear-gradient(120deg,#302746,#192e43);border-color:#aa92da;box-shadow:0 0 20px #8c68cd14}
+:root[data-theme='galaxy'] .unit-function-card .unit-function-icon{background:#3a2c555e!important;color:#c4b5f5}
+:root[data-theme='galaxy'] :is(.unit-search-toolbar,.selected-unit,.organization-scope){background:linear-gradient(110deg,#1b1b32de,#152137de);border-color:#5a4f7477;box-shadow:inset 0 1px 0 #c7b4ff08}
+:root[data-theme='galaxy'] :is(.unit-search-field,.global-search,.search-input){background:#0d1428cc;border-color:#514c72}
+:root[data-theme='galaxy'] .unit-search-field:focus-within{border-color:#c0a5ef;box-shadow:0 0 0 3px #a082d51c,0 0 18px #7860ac12}
+:root[data-theme='galaxy'] :is(.btn-primary,.login-submit){background:linear-gradient(110deg,#745ad7,#486ebc);border-color:#a28cdb66;box-shadow:0 4px 16px #6952b22b;color:#faf7ff}
+:root[data-theme='galaxy'] :is(.btn-primary,.login-submit):hover:enabled{background:linear-gradient(110deg,#8469e6,#567ed0)}
+:root[data-theme='galaxy'] .btn-secondary{background:#28253f;border-color:#62547b99;color:#dcd9f0}
+:root[data-theme='galaxy'] .btn-secondary:hover:enabled{background:#393050;border-color:#a58acb}
+:root[data-theme='galaxy'] .unit-heading-actions .icon-btn{background:#252b43;border-color:#62547b99;color:#c5d6eb}
+:root[data-theme='galaxy'] :is(.modal,.notification-popover,.search-results){background:linear-gradient(145deg,#1b1a33,#111b2e);border-color:#77638d99;box-shadow:0 25px 80px #02030b88}
+:root[data-theme='galaxy'] .auth-form-area{background:radial-gradient(ellipse at 70% 15%,#613e8038,transparent 65%),#0b1024}
+:root[data-theme='galaxy'] .auth-card{background:linear-gradient(140deg,#211b37ee,#132036f2);border-color:#76608a77;box-shadow:0 20px 70px #01030b66}
+:root[data-theme='galaxy'] .welcome-banner{background:linear-gradient(100deg,#15152af5 0%,#282047c9 48%,#10203944 100%),url('/assets/vovinam-night-background.png') center right/cover;border-color:#79678a80;box-shadow:0 16px 40px #03051333}
+:root[data-theme='galaxy'] .system-loading--fullscreen{background:radial-gradient(ellipse at 50% 38%,#34274b,#0c1025 60%,#080b1c)}
+:root[data-theme='galaxy'] .loading-emblem:before{background:#25213c;box-shadow:0 0 50px #956acb38}
+:root[data-theme='galaxy'] .loading-track i{background:linear-gradient(90deg,#9072e1,#7bcde8,#efcd83)}
+:root[data-theme='galaxy'] .route-transition:after{background:linear-gradient(90deg,#8060d0,#b598ec,#83d4ed)}
+@media(max-width:760px){:root[data-theme='galaxy'] .topbar{backdrop-filter:blur(10px)}}

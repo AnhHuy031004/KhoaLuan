@@ -1,0 +1,67 @@
+export default {
+  id: 'classes',
+  title: 'Quản lý lớp học',
+  group: 'ĐÀO TẠO',
+  icon: 'Layers',
+  permissions: {
+    ADMIN: 'VCED',
+    MASTER: 'VCE',
+    INSTRUCTOR: 'V',
+    STUDENT: '',
+  },
+  fields: [
+    {key:'clubId',label:'Câu lạc bộ',type:'club',required:true},
+    {
+      key: 'name',
+      label: 'Tên lớp',
+      type: 'text',
+      required: true,
+    },
+    {
+      key: 'instructorId',
+      label: 'Huấn luyện viên',
+      type: 'instructor',
+      required: true,
+    },
+    {
+      key: 'location',
+      label: 'Địa điểm',
+      type: 'text',
+      required: true,
+    },
+    {
+      key: 'capacity',
+      label: 'Sĩ số tối đa',
+      type: 'number',
+      required: true,
+    },
+    {
+      key: 'tuition',
+      label: 'Học phí / tháng',
+      type: 'money',
+      required: true,
+    },
+    {
+      key: 'status',
+      label: 'Trạng thái',
+      type: 'select',
+      required: true,
+      options: [
+        ['ACTIVE', 'Đang hoạt động'],
+        ['PAUSED', 'Tạm dừng'],
+      ],
+    },
+  ],
+  columns: [
+    'name',
+    'clubId',
+    'instructorId',
+    'location',
+    'capacity',
+    'tuition',
+    'status',
+  ],
+  description: 'Tổ chức lớp học và phân công người phụ trách.',
+  endpoint: '/classes',
+  component: 'ClassesPage',
+};

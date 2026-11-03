@@ -1,0 +1,176 @@
+{
+  "users": {
+    "ADMIN": "VCED",
+    "MASTER": "",
+    "INSTRUCTOR": "",
+    "STUDENT": ""
+  },
+  "roles": {
+    "ADMIN": "VCED",
+    "MASTER": "",
+    "INSTRUCTOR": "",
+    "STUDENT": ""
+  },
+  "students": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "V",
+    "STUDENT": "VE"
+  },
+  "masters": {
+    "ADMIN": "VCED",
+    "MASTER": "V",
+    "INSTRUCTOR": "",
+    "STUDENT": ""
+  },
+  "instructors": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "",
+    "STUDENT": ""
+  },
+  "classes": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "V",
+    "STUDENT": ""
+  },
+  "enrollments": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "V",
+    "STUDENT": ""
+  },
+  "schedules": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "VCE",
+    "STUDENT": "V"
+  },
+  "attendance": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "VCE",
+    "STUDENT": "V"
+  },
+  "leaves": {
+    "ADMIN": "VCED",
+    "MASTER": "VA",
+    "INSTRUCTOR": "VA",
+    "STUDENT": "C"
+  },
+  "evaluations": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "VCE",
+    "STUDENT": "V"
+  },
+  "ranks": {
+    "ADMIN": "VCED",
+    "MASTER": "VCE",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "promotions": {
+    "ADMIN": "VCED",
+    "MASTER": "VCEA",
+    "INSTRUCTOR": "VC",
+    "STUDENT": ""
+  },
+  "exams": {
+    "ADMIN": "VCED",
+    "MASTER": "VCEA",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "exam-results": {
+    "ADMIN": "VCED",
+    "MASTER": "VCEA",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "belt-history": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "tuition": {
+    "ADMIN": "VCED",
+    "MASTER": "V",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "invoices": {
+    "ADMIN": "VCED",
+    "MASTER": "VC",
+    "INSTRUCTOR": "",
+    "STUDENT": "V"
+  },
+  "online-payments": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "",
+    "STUDENT": "CP"
+  },
+  "transactions": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "",
+    "STUDENT": "V"
+  },
+  "payment-confirmations": {
+    "ADMIN": "VA",
+    "MASTER": "VA",
+    "INSTRUCTOR": "VA",
+    "STUDENT": ""
+  },
+  "discounts": {
+    "ADMIN": "VCED",
+    "MASTER": "V",
+    "INSTRUCTOR": "",
+    "STUDENT": ""
+  },
+  "announcements": {
+    "ADMIN": "VCED",
+    "MASTER": "VCP",
+    "INSTRUCTOR": "VCP",
+    "STUDENT": "V"
+  },
+  "student-report": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "attendance-report": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "tuition-report": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "promotion-report": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "V",
+    "STUDENT": "V"
+  },
+  "settings": {
+    "ADMIN": "VCED",
+    "MASTER": "",
+    "INSTRUCTOR": "",
+    "STUDENT": ""
+  },
+  "audit": {
+    "ADMIN": "V",
+    "MASTER": "V",
+    "INSTRUCTOR": "V",
+    "STUDENT": ""
+  }
+}

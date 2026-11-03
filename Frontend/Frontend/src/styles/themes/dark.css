@@ -1,0 +1,14 @@
+:root,:root[data-theme='dark'] {
+  color-scheme:dark;
+  --canvas:#091727;--surface:#12283e;--surface-raised:#19364e;--surface-soft:#102338;--field:#0d2236;
+  --text:#c5d7e6;--heading:#e7f0f9;--muted:#9bb3c8;--border:#304d65;
+  --primary:#79c9f5;--primary-dark:#278cc5;--primary-soft:#1b405c;--button-primary:#187fb9;--on-brand:#f2f8fc;
+  --gold:#e6c477;--gold-soft:#443d2a;--red:#efafbd;--navy:#09192b;
+  --positive:#9cddc1;--positive-soft:#1a4037;--positive-border:#3c7863;
+  --warning:#edcf82;--warning-soft:#463e27;--warning-border:#877342;
+  --negative:#efb2bf;--negative-soft:#492b38;--negative-border:#925469;
+  --info:#9dd5f2;--info-soft:#1a405b;--info-border:#3b7292;
+  --violet:#c9b8ec;--violet-soft:#393451;
+  --shadow:0 8px 24px #00000016;--panel-fill:linear-gradient(140deg,#16324a,#10253a);
+  --topbar:#0d2034f2;--workspace-glow:#23475b30;--overlay:#020b17ad;--chart-track:#264358;
+}

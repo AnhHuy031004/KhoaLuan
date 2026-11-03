@@ -1,0 +1,30 @@
+[
+  {
+    "role": "ADMIN",
+    "pages": 28,
+    "errors": [],
+    "unknownRoutes": [],
+    "calledMockOnlyEndpoints": []
+  },
+  {
+    "role": "INSTRUCTOR",
+    "pages": 15,
+    "errors": [],
+    "unknownRoutes": [],
+    "calledMockOnlyEndpoints": []
+  },
+  {
+    "role": "STUDENT",
+    "pages": 20,
+    "errors": [],
+    "unknownRoutes": [],
+    "calledMockOnlyEndpoints": []
+  },
+  {
+    "role": "PARENT",
+    "pages": 20,
+    "errors": [],
+    "unknownRoutes": [],
+    "calledMockOnlyEndpoints": []
+  }
+]

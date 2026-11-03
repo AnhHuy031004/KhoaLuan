@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" fill="none">
+  <!-- Decorative belt-colour curves on the shared dark canvas. -->
+  <g transform="rotate(-28 1000 650)" stroke-width="1.5">
+    <ellipse cx="1000" cy="650" rx="330" ry="255" stroke="#4297E8" opacity=".24"/>
+    <ellipse cx="1000" cy="650" rx="400" ry="310" stroke="#E4C25D" opacity=".19"/>
+    <ellipse cx="1000" cy="650" rx="470" ry="365" stroke="#D66B76" opacity=".18"/>
+    <ellipse cx="1000" cy="650" rx="540" ry="420" stroke="#DFE7EF" opacity=".13"/>
+  </g>
+</svg>

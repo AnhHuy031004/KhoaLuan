@@ -1,0 +1,322 @@
+frontend/
+├── .env.example
+├── .dockerignore
+├── .eslintrc.cjs
+├── .prettierrc
+├── index.html
+├── package.json
+├── vite.config.js
+├── jsconfig.json
+├── Dockerfile
+├── Dockerfile.dev
+├── nginx.conf                    # Nginx cho SPA (nếu serve static)
+│
+├── public/
+│   ├── favicon.ico
+│   ├── logo.svg
+│   └── robots.txt
+│
+└── src/
+    ├── main.jsx
+    ├── App.jsx
+    ├── index.css
+    │
+    ├── assets/
+    │   ├── images/
+    │   ├── icons/
+    │   └── fonts/
+    │
+    ├── components/               # Reusable components
+    │   ├── common/
+    │   │   ├── Button.jsx
+    │   │   ├── Input.jsx
+    │   │   ├── Select.jsx
+    │   │   ├── Modal.jsx
+    │   │   ├── Table.jsx
+    │   │   ├── Pagination.jsx
+    │   │   ├── DatePicker.jsx
+    │   │   ├── Loading.jsx
+    │   │   ├── EmptyState.jsx
+    │   │   ├── ErrorBoundary.jsx
+    │   │   └── Toast.jsx
+    │   ├── layout/
+    │   │   ├── Header.jsx
+    │   │   ├── Sidebar.jsx
+    │   │   ├── Footer.jsx
+    │   │   ├── MainLayout.jsx
+    │   │   └── AuthLayout.jsx
+    │   ├── rbac/
+    │   │   ├── ProtectedRoute.jsx
+    │   │   ├── PermissionGate.jsx
+    │   │   └── RoleGate.jsx
+    │   └── charts/
+    │       ├── LineChart.jsx
+    │       ├── BarChart.jsx
+    │       └── PieChart.jsx
+    │
+    ├── features/                 # Feature-based modules
+    │   ├── auth/
+    │   │   ├── pages/
+    │   │   │   ├── LoginPage.jsx
+    │   │   │   └── ForgotPasswordPage.jsx
+    │   │   ├── components/
+    │   │   │   └── LoginForm.jsx
+    │   │   ├── hooks/
+    │   │   │   └── useAuth.js
+    │   │   ├── services/
+    │   │   │   └── authService.js
+    │   │   └── slices/
+    │   │       └── authSlice.js
+    │   │
+    │   ├── users/
+    │   │   ├── pages/
+    │   │   │   ├── UserListPage.jsx
+    │   │   │   └── UserDetailPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── UserTable.jsx
+    │   │   │   └── UserForm.jsx
+    │   │   ├── hooks/
+    │   │   │   └── useUsers.js
+    │   │   └── services/
+    │   │       └── userService.js
+    │   │
+    │   ├── roles/
+    │   │   ├── pages/
+    │   │   │   ├── RoleListPage.jsx
+    │   │   │   └── PermissionMatrixPage.jsx
+    │   │   ├── components/
+    │   │   │   └── PermissionMatrix.jsx
+    │   │   └── services/
+    │   │       └── roleService.js
+    │   │
+    │   ├── employees/
+    │   │   ├── pages/
+    │   │   │   ├── EmployeeListPage.jsx
+    │   │   │   ├── EmployeeDetailPage.jsx
+    │   │   │   └── EmployeeCreatePage.jsx
+    │   │   ├── components/
+    │   │   │   ├── EmployeeTable.jsx
+    │   │   │   ├── EmployeeForm.jsx
+    │   │   │   ├── EmployeeProfile.jsx
+    │   │   │   └── EmployeeTabs/
+    │   │   │       ├── PersonalInfoTab.jsx
+    │   │   │       ├── JobInfoTab.jsx
+    │   │   │       ├── BankAccountTab.jsx
+    │   │   │       ├── ContractTab.jsx
+    │   │   │       └── SalaryHistoryTab.jsx
+    │   │   └── services/
+    │   │       └── employeeService.js
+    │   │
+    │   ├── contracts/
+    │   │   ├── pages/
+    │   │   │   └── ContractListPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── ContractTable.jsx
+    │   │   │   ├── ContractForm.jsx
+    │   │   │   └── ContractHistoryTimeline.jsx
+    │   │   └── services/
+    │   │       └── contractService.js
+    │   │
+    │   ├── attendance/
+    │   │   ├── pages/
+    │   │   │   ├── AttendancePage.jsx
+    │   │   │   ├── CheckInOutPage.jsx
+    │   │   │   └── AttendanceAdjustmentPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── AttendanceTable.jsx
+    │   │   │   ├── CheckInOutWidget.jsx
+    │   │   │   ├── AttendanceCalendar.jsx
+    │   │   │   └── AdjustmentForm.jsx
+    │   │   └── services/
+    │   │       └── attendanceService.js
+    │   │
+    │   ├── leave/
+    │   │   ├── pages/
+    │   │   │   ├── LeaveRequestPage.jsx
+    │   │   │   └── LeaveApprovalPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── LeaveRequestForm.jsx
+    │   │   │   ├── LeaveBalanceCard.jsx
+    │   │   │   └── LeaveApprovalQueue.jsx
+    │   │   └── services/
+    │   │       └── leaveService.js
+    │   │
+    │   ├── overtime/
+    │   │   ├── pages/
+    │   │   │   ├── OvertimeRequestPage.jsx
+    │   │   │   └── OvertimeApprovalPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── OvertimeForm.jsx
+    │   │   │   └── OvertimeApprovalQueue.jsx
+    │   │   └── services/
+    │   │       └── overtimeService.js
+    │   │
+    │   ├── shifts/
+    │   │   ├── pages/
+    │   │   │   └── ShiftManagementPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── ShiftTable.jsx
+    │   │   │   ├── ShiftForm.jsx
+    │   │   │   └── ShiftAssignment.jsx
+    │   │   └── services/
+    │   │       └── shiftService.js
+    │   │
+    │   ├── payroll/
+    │   │   ├── pages/
+    │   │   │   ├── PayrollPeriodPage.jsx
+    │   │   │   ├── PayrollCalculationPage.jsx
+    │   │   │   ├── PayrollCheckPage.jsx
+    │   │   │   ├── PayrollApprovalPage.jsx
+    │   │   │   └── PayrollDetailPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── PayrollPeriodTable.jsx
+    │   │   │   ├── PayrollCalculationProgress.jsx
+    │   │   │   ├── PayrollTable.jsx
+    │   │   │   ├── PayrollItemBreakdown.jsx
+    │   │   │   └── PayrollApprovalModal.jsx
+    │   │   └── services/
+    │   │       └── payrollService.js
+    │   │
+    │   ├── payroll-config/
+    │   │   ├── pages/
+    │   │   │   └── PayrollConfigPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── SalaryComponentTable.jsx
+    │   │   │   ├── PayrollRuleTable.jsx
+    │   │   │   └── EmployeePayrollConfigForm.jsx
+    │   │   └── services/
+    │   │       └── payrollConfigService.js
+    │   │
+    │   ├── tax/
+    │   │   ├── pages/
+    │   │   │   └── TaxProfilePage.jsx
+    │   │   ├── components/
+    │   │   │   ├── TaxProfileForm.jsx
+    │   │   │   └── DependentsTable.jsx
+    │   │   └── services/
+    │   │       └── taxService.js
+    │   │
+    │   ├── insurance/
+    │   │   ├── pages/
+    │   │   │   └── InsuranceProfilePage.jsx
+    │   │   ├── components/
+    │   │   │   └── InsuranceProfileForm.jsx
+    │   │   └── services/
+    │   │       └── insuranceService.js
+    │   │
+    │   ├── payment/
+    │   │   ├── pages/
+    │   │   │   ├── PaymentPage.jsx
+    │   │   │   └── PaymentHistoryPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── PaymentTable.jsx
+    │   │   │   └── PaymentConfirmModal.jsx
+    │   │   └── services/
+    │   │       └── paymentService.js
+    │   │
+    │   ├── payslip/
+    │   │   ├── pages/
+    │   │   │   └── PayslipPage.jsx
+    │   │   ├── components/
+    │   │   │   └── PayslipView.jsx
+    │   │   └── services/
+    │   │       └── payslipService.js
+    │   │
+    │   ├── reports/
+    │   │   ├── pages/
+    │   │   │   ├── PayrollReportPage.jsx
+    │   │   │   ├── HRReportPage.jsx
+    │   │   │   └── TaxReportPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── ReportFilter.jsx
+    │   │   │   └── ReportViewer.jsx
+    │   │   └── services/
+    │   │       └── reportService.js
+    │   │
+    │   ├── audit/
+    │   │   ├── pages/
+    │   │   │   └── AuditLogPage.jsx
+    │   │   ├── components/
+    │   │   │   ├── AuditTable.jsx
+    │   │   │   └── AuditDiffView.jsx
+    │   │   └── services/
+    │   │       └── auditService.js
+    │   │
+    │   ├── notification/
+    │   │   ├── components/
+    │   │   │   ├── NotificationBell.jsx
+    │   │   │   ├── NotificationList.jsx
+    │   │   │   └── NotificationItem.jsx
+    │   │   ├── hooks/
+    │   │   │   └── useNotifications.js
+    │   │   └── services/
+    │   │       └── notificationService.js
+    │   │
+    │   └── dashboard/
+    │       ├── pages/
+    │       │   └── DashboardPage.jsx
+    │       ├── components/
+    │       │   ├── StatCard.jsx
+    │       │   ├── RecentActivities.jsx
+    │       │   ├── PayrollChart.jsx
+    │       │   ├── AttendanceChart.jsx
+    │       │   ├── TeamOverview.jsx
+    │       │   └── PersonalOverview.jsx
+    │       └── services/
+    │           └── dashboardService.js
+    │
+    ├── hooks/                    # Global hooks
+    │   ├── useAuth.js
+    │   ├── useDebounce.js
+    │   ├── usePagination.js
+    │   ├── usePermission.js
+    │   ├── useToast.js
+    │   └── useWebSocket.js
+    │
+    ├── contexts/                 # React Context
+    │   ├── AuthContext.jsx
+    │   ├── ThemeContext.jsx
+    │   ├── NotificationContext.jsx
+    │   └── ToastContext.jsx
+    │
+    ├── store/                    # Redux Toolkit
+    │   ├── index.js
+    │   ├── middleware/
+    │   │   └── errorMiddleware.js
+    │   └── slices/
+    │       ├── authSlice.js
+    │       ├── userSlice.js
+    │       ├── employeeSlice.js
+    │       ├── payrollSlice.js
+    │       └── notificationSlice.js
+    │
+    ├── services/                 # API clients
+    │   ├── api.js                # Axios instance
+    │   ├── endpoints.js
+    │   └── interceptors.js
+    │
+    ├── routes/                   # Routing
+    │   ├── index.jsx
+    │   ├── AppRoutes.jsx
+    │   ├── PrivateRoutes.jsx
+    │   └── routeConfig.js
+    │
+    ├── utils/                    # Utilities
+    │   ├── constants.js
+    │   ├── formatCurrency.js
+    │   ├── formatDate.js
+    │   ├── validation.js
+    │   ├── permissions.js
+    │   ├── storage.js
+    │   └── helpers.js
+    │
+    ├── locales/                  # i18n
+    │   ├── vi.json
+    │   └── en.json
+    │
+    └── styles/
+        ├── variables.css
+        ├── global.css
+        └── themes/
+            ├── light.css
+            └── dark.css

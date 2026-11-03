@@ -1,0 +1,4 @@
+.organization-scope{display:flex;align-items:center;gap:16px;padding:18px 22px;margin-bottom:22px;border:1px solid rgba(76,166,223,.3);border-radius:16px;background:linear-gradient(110deg,rgba(21,77,119,.42),rgba(12,28,49,.75));color:#e9f2fa}
+.organization-symbol{display:grid;place-items:center;width:46px;height:46px;flex-shrink:0;border-radius:13px;color:#e5bc62;background:rgba(226,184,87,.12)}
+.organization-copy{flex:1;min-width:0}.organization-copy strong{font-size:17px}.organization-copy p{margin:4px 0;color:#a9c3d9;font-size:14px}.organization-copy small{display:block;color:#93abc1;font-size:13px;line-height:1.6}.organization-count{display:flex;align-items:center;gap:8px;white-space:nowrap;color:#e5bc62;font-size:14px}
+@media(max-width:640px){.organization-scope{padding:15px;align-items:flex-start;gap:10px;flex-wrap:wrap}.organization-symbol{width:35px;height:35px}.organization-count{margin-left:45px}.organization-copy{flex-basis:75%}}

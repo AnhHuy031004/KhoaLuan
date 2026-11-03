@@ -1,0 +1,19 @@
+{
+  "studentSubmission": true,
+  "reviewerRoles": [
+    "ADMIN",
+    "MASTER",
+    "INSTRUCTOR"
+  ],
+  "sameBrowserTabs": 4,
+  "firstApprovalRole": "INSTRUCTOR",
+  "staleDialogsAutomaticallyLocked": true,
+  "concurrentWinnerRole": "INSTRUCTOR",
+  "approvedRequests": 2,
+  "processedRowsReadOnly": true,
+  "persistedAfterReload": true,
+  "excelReviewerFields": true,
+  "mobileOverflow": false,
+  "errors": [],
+  "network": []
+}

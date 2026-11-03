@@ -1,0 +1,15 @@
+@import './styles/variables.css';
+@import './styles/global.css';
+@import './styles/themes/dark.css';
+
+@import "./styles/night.css";
+
+@import './styles/motion.css';
+
+@import './styles/attendance.css';
+
+@import './styles/leaves.css';
+
+@import './styles/theme-system.css';
+
+@import './styles/themes/galaxy.css';

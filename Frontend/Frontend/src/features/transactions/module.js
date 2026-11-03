@@ -1,0 +1,25 @@
+export default {
+  id: 'transactions',
+  title: 'Lịch sử giao dịch',
+  group: 'TÀI CHÍNH',
+  icon: 'ArrowLeftRight',
+  permissions: {
+    ADMIN: 'V',
+    MASTER: 'V',
+    INSTRUCTOR: '',
+    STUDENT: 'V',
+  },
+  fields: [],
+  columns: [
+    'code',
+    'studentId',
+    'invoiceId',
+    'amount',
+    'method',
+    'status',
+    'createdAt',
+  ],
+  description: 'Theo dõi giao dịch và chứng từ thanh toán.',
+  endpoint: '/transactions',
+  component: 'TransactionsPage',
+};
