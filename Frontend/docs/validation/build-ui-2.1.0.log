@@ -1,0 +1,67 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> vovinam-frontend@2.1.0 build
+> vite build
+
+vite v7.3.8 building client environment for production...
+transforming...
+✓ 1794 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                     2.90 kB │ gzip:   1.41 kB
+dist/assets/exportWorker-BjfwH7Tk.js              338.02 kB
+dist/assets/FeaturePage-BmcSTNkD.css                0.40 kB │ gzip:   0.27 kB
+dist/assets/PromotionsPage-C0dUPaSX.css             4.87 kB │ gzip:   1.46 kB
+dist/assets/ReportsPage-B-WPgD2p.css                4.99 kB │ gzip:   1.46 kB
+dist/assets/index-rV3Iy4UZ.css                    150.59 kB │ gzip:  29.94 kB
+dist/assets/check-C_gzzn1R.js                       0.13 kB │ gzip:   0.15 kB
+dist/assets/filter-DYt_kkAa.js                      0.17 kB │ gzip:   0.17 kB
+dist/assets/StudentReportPage-CGsoWjRz.js           0.38 kB │ gzip:   0.27 kB
+dist/assets/AttendanceReportPage-RTu54Hfa.js        0.38 kB │ gzip:   0.27 kB
+dist/assets/TuitionReportPage-BUfIH-hQ.js           0.38 kB │ gzip:   0.27 kB
+dist/assets/PromotionReportPage-B9eWLaGj.js         0.38 kB │ gzip:   0.27 kB
+dist/assets/ExamsPage-DBobJkrn.js                   0.53 kB │ gzip:   0.34 kB
+dist/assets/OrganizationPage-BUfiglIM.js            0.54 kB │ gzip:   0.34 kB
+dist/assets/OrganizationPage-8D5BmMna.js            0.54 kB │ gzip:   0.34 kB
+dist/assets/UsersPage-CvKTto0A.js                   0.54 kB │ gzip:   0.34 kB
+dist/assets/RolesPage-BA-bk2c_.js                   0.54 kB │ gzip:   0.34 kB
+dist/assets/StudentsPage-WwrfIf_r.js                0.54 kB │ gzip:   0.34 kB
+dist/assets/MastersPage-Bu8sb0rk.js                 0.54 kB │ gzip:   0.34 kB
+dist/assets/InstructorsPage-B7C8Ne8t.js             0.54 kB │ gzip:   0.34 kB
+dist/assets/ClassesPage-CBnIHEeg.js                 0.54 kB │ gzip:   0.34 kB
+dist/assets/EnrollmentsPage-CXydxVdJ.js             0.54 kB │ gzip:   0.34 kB
+dist/assets/SchedulesPage-ooankonx.js               0.54 kB │ gzip:   0.34 kB
+dist/assets/EvaluationsPage-DG8K4T7v.js             0.54 kB │ gzip:   0.34 kB
+dist/assets/RanksPage-DqV6VFi3.js                   0.54 kB │ gzip:   0.34 kB
+dist/assets/ExamResultsPage-C3dQdGJE.js             0.54 kB │ gzip:   0.34 kB
+dist/assets/BeltHistoryPage-DHz9sihE.js             0.54 kB │ gzip:   0.34 kB
+dist/assets/TuitionPage-MsPYFl1u.js                 0.54 kB │ gzip:   0.34 kB
+dist/assets/InvoicesPage-C9IrXgNT.js                0.54 kB │ gzip:   0.34 kB
+dist/assets/OnlinePaymentsPage-B_rr7tJt.js          0.54 kB │ gzip:   0.34 kB
+dist/assets/TransactionsPage-CiEyKfhl.js            0.54 kB │ gzip:   0.34 kB
+dist/assets/PaymentConfirmationsPage-DOzf807-.js    0.54 kB │ gzip:   0.34 kB
+dist/assets/AnnouncementsPage-8VxtdZCQ.js           0.54 kB │ gzip:   0.34 kB
+dist/assets/AuditPage-5NdJxhxS.js                   0.54 kB │ gzip:   0.34 kB
+dist/assets/LeavesPage-ewUpZz6d.js                  0.60 kB │ gzip:   0.39 kB
+dist/assets/DiscountsPage-DjR2YOWl.js               0.60 kB │ gzip:   0.39 kB
+dist/assets/reviewStatus-CNrft8SO.js                0.67 kB │ gzip:   0.44 kB
+dist/assets/SettingsPage-C-VX3Ftm.js                0.84 kB │ gzip:   0.54 kB
+dist/assets/useListFilters-Dyh2DWu6.js              0.91 kB │ gzip:   0.51 kB
+dist/assets/map-pin-c4xsn2mF.js                     0.93 kB │ gzip:   0.51 kB
+dist/assets/navigation-BIWPh2h5.js                  1.38 kB │ gzip:   0.70 kB
+dist/assets/ExportSystemButton-CEUkugyW.js          1.41 kB │ gzip:   0.91 kB
+dist/assets/permissions-Ply9fp47.js                 1.55 kB │ gzip:   0.75 kB
+dist/assets/ErrorState-DMTgX_u0.js                  2.08 kB │ gzip:   1.05 kB
+dist/assets/format-BAyaQdlz.js                      2.38 kB │ gzip:   1.41 kB
+dist/assets/apiProvider-yhPQvgfV.js                 3.51 kB │ gzip:   1.69 kB
+dist/assets/uiPolicy-v0P_TLSr.js                    4.29 kB │ gzip:   1.86 kB
+dist/assets/resourceService-D6zGtaTZ.js             5.34 kB │ gzip:   2.62 kB
+dist/assets/ReportsPage-C0olHb2t.js                 6.57 kB │ gzip:   2.73 kB
+dist/assets/PromotionsPage-1xQe8HLJ.js             13.94 kB │ gzip:   4.46 kB
+dist/assets/AttendancePage-Bqk62oi8.js             19.21 kB │ gzip:   6.24 kB
+dist/assets/routeConfig-CV8znLAB.js                22.87 kB │ gzip:   5.88 kB
+dist/assets/FeaturePage-CpyrMSjF.js                41.18 kB │ gzip:  13.56 kB
+dist/assets/OrganizationScope-dAmfpXcC.js          59.68 kB │ gzip:  21.73 kB
+dist/assets/index-CS9bcxSg.js                     275.42 kB │ gzip:  84.69 kB
+dist/assets/excelExport-Bz1j5sU8.js               335.89 kB │ gzip: 110.97 kB
+✓ built in 4.80s

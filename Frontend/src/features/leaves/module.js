@@ -5,8 +5,8 @@ export default {
   icon: 'CalendarOff',
   permissions: {
     ADMIN: 'VCEDA',
-    MASTER: 'VA',
-    INSTRUCTOR: 'VA',
+    MASTER: 'VEDA',
+    INSTRUCTOR: 'VCA',
     STUDENT: 'VC',
   },
   fields: [

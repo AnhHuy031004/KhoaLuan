@@ -28,7 +28,14 @@ export function createApiClient({
   };
   async function raw(
     path,
-    { method = 'GET', body, query, signal, token } = {},
+    {
+      method = 'GET',
+      body,
+      query,
+      signal,
+      token,
+      headers: extraHeaders = {},
+    } = {},
   ) {
     const q = new URLSearchParams();
     for (const [k, v] of Object.entries(query || {}))
@@ -45,6 +52,7 @@ export function createApiClient({
       });
     try {
       const headers = {
+        ...extraHeaders,
         Accept: 'application/json',
       };
       if (token) headers.Authorization = 'Bearer ' + token;
@@ -66,14 +74,18 @@ export function createApiClient({
             response.status,
           );
       }
-      if (!response.ok) {
+      if (!response.ok || Number(data?.code) >= 400) {
         const message =
           response.status === 429
             ? 'Bạn thao tác quá nhanh. Vui lòng đợi trước khi thử lại.'
             : Array.isArray(data?.message)
               ? data.message.join('; ')
               : data?.message || 'Không thể hoàn tất yêu cầu.';
-        throw new ApiError(message, response.status, data);
+        throw new ApiError(
+          message,
+          response.ok ? Number(data.code) : response.status,
+          data,
+        );
       }
       return data && Object.hasOwn(data, 'data') ? data.data : data;
     } catch (error) {
@@ -86,7 +98,7 @@ export function createApiClient({
           0,
         );
       throw new ApiError(
-        'Không kết nối được API. Kiểm tra mạng, URL API hoặc cấu hình CORS.',
+        'Không kết nối được máy chủ. Vui lòng kiểm tra kết nối và thử lại.',
         0,
       );
     } finally {

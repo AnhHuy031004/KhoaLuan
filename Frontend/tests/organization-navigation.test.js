@@ -1,3 +1,4 @@
+import { MOCK_PASSWORD } from '../mock/users.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMockFetch,DB_KEY} from '../mock/api.js';
@@ -5,7 +6,7 @@ import {organizationRequestQuery,organizationQuery} from '../src/features/organi
 async function setup(){
  const map=new Map(),storage={getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v)},fetch=createMockFetch({storage});
  const raw=async(path,method='GET',body,token)=>{const response=await fetch('/backend'+path,{method,headers:token?{Authorization:'Bearer '+token}:{},...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,...await response.json()};};
- const login=async(email)=>{const data=await raw('/auth/login','POST',{email:email+'@vovinam.test',password:'Vovinam123!'});return(p,m,b)=>raw(p,m,b,data.data.tokens.accessToken);};
+ const login=async(email)=>{const data=await raw('/auth/login','POST',{email:email+'@vovinam.test',password:MOCK_PASSWORD});return(p,m,b)=>raw(p,m,b,data.data.tokens.accessToken);};
  return {province:await login('vosu'),ward:await login('vosuphuong'),club:await login('vosuclb'),db:()=>JSON.parse(storage.getItem(DB_KEY))};
 }
 const own='?wardId=ward-1&clubId=club-1';

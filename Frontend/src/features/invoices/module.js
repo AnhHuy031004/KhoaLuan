@@ -1,12 +1,13 @@
 export default {
   id: 'invoices',
-  title: 'Hóa đơn học phí',
+  title: 'Thu phí & Công nợ',
+  navTitle: 'Thu phí & Công nợ',
   group: 'TÀI CHÍNH',
   icon: 'ReceiptText',
   permissions: {
-    ADMIN: 'VCED',
-    MASTER: 'VC',
-    INSTRUCTOR: '',
+    ADMIN: 'VCEDP',
+    MASTER: 'VCEP',
+    INSTRUCTOR: 'VEP',
     STUDENT: 'V',
   },
   fields: [
@@ -47,8 +48,16 @@ export default {
       required: false,
     },
   ],
-  columns: ['code', 'studentId', 'period', 'amount', 'dueDate', 'status'],
-  description: 'Lập hóa đơn và theo dõi công nợ học phí.',
+  columns: [
+    'code',
+    'studentId',
+    'period',
+    'amount',
+    'dueDate',
+    'paymentMethod',
+    'status',
+  ],
+  description: 'Theo dõi tình trạng đóng học phí và tích chọn thu tiền mặt.',
   endpoint: '/invoices',
   component: 'InvoicesPage',
 };

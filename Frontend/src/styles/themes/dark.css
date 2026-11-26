@@ -1,14 +1,61 @@
-:root,:root[data-theme='dark'] {
-  color-scheme:dark;
-  --canvas:#091727;--surface:#12283e;--surface-raised:#19364e;--surface-soft:#102338;--field:#0d2236;
-  --text:#c5d7e6;--heading:#e7f0f9;--muted:#9bb3c8;--border:#304d65;
-  --primary:#79c9f5;--primary-dark:#278cc5;--primary-soft:#1b405c;--button-primary:#187fb9;--on-brand:#f2f8fc;
-  --gold:#e6c477;--gold-soft:#443d2a;--red:#efafbd;--navy:#09192b;
-  --positive:#9cddc1;--positive-soft:#1a4037;--positive-border:#3c7863;
-  --warning:#edcf82;--warning-soft:#463e27;--warning-border:#877342;
-  --negative:#efb2bf;--negative-soft:#492b38;--negative-border:#925469;
-  --info:#9dd5f2;--info-soft:#1a405b;--info-border:#3b7292;
-  --violet:#c9b8ec;--violet-soft:#393451;
-  --shadow:0 8px 24px #00000016;--panel-fill:linear-gradient(140deg,#16324a,#10253a);
-  --topbar:#0d2034f2;--workspace-glow:#23475b30;--overlay:#020b17ad;--chart-track:#264358;
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  /* Unified Deep Navy Palette — Sidebar & Main Interface match seamlessly */
+  --canvas: #0b1c36;
+  --surface: #112647;
+  --surface-raised: #17325c;
+  --surface-soft: #0e213e;
+  --field: #09172e;
+  --text: #d0dff2;
+  --heading: #f2f7ff;
+  --muted: #8eaad0;
+  --border: #233f6b;
+  --primary: #66bdf5;
+  --primary-dark: #2282c2;
+  --primary-soft: #1a3b69;
+  --button-primary: #1a78c2;
+  --on-brand: #f4faff;
+  --gold: #ecc976;
+  --gold-soft: #3d3420;
+  --red: #f2a7b8;
+  --navy: #0b1c36;
+  --positive: #7de0b6;
+  --positive-soft: #12382f;
+  --positive-border: #2e755e;
+  --warning: #f1cf7a;
+  --warning-soft: #3d331d;
+  --warning-border: #876d35;
+  --negative: #f4a8b8;
+  --negative-soft: #422230;
+  --negative-border: #8f4860;
+  --info: #8fd2f7;
+  --info-soft: #15385c;
+  --info-border: #326b9c;
+  --violet: #cab7f2;
+  --violet-soft: #2e294b;
+  --shadow: 0 8px 24px rgba(3, 10, 24, 0.32);
+  --panel-fill: #112647;
+  --topbar: #0d203d;
+  --workspace-glow: transparent;
+  --overlay: rgba(3, 10, 24, 0.72);
+  --chart-track: #1f395e;
+
+  /* Exact Match Navy Sidebar */
+  --sidebar-bg: #0b1c36;
+  --sidebar-border: #1e3861;
+  --sidebar-text: #c8daf0;
+  --sidebar-muted: #8aa7cc;
+  --sidebar-heading: #f2f7ff;
+  --sidebar-icon: #85a9d4;
+  --sidebar-card: #112647;
+  --sidebar-card-border: #233f6b;
+  --sidebar-hover: rgba(102, 189, 245, 0.12);
+  --sidebar-active-bg: #1a4b84;
+  --sidebar-active-text: #ffffff;
+  --sidebar-active-icon: #9ad8ff;
+  --sidebar-active-accent: #ecc976;
+  --sidebar-account-bg: #09172e;
+  --sidebar-input-bg: #09172e;
+  --sidebar-badge-bg: rgba(255, 255, 255, 0.09);
 }

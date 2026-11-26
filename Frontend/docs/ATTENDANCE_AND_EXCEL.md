@@ -1,38 +1,28 @@
-# Điểm danh theo buổi và xuất Excel
+# Điểm danh và Excel — 1.1.0
 
-## Điểm danh (mock)
+## Điểm danh theo buổi
 
-ADMIN, MASTER và INSTRUCTOR vào Điểm danh:
+1. Chọn ngày, lớp/buổi. Danh sách dùng mốc vào/rời lớp và phân công của buổi; xem chưa tạo snapshot cố định.
+2. Chọn võ sinh bằng checkbox hoặc bấm dòng. Thao tác chọn chưa ghi điểm danh.
+3. Bấm **Xác nhận có mặt (N)**, kiểm tra danh sách và xác nhận. Thao tác nhanh từng người cũng đi qua cùng hộp thoại.
+4. Nếu bấm nhầm trước chốt, dùng **Hoàn tác**, nhập lý do. Chưa có mặt không đồng nghĩa vắng không phép.
+5. Chốt riêng buổi khi đã kiểm tra. Người chưa ghi nhận chuyển thành Vắng hoặc Có phép nếu có đơn đã được duyệt.
+6. Sau chốt, chỉ Admin/Võ sư có quyền E trong phạm vi mới được **Hiệu chỉnh**. Nhập trạng thái đúng và lý do. Không mở lại toàn bộ buổi để tránh mất snapshot.
+7. Xem **Lịch sử hiệu chỉnh** để đối chiếu người xử lý, thời gian, lý do và trạng thái trước/sau. Đây là audit demo cục bộ; backend cần audit bất biến riêng.
 
-1. Chọn Ngày điểm danh trong dropdown. Các ngày lấy từ lịch tập chưa hủy trong phạm vi phụ trách.
-2. Hệ thống hiển thị tất cả buổi tập của ngày; chọn một buổi.
-3. Danh sách hiện đầy đủ học viên đang hoạt động được phân trực tiếp vào buổi (`studentIds` nếu có), hoặc có phân lớp còn hiệu lực tại ngày tập. Không phân trang danh sách này.
-4. Tick học viên có mặt → Có mặt ở góc phải bảng → xem tên trong popup → Xác nhận.
-5. Toast thành công; học viên đã có mặt hiển thị chìm, ô tích khóa. Học viên còn lại vẫn có ô tích trống để bổ sung khi đến muộn. Có thể xác nhận theo nhiều đợt trước khi chốt.
-6. Bấm Chốt điểm danh buổi học ở trên cùng bên phải → popup kiểm tra sĩ số → Xác nhận chốt điểm danh.
-7. Học viên chưa có mặt chuyển Vắng mặt; người có đơn nghỉ đã duyệt chuyển Có phép. Buổi chốt được khóa, lưu thời điểm và người chốt. Không mở lại trong bản này.
+Tab Vắng mặt sau chốt chỉ gồm ABSENT; EXCUSED thuộc Có phép. Số đếm và danh sách dùng chung điều kiện. Từ khóa không khớp luôn có thông báo không tìm thấy, không bị coi là đã điểm danh hết. Ngày/buổi/tab/từ khóa được lưu trên URL.
 
-Nếu đang tick nhưng chưa xác nhận, nút chốt bị khóa để tránh bỏ sót thao tác. Hủy popup không ghi thay đổi. Đổi ngày/buổi bỏ lựa chọn chưa xác nhận. Buổi không có học viên không thể chốt.
+Bản ghi có điểm danh thực tế hoặc đã chốt bảo vệ lịch khỏi sửa/xóa. Lịch chỉ được mở xem chưa bị khóa. Buổi đang mở cập nhật danh sách còn hiệu lực; người đã có bản ghi được giữ lại để không mất dữ liệu khi đổi phân lớp. Buổi đã chốt giữ danh sách snapshot.
 
-HLV chỉ thấy buổi của lớp được giao. Võ sinh xem lịch sử của chính mình, không có các nút phụ trách. Mock kiểm tra quyền cả ở UI và bộ xử lý dữ liệu. Không dùng chung trạng thái giữa các buổi cùng lớp/ngày: khóa chính là scheduleId. Danh sách được chụp lại khi mở điểm danh; lịch đã mở điểm danh không được sửa/xóa để tránh làm sai lịch sử. Bản ghi cũ theo lớp/ngày chỉ ghép tự động nếu có đúng một buổi cho lớp trong ngày đó.
+Nếu duyệt bổ sung đơn nghỉ sau khi đã chốt, quản lý đối chiếu và hiệu chỉnh có lý do; không tự thay trạng thái buổi cũ một cách âm thầm.
 
-Dữ liệu có mặt/đi muộn được báo cáo như trước; các lần xác nhận bổ sung qua nút Có mặt lưu trạng thái PRESENT cùng thời điểm xác nhận thực tế. Mỗi học viên chỉ có một bản ghi trong buổi. Chốt chỉ ảnh hưởng buổi đang chọn, không chốt các buổi khác trong ngày.
+## Xuất danh sách
 
-Các endpoint `/attendance-workflow/*` là hợp đồng mock; service UI riêng tại `features/attendance/services/sessionAttendanceService.js`. Khi ghép API thật cần ánh xạ các thao tác này với backend tương ứng. Bản API để dành vẫn dùng màn hình API trước đây, không gửi những endpoint mock này lên server thật.
+- Trang nghiệp vụ: **Xuất danh sách đang lọc**; lấy đủ các trang theo bộ lọc, không chỉ trang đang xem. Nếu danh sách thay đổi dẫn đến lặp/thiếu trang sẽ báo thử lại.
+- Điểm danh: xuất danh sách toàn buổi đang mở, gồm trạng thái từng võ sinh. Lịch sử sửa sai có trong màn hình và bản xuất hệ thống.
+- Đề xuất thăng đai: xuất đúng tập dữ liệu khớp bộ lọc đang hiển thị.
+- Báo cáo/Cài đặt Admin: **Xuất toàn hệ thống**; bỏ qua tìm kiếm/phân trang nhưng vẫn theo phạm vi quyền, có hộp xác nhận dữ liệu cá nhân.
+- Workbook có Tổng quan, Danh mục dữ liệu và các sheet dữ liệu. Không xuất mật khẩu/token/phiên đăng nhập. Chuỗi giống công thức giữ dạng text.
+- Worker tạo XLSX để hạn chế chặn thao tác giao diện. Lookup theo Map; ô quá dài được tách cột; vượt giới hạn dòng Excel tách sheet.
 
-## Xuất toàn hệ thống (.xlsx)
-
-Tất cả nút xuất trên trang chức năng, điểm danh và Tổng quan dùng cùng một service. Một lần xuất tạo workbook XLSX thực, không đổi đuôi CSV:
-
-- Toàn bộ dữ liệu nghiệp vụ được cấp quyền, không áp dụng tìm kiếm, lọc hoặc phân trang đang xem; không còn giới hạn 5.000 dòng.
-- ADMIN xuất toàn bộ bảng nghiệp vụ. Vai trò khác chỉ xuất các module và bản ghi trong phạm vi quyền tương ứng; không bỏ qua phân quyền.
-- Mỗi bảng là một sheet, có Tổng quan (người xuất, thời điểm, phạm vi), Danh mục dữ liệu (số bản ghi), báo cáo, trạng thái các buổi điểm danh và danh sách học viên từng buổi. Có cả ma trận quyền đối với Admin.
-- Các sheet giữ ID, toàn bộ trường nghiệp vụ và thêm tên tham chiếu khi có. Số tiền là số, điện thoại/mã là chuỗi giữ số 0 đầu. Các trường cấu trúc được giữ dưới dạng JSON trong ô.
-- Không xuất mật khẩu, access/refresh token, bí mật MFA, reset token hoặc phiên đăng nhập. Đây là bản xuất nghiệp vụ, không phải bản sao xác thực để khôi phục tài khoản.
-- Ô trên 30.000 ký tự chia thành các cột phần 2, phần 3 để giữ đủ văn bản; vượt số hàng Excel thì chia sheet tiếp. Dữ liệu bắt đầu bằng dấu bằng được giữ dạng văn bản, không tự thành công thức.
-
-XLSX được lazy-load khi xuất, không dùng CDN. Cài dependencies một lần với npm ci. Dữ liệu xuất là snapshot tại thời điểm bấm nút; thay đổi sau đó cần xuất lại.
-
-## Giao diện
-
-Đã bỏ Sparkles ở nhãn sidebar và banner Dashboard; biểu tượng Đánh giá võ sinh thay bằng biểu tượng người, không dùng hình sao. Logo Vovinam giữ nguyên.
+Benchmark tổng hợp workbook trên Node với dữ liệu giả nằm ở `scripts/benchmark-export.mjs`. Kết quả không thay thế đo bộ nhớ/tương tác trên điện thoại. Với xuất rất lớn trong vận hành thật nên dùng job xuất và phân quyền phía server.

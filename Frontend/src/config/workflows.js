@@ -5,7 +5,7 @@ export const workflows = {
   exams: {title:'Kỳ thi thăng đai', initial:'PENDING', actions:{approve:{from:'PENDING',to:'APPROVED'},reject:{from:'PENDING',to:'REJECTED'}}},
   'exam-results': {title:'Kết quả thi', initial:'PENDING', actions:{approve:{from:'PENDING',to:['PASS','FAIL'],roles:['ADMIN']},reject:{from:'PENDING',to:'REJECTED',roles:['ADMIN']}}},
   discounts: {title:'Miễn giảm học phí', initial:'PENDING', actions:{approve:{from:'PENDING',to:'APPROVED',roles:['ADMIN','MASTER']},reject:{from:'PENDING',to:'REJECTED',roles:['ADMIN','MASTER']}}},
-  'online-payments': {title:'Thanh toán học phí', initial:'DRAFT', actions:{process:{from:'DRAFT',to:'PENDING'}}},
+  'online-payments': {title:'Thanh toán & xác nhận chuyển khoản', initial:'DRAFT', actions:{process:{from:'DRAFT',to:'PENDING'},approve:{from:'PENDING',to:'SUCCESS'},reject:{from:'PENDING',to:'REJECTED'}}},
   'payment-confirmations': {title:'Xác nhận thanh toán', initial:'PENDING', actions:{approve:{from:'PENDING',to:'SUCCESS'},reject:{from:'PENDING',to:'REJECTED'}}},
   announcements: {title:'Thông báo', initial:'DRAFT', actions:{process:{from:'DRAFT',to:'PUBLISHED'}}},
 };

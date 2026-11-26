@@ -1,4 +1,3 @@
 import React from 'react';
-import ReportsPage from '../../../components/reports/ReportsPage.jsx';
-import config from '../module.js';
-export default function AttendanceReportPage(){return <ReportsPage config={config}/>;}
+import UnifiedReportsPage from '../../../components/reports/UnifiedReportsPage.jsx';
+export default function AttendanceReportPage() { return <UnifiedReportsPage initialTab="attendance-report" />; }

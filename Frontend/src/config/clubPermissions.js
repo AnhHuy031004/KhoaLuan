@@ -3,6 +3,7 @@ export const CLUB_PERMISSIONS = {
   clubs:'V', classes:'VCE', students:'VCE', instructors:'VCE', enrollments:'VCE',
   schedules:'VCE', attendance:'VCE', leaves:'VA', evaluations:'VCE', ranks:'V',
   promotions:'VCEA', exams:'V', 'exam-results':'V', 'belt-history':'V',
+  discounts:'VCA',
   announcements:'VCP', 'student-report':'V', 'attendance-report':'V',
   'promotion-report':'V', audit:'V',
 };

@@ -2,11 +2,25 @@ import React from 'react';
 import { FileText } from 'lucide-react';
 import Badge from '../../../components/common/Badge.jsx';
 import { formatDate } from '../../../utils/format.js';
-export default function AnnouncementList({ items, resolve, rowActions }) {
+
+export default function AnnouncementList({ items, resolve, rowActions, onSelect }) {
   return (
     <div className="announcement-grid">
       {items.map((row) => (
-        <article className="announcement-card" key={row.id}>
+        <article
+          className="announcement-card schedule-card-interactive"
+          key={row.id}
+          role="button"
+          tabIndex={0}
+          title="Bấm để xem chi tiết thông báo"
+          onClick={() => onSelect?.(row)}
+          onKeyDown={(e) => {
+            if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+              e.preventDefault();
+              onSelect?.(row);
+            }
+          }}
+        >
           <div className="article-top">
             <span className="article-icon">
               <FileText size={19} />
@@ -19,7 +33,7 @@ export default function AnnouncementList({ items, resolve, rowActions }) {
             <span>
               {formatDate(row.createdAt)} · {resolve('audience', row.audience)}
             </span>
-            {rowActions(row)}
+            <div onClick={(e) => e.stopPropagation()}>{rowActions(row)}</div>
           </div>
         </article>
       ))}

@@ -1,35 +1,31 @@
+import { validateDob, validatePhone, validateEmail, validateFullName, normalizeWhitespace, normalizePhone } from '../src/utils/validation.js';
+import { createDatabase, INITIAL_PERMISSIONS } from './database.js';
+import {
+  syncAccountContacts,
+  syncPersonContacts,
+  linkedPerson,
+} from './identity.js';
 import { randomUUID as uuid } from '../src/utils/uuid.js';
-import { migrateInstructorScope } from './instructor-scope.js';
+import { invoiceBaseAmount } from '../src/utils/tuition.js';
 import { priceInvoice } from './invoice-pricing.js';
 import { assertWorkflowAction, workflows } from '../src/config/workflows.js';
 import { notifyWorkflow } from './workflow-events.js';
-import { migrateTestAccounts } from './test-accounts.js';
 import {
   organizationNavigation,
   selectOrganization,
 } from './organization-navigation.js';
-import { ORGANIZATION_MODULES } from '../src/features/organization/navigation.js';
-import { migrateHierarchy, hierarchyAccess, FINANCE } from './hierarchy.js';
+import { ORGANIZATION_MODULES, normalizeSearch } from '../src/features/organization/navigation.js';
+import { hierarchyAccess, FINANCE } from './hierarchy.js';
 import { reportCharts } from './report-charts.js';
-import { seedTuitionRelief, tuitionRelief } from './tuition-relief.js';
+import { tuitionRelief } from './tuition-relief.js';
 import { leaveReviewStatus } from '../src/features/leaves/reviewStatus.js';
 import { systemExport } from './export-system.js';
 import { attendanceWorkflow } from './attendance-workflow.js';
-import { createSeed } from './seed.js';
 import { modules } from '../src/routes/routeConfig.js';
 import { can, canOpen } from '../src/utils/permissions.js';
 
-export const DB_KEY = 'vovinam-mock-offline-v4';
-const INITIAL_PERMISSIONS = Object.fromEntries(
-  modules.map((m) => [m.id, { ...m.permissions }]),
-);
-const clonePermissions = () =>
-  Object.fromEntries(
-    Object.entries(INITIAL_PERMISSIONS).map(([id, roles]) => [
-      id,
-      { ...roles },
-    ]),
-  );
+import { DB_KEY } from '../src/config/demoStorage.js';
+export { DB_KEY };
 const fail = (status, message) => {
   throw Object.assign(new Error(message), { status });
 };
@@ -39,133 +35,16 @@ const safe = (user) => {
 };
 
 export function createMockFetch({ storage } = {}) {
-  const read = () => {
-    try {
-      const db = JSON.parse(storage?.getItem(DB_KEY) || 'null');
-      if (db?.version === 3) {
-        db.permissions ||= clonePermissions();
-        if (!db.centerRankCatalogVersion) {
-          const standard = ['Lam đai', 'Lam đai I', 'Lam đai II', 'Hoàng đai'];
-          const matches = standard.every((name, i) =>
-            db.ranks.some((r) => r.id === `r-${i + 1}` && r.name === name),
-          );
-          const obsolete = db.ranks.find((r) => r.id === 'r-5');
-          if (
-            matches &&
-            (!obsolete ||
-              (obsolete.name === 'Hồng đai' &&
-                obsolete.level === 5 &&
-                obsolete.description === 'Võ đạo và kỹ thuật chuyên sâu'))
-          ) {
-            db.ranks = db.ranks.filter((r) => r.id !== 'r-5');
-            for (const rows of Object.values(db))
-              if (Array.isArray(rows))
-                for (const row of rows)
-                  if (row?.rankId === 'r-5') row.rankId = 'r-4';
-          }
-          db.centerRankCatalogVersion = 1;
-        }
-        if (!db.tuitionReliefVersion) {
-          db.tuitionRelief = seedTuitionRelief(db);
-          db.permissions.discounts = {
-            ADMIN: 'VA',
-            MASTER: 'VA',
-            INSTRUCTOR: 'VC',
-            STUDENT: 'V',
-          };
-          db.tuitionReliefVersion = 1;
-        }
-        // One-time upgrade of this workflow; never reset user records or other module rights.
-        if (!db.leaveWorkflowVersion) {
-          db.permissions.leaves ||= {};
-          db.permissions.leaves.ADMIN = [
-            ...new Set((db.permissions.leaves.ADMIN || 'VCED') + 'VA'),
-          ].join('');
-          db.permissions.leaves.STUDENT = [
-            ...new Set((db.permissions.leaves.STUDENT || 'C') + 'V'),
-          ].join('');
-          db.leaveWorkflowVersion = 1;
-        }
-        if (!db.adminResultReviewVersion) {
-          db.permissions['exam-results'] ||= {};
-          for (const role of Object.keys(db.permissions['exam-results']))
-            if (role !== 'ADMIN')
-              db.permissions['exam-results'][role] = db.permissions[
-                'exam-results'
-              ][role].replace(/A/g, '');
-          db.adminResultReviewVersion = 1;
-        }
-        if (!db.examWorkflowVersion) {
-          for (const id of ['exams', 'exam-results']) {
-            db.permissions[id] ||= {};
-            db.permissions[id].ADMIN = [
-              ...new Set((db.permissions[id].ADMIN || 'VCED') + 'A'),
-            ].join('');
-          }
-          for (const row of db['exam-results'] || [])
-            row.classId ||= db.students.find(
-              (s) => s.id === row.studentId,
-            )?.classId;
-          db.examWorkflowVersion = 1;
-        }
-        if (!db.promotionWorkflowVersion) {
-          db.permissions.promotions ||= {};
-          db.permissions.promotions.ADMIN = [
-            ...new Set((db.permissions.promotions.ADMIN || 'VCED') + 'A'),
-          ].join('');
-          for (const row of db.promotions || [])
-            row.classId ||= db.students.find(
-              (s) => s.id === row.studentId,
-            )?.classId;
-          db.promotionWorkflowVersion = 1;
-        }
-        for (const row of db.leaves || [])
-          if (row.reviewedBy && !row.reviewedRole) {
-            const reviewer = db.users.find((u) => u.id === row.reviewedBy);
-            if (reviewer) {
-              row.reviewedRole = reviewer.role;
-              row.reviewedName = reviewer.fullName;
-            }
-          }
-        if (!db.workflowAccessVersion) {
-          db.permissions.promotions ||= {};
-          if (!db.permissions.promotions.STUDENT)
-            db.permissions.promotions.STUDENT = 'V';
-          db.workflowAccessVersion = 1;
-        }
-        migrateHierarchy(db);
-        migrateTestAccounts(db);
-        migrateInstructorScope(db);
-        return db;
-      }
-    } catch {}
-    const db = createSeed();
-    db.tuitionRelief = seedTuitionRelief(db);
-    db.tuitionReliefVersion = 1;
-    db.centerRankCatalogVersion = 1;
-    db.leaveWorkflowVersion = 1;
-    db.promotionWorkflowVersion = 1;
-    db.examWorkflowVersion = 1;
-    db.adminResultReviewVersion = 1;
-    db.workflowAccessVersion = 1;
-    db.permissions = clonePermissions();
-    migrateHierarchy(db);
-    migrateTestAccounts(db);
-    migrateInstructorScope(db);
-    return db;
-  };
-  const save = (db) => {
-    const value = JSON.stringify(db);
-    if (storage?.getItem(DB_KEY) !== value) storage?.setItem(DB_KEY, value);
-  };
+  const { read, save } = createDatabase(storage);
   const execute = async (input, options = {}) => {
     if (options.signal?.aborted)
       throw new DOMException('Aborted', 'AbortError');
     let status = 200,
       data = null,
       message = 'Thành công';
-    const db = read();
+    let db;
     try {
+      db = read();
       const url = new URL(String(input), 'http://mock.local');
       let path = url.pathname.replace(/^\/(backend|api\/v1)/, '');
       const method = options.method || 'GET';
@@ -178,6 +57,17 @@ export function createMockFetch({ storage } = {}) {
         user = db.users.find(
           (u) => u.id === session?.userId && u.status === 'ACTIVE',
         );
+      const accountView = (account) => {
+        const profile = linkedPerson(db, account);
+        if (!['MASTER', 'INSTRUCTOR'].includes(account.role)) return safe(account);
+        return { ...safe(account),
+          qualification: profile?.qualification || account.qualification || '',
+          rankTitle: profile?.rankTitle || account.rankTitle || '',
+          rankName: profile?.rankName || account.rankName || db.ranks.find((rank) => rank.id === (profile?.rankId || account.rankId))?.name || '',
+          certificate: profile?.certificate || account.certificate || profile?.certification || account.certification || profile?.degree || account.degree || '',
+          certificates: profile?.certificates || account.certificates || [],
+        };
+      };
       const issue = (u) => {
         const accessToken = 'mock-' + uuid(),
           refreshToken = 'mock-refresh-' + uuid();
@@ -208,7 +98,8 @@ export function createMockFetch({ storage } = {}) {
             : path === '/lookups'
               ? q.module
               : modules.find(
-                  (m) => path === m.endpoint || path.startsWith(m.endpoint + '/'),
+                  (m) =>
+                    path === m.endpoint || path.startsWith(m.endpoint + '/'),
                 )?.id;
       const access =
         user &&
@@ -244,7 +135,11 @@ export function createMockFetch({ storage } = {}) {
                 .join(', ') || 'Chưa phân công',
           }));
         if (FINANCE.includes(id)) return rows;
-        if (id === 'classes' && user.role === 'MASTER' && access.level === 'CLUB')
+        if (
+          id === 'classes' &&
+          user.role === 'MASTER' &&
+          access.level === 'CLUB'
+        )
           return rows.map(({ tuition, ...row }) => ({
             ...row,
             studentCount: db.students.filter(
@@ -252,7 +147,10 @@ export function createMockFetch({ storage } = {}) {
             ).length,
             roster: db.students
               .filter((s) => s.classId === row.id && s.status === 'ACTIVE')
-              .map((s) => ({ fullName: s.fullName, studentCode: s.studentCode })),
+              .map((s) => ({
+                fullName: s.fullName,
+                studentCode: s.studentCode,
+              })),
           }));
         const ids = studentIds(),
           classes = classIds();
@@ -316,7 +214,9 @@ export function createMockFetch({ storage } = {}) {
           )
           .map((s) => ({
             id: s.id,
+            studentCode: s.studentCode,
             fullName: s.fullName,
+            email: s.email,
             classId: s.classId,
             rankId: s.rankId,
             status: s.status,
@@ -339,7 +239,26 @@ export function createMockFetch({ storage } = {}) {
         ),
         clubs: db.clubs.filter((c) => access.allows('clubs', c)),
         provinces: db.provinces.filter((p) => p.id === access.provinceId),
-        instructors: db.instructors.filter((i) => access.allows('instructors', i)),
+        instructors: db.instructors.filter((i) =>
+          access.allows('instructors', i),
+        ),
+        tuition: access.canRead('tuition') ? scoped('tuition', db.tuition) : [],
+        tuitionRelief: access.canRead('invoices')
+          ? db.tuitionRelief
+              .filter(
+                (r) =>
+                  access.allows('discounts', r) &&
+                  (user.role !== 'STUDENT' || r.studentId === user.studentId),
+              )
+              .map(({ studentId, classId, period, percent, status, id }) => ({
+                studentId,
+                classId,
+                period,
+                percent,
+                status,
+                id,
+              }))
+          : [],
         ranks: db.ranks
           .filter((r) => access.allows('ranks', r))
           .sort((a, b) => Number(a.level) - Number(b.level)),
@@ -393,13 +312,17 @@ export function createMockFetch({ storage } = {}) {
               ...r,
               studentName: db.students.find((s) => s.id === r.studentId)
                 ?.fullName,
+              studentCode: db.students.find((s) => s.id === r.studentId)
+                ?.studentCode,
               className: db.classes.find((c) => c.id === r.classId)?.name,
             };
-            if (
-              !JSON.stringify(enriched)
-                .toLowerCase()
-                .includes(q.search.toLowerCase())
-            )
+            const hay = normalizeSearch(
+              Object.values(enriched)
+                .filter((v) => v !== null && v !== undefined && typeof v !== 'object')
+                .join(' '),
+            );
+            const terms = normalizeSearch(q.search).split(' ').filter(Boolean);
+            if (terms.length && !terms.every((t) => hay.includes(t)))
               return false;
           }
           return true;
@@ -491,7 +414,7 @@ export function createMockFetch({ storage } = {}) {
             u.status === 'ACTIVE',
         );
         if (!u) fail(401, 'Email hoặc mật khẩu không chính xác.');
-        data = { user: safe(u), tokens: issue(u) };
+        data = { user: accountView(u), tokens: issue(u) };
       } else if (path === '/auth/refresh-token') {
         const found = Object.entries(db.sessions).find(
           ([, s]) => s.refreshToken === body.refreshToken,
@@ -530,14 +453,32 @@ export function createMockFetch({ storage } = {}) {
         data = { success: true };
       } else {
         if (!user) fail(401, 'Vui lòng đăng nhập để tiếp tục.');
-        if (path === '/auth/me') data = safe(user);
+        if (path === '/auth/me') data = accountView(user);
         else if (path === '/auth/logout') {
           delete db.sessions[token];
           data = { success: true };
         } else if (path === '/auth/profile' && method === 'PATCH') {
-          user.fullName = String(body.fullName || user.fullName).trim();
-          user.phone = String(body.phone || '');
-          data = safe(user);
+          const nextName = String(
+            body.fullName !== undefined ? body.fullName : user.fullName,
+          )
+            .replace(/\s+/g, ' ')
+            .trim();
+          if (nextName.length < 2)
+            fail(400, 'Họ và tên phải có ít nhất 2 ký tự hợp lệ.');
+          const nextPhone = String(
+            body.phone !== undefined ? body.phone : user.phone || '',
+          )
+            .replace(/[\s.-]/g, '')
+            .trim();
+          if (nextPhone && !/^(\+84|0)\d{8,10}$/.test(nextPhone))
+            fail(
+              400,
+              'Số điện thoại không hợp lệ (ví dụ: 0901234567 hoặc +84901234567).',
+            );
+          user.fullName = nextName;
+          user.phone = nextPhone;
+          syncAccountContacts(db, user);
+          data = accountView(user);
           audit('Cập nhật hồ sơ', 'Hồ sơ cá nhân');
         } else if (path === '/auth/change-password') {
           if (body.currentPassword !== user.password)
@@ -579,14 +520,15 @@ export function createMockFetch({ storage } = {}) {
                   fail(400, 'Quyền không hợp lệ.');
                 if (
                   moduleId === 'discounts' &&
-                  ((value.includes('C') && role !== 'INSTRUCTOR') ||
+                  ((value.includes('C') &&
+                    !['ADMIN', 'MASTER', 'INSTRUCTOR'].includes(role)) ||
                     (value.includes('A') &&
                       !['ADMIN', 'MASTER'].includes(role)) ||
                     /[EDP]/.test(value))
                 )
                   fail(
                     400,
-                    'Miễn giảm học phí: chỉ HLV gửi đề xuất; Admin/Võ sư duyệt; không sửa hoặc xóa đơn đã gửi.',
+                    'Miễn giảm học phí: chỉ HLV, Võ sư hoặc Admin gửi đề xuất; Võ sư/Admin duyệt theo cấp bậc; không sửa hoặc xóa đơn đã gửi.',
                   );
                 if (
                   moduleId === 'exam-results' &&
@@ -633,7 +575,9 @@ export function createMockFetch({ storage } = {}) {
             query: q,
             scoped: (kind, rows) =>
               kind === 'classes' && id === 'tuition-report'
-                ? rows.filter((c) => access.classIds(false, true).includes(c.id))
+                ? rows.filter((c) =>
+                    access.classIds(false, true).includes(c.id),
+                  )
                 : scoped(kind, rows),
           });
         } else if (
@@ -707,7 +651,20 @@ export function createMockFetch({ storage } = {}) {
               ...a,
               read: (db.readNotifications[user.id] || []).includes(a.id),
             }));
-        } else if (path === '/notifications/read-all') {
+        } else if (path === '/notifications/read-one' && method === 'POST') {
+          if (
+            !scoped('announcements', db.announcements).some(
+              (n) => n.id === body.id,
+            )
+          )
+            fail(404, 'Thông báo không thuộc quyền truy cập.');
+          db.readNotifications[user.id] = [
+            ...new Set([...(db.readNotifications[user.id] || []), body.id]),
+          ];
+          data = { success: true };
+        } else if (
+          ['/notifications/read-all', '/notifications/read-one'].includes(path)
+        ) {
           if (method !== 'POST') fail(405, 'Đánh dấu đã đọc phải dùng POST.');
           db.readNotifications[user.id] = scoped(
             'announcements',
@@ -746,7 +703,7 @@ export function createMockFetch({ storage } = {}) {
             action = suffix[2];
           if (
             suffix.length > 1 &&
-            !(suffix.length === 3 && suffix[1] === 'actions')
+            !(suffix.length === 3 && suffix[1] === 'actions') && !(suffix.length === 2 && ['collect-cash', 'pay-online'].includes(suffix[1]))
           )
             fail(404, 'Đường dẫn thao tác không hợp lệ.');
           if (suffix[1] === 'actions')
@@ -817,7 +774,131 @@ export function createMockFetch({ storage } = {}) {
             rows = source;
             config._columns = columns;
           }
-          if (config.id === 'promotions' && path === '/promotions/bulk-review') {
+          if (
+            config.id === 'invoices' &&
+            path === '/invoices/batch'
+          ) {
+            if (method !== 'POST') fail(405, 'Thao tác không hợp lệ.');
+            if (!can(config, user.role, 'C'))
+              fail(403, 'Bạn không có quyền lập hóa đơn.');
+            const targetClassId = body.classId;
+            const targetPeriod = body.period;
+            const targetDueDate = body.dueDate;
+            const baseAmount = Number(body.amount || 0);
+            if (!targetClassId || !targetPeriod || !targetDueDate || baseAmount <= 0)
+              fail(400, 'Vui lòng nhập đầy đủ lớp, kỳ thu, hạn đóng và mức học phí hợp lệ.');
+            if (!access.classIds(true).includes(targetClassId))
+              fail(403, 'Lớp không thuộc phạm vi của bạn.');
+            const targetStudents = db.students.filter(
+              (s) =>
+                s.classId === targetClassId &&
+                s.status !== 'PAUSED' &&
+                (!Array.isArray(body.studentIds) ||
+                  !body.studentIds.length ||
+                  body.studentIds.includes(s.id)),
+            );
+            const existingSet = new Set(
+              db.invoices
+                .filter(
+                  (inv) =>
+                    inv.classId === targetClassId && inv.period === targetPeriod,
+                )
+                .map((inv) => inv.studentId),
+            );
+            const createdItems = [];
+            let skipped = 0;
+            for (const st of targetStudents) {
+              if (existingSet.has(st.id)) {
+                skipped += 1;
+                continue;
+              }
+              const relief = (db.tuitionRelief || []).find(
+                (r) =>
+                  r.studentId === st.id &&
+                  r.period === targetPeriod &&
+                  r.status === 'APPROVED',
+              );
+              const pct = relief
+                ? relief.reliefType === 'EXEMPTION'
+                  ? 100
+                  : Number(relief.percent || 0)
+                : 0;
+              const finalAmount = Math.max(
+                0,
+                Math.round(baseAmount * (1 - pct / 100)),
+              );
+              const nextSeq = db.invoices.length + 1;
+              const invRow = {
+                id: 'inv-batch-' + Date.now() + '-' + nextSeq,
+                code: `HD-${targetPeriod.replace('-', '')}-${String(nextSeq).padStart(3, '0')}`,
+                studentId: st.id,
+                classId: targetClassId,
+                period: targetPeriod,
+                baseAmount,
+                amount: finalAmount,
+                discountPercent: pct,
+                dueDate: targetDueDate,
+                status: finalAmount === 0 ? 'PAID' : 'UNPAID',
+                paymentMethod: finalAmount === 0 ? 'EXEMPTION' : '',
+                createdAt: new Date().toISOString(),
+              };
+              db.invoices.push(invRow);
+              createdItems.push(invRow);
+            }
+            audit(
+              `Lập kỳ thu hàng loạt ${createdItems.length} hóa đơn`,
+              config.title,
+            );
+            data = {
+              created: createdItems.length,
+              skipped,
+              items: createdItems,
+            };
+          } else if (
+            config.id === 'enrollments' &&
+            path === '/enrollments/batch-transfer'
+          ) {
+            if (method !== 'POST') fail(405, 'Thao tác không hợp lệ.');
+            if (!can(config, user.role, 'E'))
+              fail(403, 'Bạn không có quyền chuyển lớp.');
+            const nextClassId = body.targetClassId;
+            const ids = Array.isArray(body.ids) ? [...new Set(body.ids)] : [];
+            if (!nextClassId || !ids.length)
+              fail(400, 'Chọn danh sách võ sinh và lớp đích hợp lệ.');
+            if (!access.classIds(true).includes(nextClassId))
+              fail(403, 'Lớp đích không thuộc phạm vi của bạn.');
+            const updatedItems = [];
+            let skipped = 0;
+            const failedIds = [];
+            for (const eid of ids) {
+              const row = db.enrollments.find((r) => r.id === eid);
+              if (!row || !access.allows('enrollments', row, true)) {
+                failedIds.push(eid);
+                continue;
+              }
+              if (row.classId === nextClassId) {
+                skipped += 1;
+                continue;
+              }
+              row.classId = nextClassId;
+              const st = db.students.find((s) => s.id === row.studentId);
+              if (st) st.classId = nextClassId;
+              updatedItems.push(row);
+            }
+            audit(
+              `Chuyển lớp hàng loạt ${updatedItems.length} võ sinh`,
+              config.title,
+            );
+            data = {
+              updated: updatedItems.length,
+              skipped,
+              failedIds,
+              items: updatedItems,
+            };
+          } else           if (
+            config.id === 'promotions' &&
+            path === '/promotions/bulk-review'
+          ) {
             if (method !== 'POST') fail(405, 'Thao tác không hợp lệ.');
             if (!can(config, user.role, 'A'))
               fail(403, 'Bạn không có quyền duyệt đề xuất.');
@@ -860,6 +941,30 @@ export function createMockFetch({ storage } = {}) {
                   : {}),
                 reviewedAt,
               });
+              if (
+                body.action === 'approve' &&
+                row.examId &&
+                (db.exams || []).some((ex) => ex.id === row.examId) &&
+                !(db['exam-results'] || []).some(
+                  (er) => er.studentId === row.studentId && er.examId === row.examId,
+                )
+              ) {
+                db['exam-results'] = db['exam-results'] || [];
+                db['exam-results'].push({
+                  id: 'result-auto-' + Date.now() + '-' + db['exam-results'].length,
+                  studentId: row.studentId,
+                  classId: row.classId,
+                  examId: row.examId,
+                  quyenScore: 0,
+                  theoryFitnessScore: 0,
+                  basicScore: 0,
+                  sparringScore: 0,
+                  totalScore: 0,
+                  note: 'Tự động tạo từ đề xuất thi lên đai đã duyệt.',
+                  status: 'PENDING',
+                  createdAt: reviewedAt,
+                });
+              }
               notifyWorkflow({
                 db,
                 user,
@@ -882,14 +987,21 @@ export function createMockFetch({ storage } = {}) {
               !(config.id === 'online-payments' && can(config, user.role, 'P'))
             )
               fail(403, 'Vai trò này không được xem danh sách.');
-            if (config.id === 'online-payments' && user.role === 'STUDENT')
+            if (
+              config.id === 'online-payments' &&
+              user.role === 'STUDENT' &&
+              !id
+            )
               rows = rows.filter((r) =>
                 ['DRAFT', 'PENDING'].includes(r.status),
               );
-            if (config.id === 'leaves' && id) {
+            if (id) {
               const row = rows.find((r) => r.id === id);
               if (!row) fail(404, 'Không tìm thấy đơn trong phạm vi của bạn.');
-              data = row;
+              data = {
+                ...(config.id === 'users' ? safe(row) : row),
+                __readOnly: !access.allows(config.id, row, true),
+              };
             } else {
               const list = filtered(
                 config.id === 'ranks'
@@ -913,6 +1025,148 @@ export function createMockFetch({ storage } = {}) {
                 },
                 lookups: lookups(),
               };
+            }
+          } else if (config.id === 'invoices' && suffix[1] === 'pay-online' && method === 'POST') {
+            const row = rows.find((r) => r.id === id);
+            if (!row) fail(404, 'Không tìm thấy hóa đơn trong phạm vi của bạn.');
+            if (row.status === 'PAID') fail(409, 'Hóa đơn này đã được thanh toán.');
+            const idempotencyKey = String(
+              body?.idempotencyKey || `${row.id}:${row.amount}`,
+            ).trim();
+            const existingPending = db['online-payments'].find(
+              (p) =>
+                (p.invoiceId === row.id || p.idempotencyKey === idempotencyKey) &&
+                p.status === 'PENDING',
+            );
+            if (existingPending) {
+              data = {
+                invoice: row,
+                payment: existingPending,
+                pendingVerification: true,
+                duplicate: true,
+              };
+            } else {
+              const studentProfile = db.students.find((s) => s.id === row.studentId);
+              const transferRecord = {
+                id: uuid(),
+                code: 'CK-' + row.code,
+                studentId: row.studentId,
+                classId: row.classId,
+                invoiceId: row.id,
+                amount: row.amount,
+                method: 'BANK',
+                status: 'PENDING',
+                idempotencyKey,
+                submittedBy: user.id,
+                submittedName: user.fullName || studentProfile?.fullName || 'Võ sinh',
+                reviewerHint: 'Võ sư phụ trách / Quản trị viên',
+                note:
+                  body?.note ||
+                  'Yêu cầu đối soát chuyển khoản ngân hàng (chờ xác nhận)',
+                createdAt: new Date().toISOString(),
+              };
+              db['online-payments'].unshift(transferRecord);
+              const classObj = db.classes.find((c) => c.id === row.classId);
+              const clubObj = db.clubs.find((c) => c.id === classObj?.clubId);
+              const recipientUserIds = db.users
+                .filter((u) => {
+                  if (u.status === 'INACTIVE') return false;
+                  if (u.role === 'ADMIN') return true;
+                  if (u.role === 'MASTER') {
+                    if (!u.masterLevel || u.masterLevel === 'PROVINCE') return true;
+                    if (u.masterLevel === 'WARD') return u.wardId === clubObj?.wardId;
+                    if (u.masterLevel === 'CLUB') return u.clubId === clubObj?.id;
+                  }
+                  if (u.role === 'INSTRUCTOR') return classObj?.instructorId === u.id;
+                  return false;
+                })
+                .map((u) => u.id);
+              db.announcements.unshift({
+                id: uuid(),
+                title: 'Yêu cầu đối soát chuyển khoản mới · ' + row.code,
+                body:
+                  (studentProfile?.fullName || user.fullName || 'Võ sinh') +
+                  ' đã gửi yêu cầu đối soát chuyển khoản ' +
+                  Number(row.amount || 0).toLocaleString('vi-VN') +
+                  ' đ cho hóa đơn ' +
+                  row.code +
+                  '.',
+                audience: 'CLASS',
+                classId: row.classId,
+                studentId: row.studentId,
+                invoiceId: row.id,
+                status: 'PUBLISHED',
+                systemEvent: 'PAYMENT_CONFIRMATION_PENDING',
+                recipientUserIds,
+                createdAt: new Date().toISOString(),
+              });
+              data = {
+                invoice: row,
+                payment: transferRecord,
+                pendingVerification: true,
+              };
+              audit('Gửi yêu cầu đối soát chuyển khoản', row.code);
+            }
+          } else if (config.id === 'invoices' && suffix[1] === 'collect-cash' && method === 'POST') {
+            if (!can(config, user.role, 'P') && !can(config, user.role, 'E'))
+              fail(403, 'Bạn không có quyền ghi nhận thu học phí tiền mặt.');
+            const row = rows.find((r) => r.id === id);
+            if (!row) fail(404, 'Không tìm thấy hóa đơn trong phạm vi của bạn.');
+            access.assertWrite(config.id, row);
+            const idempotencyKey = String(body?.idempotencyKey || '').trim();
+            if (
+              idempotencyKey &&
+              row.status === 'PAID' &&
+              row.cashIdempotencyKey === idempotencyKey
+            ) {
+              data = { ...row, duplicate: true };
+            } else {
+              if (row.status === 'PAID')
+                fail(409, 'Hóa đơn này đã được thanh toán trước đó.');
+              const nowIso = new Date().toISOString();
+              row.status = 'PAID';
+              row.paymentMethod = 'CASH';
+              row.paidAt = nowIso.slice(0, 10);
+              row.collectedBy = user.id;
+              row.collectedByName = user.fullName;
+              if (idempotencyKey) row.cashIdempotencyKey = idempotencyKey;
+              const pendingTransfers = db['online-payments'].filter(
+                (p) => p.invoiceId === row.id && p.status === 'PENDING',
+              );
+              for (const req of pendingTransfers) {
+                req.status = 'REJECTED';
+                req.supersededByCash = true;
+                req.reviewNote =
+                  'Đã thu tiền mặt trực tiếp tại lớp bởi ' +
+                  user.fullName +
+                  ' — tự động đóng yêu cầu đối soát chuyển khoản trước đó.';
+                req.reviewedBy = user.id;
+                req.reviewedName = user.fullName;
+                req.reviewedAt = nowIso;
+              }
+              db.transactions.unshift({
+                id: uuid(),
+                code: 'TM-' + row.code,
+                studentId: row.studentId,
+                classId: row.classId,
+                invoiceId: row.id,
+                amount: row.amount,
+                method: 'CASH',
+                status: 'SUCCESS',
+                collectedBy: user.id,
+                collectedByName: user.fullName,
+                createdAt: nowIso,
+              });
+              data = {
+                ...row,
+                supersededTransfers: pendingTransfers.length,
+              };
+              audit(
+                pendingTransfers.length
+                  ? 'Thu học phí tiền mặt (đóng ' + pendingTransfers.length + ' yêu cầu chuyển khoản chờ)'
+                  : 'Thu học phí tiền mặt',
+                row.code,
+              );
             }
           } else if (suffix[1] === 'actions') {
             const needed = ['approve', 'reject'].includes(action) ? 'A' : 'P';
@@ -938,7 +1192,7 @@ export function createMockFetch({ storage } = {}) {
             if (row.systemEvent)
               fail(403, 'Thông báo kết quả tự động không được chỉnh sửa.');
             if (
-              config.id === 'online-payments' ||
+              (config.id === 'online-payments' && action !== 'reject') ||
               (config.id === 'payment-confirmations' && action === 'approve')
             ) {
               const invoice = db.invoices.find((i) => i.id === row.invoiceId);
@@ -963,21 +1217,84 @@ export function createMockFetch({ storage } = {}) {
                         '. Không thể duyệt lại.'
                     : 'Bản ghi này đã được xử lý.',
                 );
-              if (config.id === 'payment-confirmations') {
-                if (action === 'reject') row.status = 'REJECTED';
-                else {
+              if (config.id === 'payment-confirmations' || config.id === 'online-payments') {
+                const nowIso = new Date().toISOString();
+                const studentAccount = db.users.find(
+                  (u) => u.role === 'STUDENT' && (u.studentId === row.studentId || u.id === row.submittedBy),
+                );
+                if (action === 'reject') {
+                  const reasonText = String(body?.reason || body?.reviewNote || '').trim();
+                  row.status = 'REJECTED';
+                  row.reviewNote = reasonText || 'Không khớp giao dịch chuyển khoản. Vui lòng kiểm tra lại và gửi lại yêu cầu.';
+                  row.reviewedBy = user.id;
+                  row.reviewedName = user.fullName;
+                  row.reviewedAt = nowIso;
+                  if (studentAccount) {
+                    db.announcements.unshift({
+                      id: uuid(),
+                      title: 'Yêu cầu đối soát chuyển khoản bị từ chối · ' + (row.code || ''),
+                      body: 'Lý do: ' + row.reviewNote,
+                      audience: 'CLASS',
+                      classId: row.classId,
+                      studentId: row.studentId,
+                      invoiceId: row.invoiceId,
+                      status: 'PUBLISHED',
+                      systemEvent: 'PAYMENT_CONFIRMATION_REJECTED',
+                      recipientUserIds: [studentAccount.id],
+                      createdAt: nowIso,
+                    });
+                  }
+                } else {
                   const invoice = db.invoices.find(
                     (i) => i.id === row.invoiceId,
                   );
                   if (!invoice || invoice.status === 'PAID')
                     fail(409, 'Hóa đơn đã được thanh toán hoặc không tồn tại.');
                   row.status = 'SUCCESS';
+                  row.method = 'BANK';
+                  row.reviewNote = String(body?.reason || body?.reviewNote || '').trim() || 'Đã đối soát và xác nhận chuyển khoản.';
+                  row.reviewedBy = user.id;
+                  row.reviewedName = user.fullName;
+                  row.reviewedAt = nowIso;
                   invoice.status = 'PAID';
-                  db.transactions.unshift({
-                    ...row,
-                    id: uuid(),
-                    createdAt: new Date().toISOString(),
-                  });
+                  invoice.paymentMethod = 'BANK';
+                  invoice.paidAt = nowIso.slice(0, 10);
+                  invoice.collectedBy = user.id;
+                  invoice.collectedByName = user.fullName;
+                  if (
+                    !db.transactions.some(
+                      (t) => t.invoiceId === invoice.id && t.status === 'SUCCESS',
+                    )
+                  ) {
+                    db.transactions.unshift({
+                      ...row,
+                      id: uuid(),
+                      method: 'BANK',
+                      collectedBy: user.id,
+                      collectedByName: user.fullName,
+                      createdAt: nowIso,
+                    });
+                  }
+                  if (studentAccount) {
+                    db.announcements.unshift({
+                      id: uuid(),
+                      title: 'Đã xác nhận thanh toán học phí · ' + invoice.code,
+                      body:
+                        'Khoản thanh toán ' +
+                        Number(invoice.amount || 0).toLocaleString('vi-VN') +
+                        ' đ đã được ' +
+                        user.fullName +
+                        ' xác nhận.',
+                      audience: 'CLASS',
+                      classId: row.classId,
+                      studentId: row.studentId,
+                      invoiceId: row.invoiceId,
+                      status: 'PUBLISHED',
+                      systemEvent: 'PAYMENT_CONFIRMATION_APPROVED',
+                      recipientUserIds: [studentAccount.id],
+                      createdAt: nowIso,
+                    });
+                  }
                 }
               } else if (config.id === 'exam-results' && action === 'approve') {
                 if (
@@ -995,10 +1312,22 @@ export function createMockFetch({ storage } = {}) {
                     ),
                     exam = db.exams.find((e) => e.id === row.examId);
                   if (student && exam) {
-                    student.rankId = exam.rankId;
+                    const currentRank = db.ranks.find(
+                      (r) => r.id === student.rankId,
+                    );
+                    const awardedRank = db.ranks.find(
+                      (r) => r.id === exam.rankId,
+                    );
+                    if (!currentRank || !awardedRank)
+                      fail(409, 'Cấp đai không còn hợp lệ.');
+                    // Historical results remain valid without downgrading today's rank.
+                    if (Number(awardedRank.level) > Number(currentRank.level))
+                      student.rankId = exam.rankId;
                     db['belt-history'].unshift({
                       id: uuid(),
                       studentId: student.id,
+                      classId: row.classId || student.classId,
+                      examId: exam.id,
                       rankId: exam.rankId,
                       awardedAt: new Date().toISOString().slice(0, 10),
                       note: 'Hoàn thành ' + exam.title,
@@ -1025,9 +1354,7 @@ export function createMockFetch({ storage } = {}) {
                   reviewedAt: new Date().toISOString(),
                 });
               if (config.id === 'exam-results') {
-                const student = db.students.find(
-                    (s) => s.id === row.studentId,
-                  ),
+                const student = db.students.find((s) => s.id === row.studentId),
                   exam = db.exams.find((e) => e.id === row.examId),
                   cls = db.classes.find((c) => c.id === row.classId);
                 const resultLabel = {
@@ -1107,11 +1434,19 @@ export function createMockFetch({ storage } = {}) {
             if (
               config.id === 'schedules' &&
               id &&
-              db.attendanceSessions?.[id]
+              (db.attendanceSessions?.[id]?.status === 'CLOSED' ||
+                db.attendance.some(
+                  (a) =>
+                    a.scheduleId === id ||
+                    (!a.scheduleId &&
+                      a.classId === rows.find((s) => s.id === id)?.classId &&
+                      a.sessionDate ===
+                        rows.find((s) => s.id === id)?.sessionDate),
+                ))
             )
               fail(
                 409,
-                'Buổi tập đã mở điểm danh, không thể sửa hoặc xóa lịch.',
+                'Buổi tập đã có bản ghi điểm danh hoặc đã chốt, không thể sửa hoặc xóa lịch.',
               );
             const needed =
               method === 'POST' ? 'C' : method === 'DELETE' ? 'D' : 'E';
@@ -1124,6 +1459,14 @@ export function createMockFetch({ storage } = {}) {
                 403,
                 'Thông báo kết quả tự động không được chỉnh sửa hoặc xóa.',
               );
+            if (
+              id &&
+              !row &&
+              ['PATCH', 'PUT', 'DELETE'].includes(method) &&
+              config.id === 'invoices' &&
+              db[collection].some((r) => r.id === id)
+            )
+              fail(403, 'Hóa đơn không thuộc phạm vi đơn vị phụ trách.');
             if (id && !row)
               fail(404, 'Không tìm thấy dữ liệu trong phạm vi của bạn.');
             if (config.id === 'invoices' && row) {
@@ -1143,9 +1486,14 @@ export function createMockFetch({ storage } = {}) {
                 );
             }
             if (
-              ['leaves', 'promotions', 'exams', 'exam-results'].includes(
-                config.id,
-              ) &&
+              [
+                'leaves',
+                'promotions',
+                'exams',
+                'exam-results',
+                'discounts',
+                'payment-confirmations',
+              ].includes(config.id) &&
               row &&
               row.status !== 'PENDING'
             )
@@ -1222,6 +1570,17 @@ export function createMockFetch({ storage } = {}) {
                 )
                   continue;
                 let v = body[field.key];
+                if (
+                  config.id === 'invoices' &&
+                  field.key === 'amount' &&
+                  (v === undefined || v === '')
+                )
+                  v = invoiceBaseAmount(
+                    db.tuition,
+                    db.classes,
+                    body.classId,
+                    body.period,
+                  );
                 if (field.type === 'password' && method !== 'POST' && !v)
                   continue;
                 if (
@@ -1270,11 +1629,24 @@ export function createMockFetch({ storage } = {}) {
                 )
                   clean.classId = '';
               }
-              if (
-                clean.email &&
-                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean.email)
-              )
-                fail(400, 'Địa chỉ email không hợp lệ.');
+              if (clean.fullName !== undefined) {
+                clean.fullName = normalizeWhitespace(clean.fullName);
+                const nameErr = validateFullName(clean.fullName, { required: false });
+                if (nameErr) fail(400, nameErr);
+              }
+              if (clean.dob !== undefined && String(clean.dob).trim() !== '') {
+                const dobErr = validateDob(clean.dob);
+                if (dobErr) fail(400, dobErr);
+              }
+              if (clean.phone !== undefined && String(clean.phone).trim() !== '') {
+                const phoneErr = validatePhone(clean.phone);
+                if (phoneErr) fail(400, phoneErr);
+                clean.phone = normalizePhone(clean.phone);
+              }
+              if (clean.email !== undefined && String(clean.email).trim() !== '') {
+                const emailErr = validateEmail(clean.email);
+                if (emailErr) fail(400, emailErr);
+              }
               for (const [key, list] of [
                 ['studentId', db.students],
                 ['classId', db.classes],
@@ -1332,7 +1704,7 @@ export function createMockFetch({ storage } = {}) {
                     e.status === 'ACTIVE',
                 )
               )
-                fail(400, 'Học viên không thuộc lớp xin nghỉ.');
+                fail(400, 'Võ sinh không thuộc lớp xin nghỉ.');
               if (config.id === 'instructors') {
                 if (
                   db.instructors.some(
@@ -1368,6 +1740,25 @@ export function createMockFetch({ storage } = {}) {
                   )
                 )
                   fail(409, 'Tên hoặc thứ tự cấp đai đã tồn tại.');
+              }
+              if (
+                ['students', 'instructors', 'masters'].includes(config.id) &&
+                clean.email
+              ) {
+                const linked = db.users.find((u) =>
+                  config.id === 'students'
+                    ? u.studentId === id
+                    : u.id === id || u.id === row?.userId,
+                );
+                if (
+                  linked &&
+                  db.users.some(
+                    (u) =>
+                      u.id !== linked.id &&
+                      u.email.toLowerCase() === clean.email.toLowerCase(),
+                  )
+                )
+                  fail(409, 'Email đã được dùng cho tài khoản khác.');
               }
               if (config.id === 'exam-results') {
                 clean.classId =
@@ -1409,10 +1800,7 @@ export function createMockFetch({ storage } = {}) {
                   !current ||
                   Number(target.level) <= Number(current.level)
                 )
-                  fail(
-                    400,
-                    'Cấp đai đề xuất phải cao hơn cấp đai hiện tại.',
-                  );
+                  fail(400, 'Cấp đai đề xuất phải cao hơn cấp đai hiện tại.');
                 if (
                   db.promotions.some(
                     (r) =>
@@ -1431,6 +1819,22 @@ export function createMockFetch({ storage } = {}) {
                   )
                 )
                   fail(409, 'Email đã được sử dụng.');
+                const person = row ? linkedPerson(db, row) : null;
+                const table = {
+                  STUDENT: 'students',
+                  INSTRUCTOR: 'instructors',
+                  MASTER: 'masters',
+                }[clean.role];
+                if (
+                  person &&
+                  table &&
+                  db[table].some(
+                    (p) =>
+                      p.id !== person.id &&
+                      p.email?.toLowerCase() === clean.email,
+                  )
+                )
+                  fail(409, 'Email đã được dùng cho hồ sơ khác.');
                 if (clean.password && clean.password.length < 8)
                   fail(400, 'Mật khẩu cần ít nhất 8 ký tự.');
                 if (
@@ -1455,8 +1859,59 @@ export function createMockFetch({ storage } = {}) {
                   clean.studentId = student.id;
                 }
               }
-              if (config.id === 'schedules' && clean.endTime <= clean.startTime)
-                fail(400, 'Giờ kết thúc cần sau giờ bắt đầu.');
+              if (
+                config.id === 'tuition' &&
+                clean.status === 'ACTIVE' &&
+                db.tuition.some(
+                  (t) =>
+                    t.id !== id &&
+                    t.status === 'ACTIVE' &&
+                    t.classId === clean.classId &&
+                    t.period === clean.period,
+                )
+              )
+                fail(
+                  409,
+                  'Lớp và kỳ này đã có biểu phí đang áp dụng. Hãy sửa biểu phí hiện có.',
+                );
+              if (config.id === 'schedules') {
+                if (
+                  !/^\d{4}-\d{2}-\d{2}$/.test(clean.sessionDate) ||
+                  Number.isNaN(Date.parse(clean.sessionDate)) ||
+                  new Date(clean.sessionDate).toISOString().slice(0, 10) !==
+                    clean.sessionDate
+                )
+                  fail(400, 'Ngày tập không hợp lệ.');
+                if (
+                  !/^([01]\d|2[0-3]):[0-5]\d$/.test(clean.startTime) ||
+                  !/^([01]\d|2[0-3]):[0-5]\d$/.test(clean.endTime) ||
+                  clean.endTime <= clean.startTime
+                )
+                  fail(400, 'Giờ kết thúc cần sau giờ bắt đầu.');
+                const cls = db.classes.find((c) => c.id === clean.classId);
+                if (
+                  clean.status !== 'CANCELLED' &&
+                  db.schedules.some((s) => {
+                    const other = db.classes.find((c) => c.id === s.classId);
+                    return (
+                      s.id !== id &&
+                      s.status !== 'CANCELLED' &&
+                      s.sessionDate === clean.sessionDate &&
+                      s.startTime < clean.endTime &&
+                      s.endTime > clean.startTime &&
+                      (s.classId === clean.classId ||
+                        (cls?.instructorId &&
+                          cls.instructorId === other?.instructorId) ||
+                        s.location.trim().toLowerCase() ===
+                          clean.location.trim().toLowerCase())
+                    );
+                  })
+                )
+                  fail(
+                    409,
+                    'Lịch bị trùng giờ với lớp, huấn luyện viên hoặc địa điểm. Hãy chọn giờ khác.',
+                  );
+              }
               if (config.id === 'enrollments') {
                 if (
                   clean.status === 'ACTIVE' &&
@@ -1486,13 +1941,21 @@ export function createMockFetch({ storage } = {}) {
                       e.id !== id &&
                       e.studentId === clean.studentId &&
                       e.status === 'ACTIVE'
-                    )
+                    ) {
                       e.status = 'PAUSED';
+                      e.leftAt =
+                        clean.joinedAt || new Date().toISOString().slice(0, 10);
+                    }
                 }
                 const targetStudent = db.students.find(
                   (s) => s.id === clean.studentId,
                 );
-                if (targetStudent) targetStudent.classId = clean.classId;
+                if (clean.status === 'PAUSED')
+                  clean.leftAt =
+                    row?.leftAt || new Date().toISOString().slice(0, 10);
+                else clean.leftAt = null;
+                if (targetStudent && clean.status === 'ACTIVE')
+                  targetStudent.classId = clean.classId;
               }
               if (
                 config.id === 'attendance' &&
@@ -1549,7 +2012,7 @@ export function createMockFetch({ storage } = {}) {
                       s.id === clean.studentId && s.classId === clean.classId,
                   )
                 )
-                  fail(400, 'Học viên không thuộc lớp lập hóa đơn.');
+                  fail(400, 'Võ sinh không thuộc lớp lập hóa đơn.');
                 if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(clean.period))
                   fail(400, 'Tháng thu không hợp lệ.');
                 if (
@@ -1561,10 +2024,31 @@ export function createMockFetch({ storage } = {}) {
                       r.period === clean.period,
                   )
                 )
-                  fail(
-                    409,
-                    'Đã có hóa đơn cho học viên, lớp và tháng này.',
-                  );
+                  fail(409, 'Đã có hóa đơn cho võ sinh, lớp và tháng này.');
+                const configured = invoiceBaseAmount(
+                  db.tuition,
+                  db.classes,
+                  clean.classId,
+                  clean.period,
+                );
+                if (
+                  configured !== null &&
+                  Number(clean.amount) !== configured
+                ) {
+                  if (!String(body.priceOverrideReason || '').trim())
+                    fail(
+                      400,
+                      'Số tiền khác biểu phí. Vui lòng nhập lý do điều chỉnh.',
+                    );
+                  if (user.role !== 'ADMIN')
+                    fail(
+                      403,
+                      'Chỉ Admin được điều chỉnh số tiền khác biểu phí.',
+                    );
+                }
+                clean.priceOverrideReason = String(
+                  body.priceOverrideReason || '',
+                ).trim();
                 Object.assign(clean, priceInvoice(db, clean));
               }
               if (method === 'POST') {
@@ -1583,8 +2067,21 @@ export function createMockFetch({ storage } = {}) {
                   row.code = 'HD-' + Date.now().toString().slice(-8);
                 }
                 if (config.id === 'students') {
-                  row.studentCode =
-                    'VS' + String(db.students.length + 1).padStart(4, '0');
+                  db.counters = db.counters || {};
+                  const maxExisting = db.students.reduce((max, s) => {
+                    const m = /^VS(\d+)$/i.exec(String(s.studentCode || ''));
+                    return m ? Math.max(max, Number(m[1])) : max;
+                  }, 0);
+                  let nextSeq = Math.max(Number(db.counters.studentCode || 0), maxExisting) + 1;
+                  while (
+                    db.students.some(
+                      (s) => s.studentCode === 'VS' + String(nextSeq).padStart(4, '0'),
+                    )
+                  ) {
+                    nextSeq += 1;
+                  }
+                  db.counters.studentCode = nextSeq;
+                  row.studentCode = 'VS' + String(nextSeq).padStart(4, '0');
                   const cls = db.classes.find((c) => c.id === row.classId);
                   if (
                     db.students.filter(
@@ -1667,8 +2164,12 @@ export function createMockFetch({ storage } = {}) {
                     fail(409, 'Lớp đã đủ sĩ số.');
                   if (clean.classId !== row.classId) {
                     for (const e of db.enrollments)
-                      if (e.studentId === row.id && e.status === 'ACTIVE')
+                      if (e.studentId === row.id && e.status === 'ACTIVE') {
                         e.status = 'PAUSED';
+                        e.leftAt =
+                          clean.joinedAt ||
+                          new Date().toISOString().slice(0, 10);
+                      }
                     db.enrollments.push({
                       id: uuid(),
                       studentId: row.id,
@@ -1685,10 +2186,15 @@ export function createMockFetch({ storage } = {}) {
                   clean.status !== row.status
                 ) {
                   const activeEnrollment = db.enrollments.find(
-                    (e) =>
-                      e.studentId === row.id && e.classId === row.classId,
+                    (e) => e.studentId === row.id && e.classId === row.classId,
                   );
-                  if (activeEnrollment) activeEnrollment.status = clean.status;
+                  if (activeEnrollment) {
+                    activeEnrollment.status = clean.status;
+                    activeEnrollment.leftAt =
+                      clean.status === 'PAUSED'
+                        ? new Date().toISOString().slice(0, 10)
+                        : null;
+                  }
                 }
                 if (config.id === 'invoices' && row.status === 'PAID')
                   fail(409, 'Hóa đơn đã thanh toán không thể sửa.');
@@ -1748,12 +2254,15 @@ export function createMockFetch({ storage } = {}) {
                       access.level === 'CLUB'
                     ? (({ tuition, ...rest }) => rest)(row)
                     : row;
+              if (config.id === 'users') syncAccountContacts(db, row);
+              if (['students', 'instructors', 'masters'].includes(config.id))
+                syncPersonContacts(db, config.id, row);
               audit(method === 'POST' ? 'Tạo mới' : 'Cập nhật', config.title);
             }
           }
         }
       }
-      save(db);
+      if (method !== 'GET') save(db);
       if (method !== 'GET' && typeof window !== 'undefined') {
         if (
           [
@@ -1836,7 +2345,9 @@ export function createMockFetch({ storage } = {}) {
               detail: { resource: 'leaves' },
             }),
           );
-        if (path === '/notifications/read-all')
+        if (
+          ['/notifications/read-all', '/notifications/read-one'].includes(path)
+        )
           window.dispatchEvent(
             new CustomEvent('vovinam:mock-change', {
               detail: { resource: 'announcements' },

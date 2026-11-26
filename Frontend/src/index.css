@@ -1,8 +1,9 @@
 @import './styles/variables.css';
 @import './styles/global.css';
+@import './styles/themes/light.css';
 @import './styles/themes/dark.css';
 
-@import "./styles/night.css";
+@import './styles/night.css';
 
 @import './styles/motion.css';
 
@@ -12,4 +13,10 @@
 
 @import './styles/theme-system.css';
 
-@import './styles/themes/galaxy.css';
+@import './styles/product.css';
+
+@import './styles/workspace.css';
+
+@import './styles/auth.css';
+
+@import './styles/ux-polish.css';

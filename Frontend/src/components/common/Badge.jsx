@@ -1,10 +1,11 @@
 import React from 'react';
 import { statusLabels } from '../../utils/format.js';
-export default function Badge({ value }) {
+
+export default function Badge({ value, label }) {
   return (
     <span className={'badge badge-' + String(value).toLowerCase()}>
       <i />
-      {statusLabels[value] || value || '—'}
+      {label || statusLabels[value] || value || '—'}
     </span>
   );
 }

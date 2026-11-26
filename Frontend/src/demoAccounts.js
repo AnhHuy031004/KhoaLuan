@@ -1,5 +1,5 @@
 // Public credentials for the read-only local demo; never sent to the API.
-export const demoPassword = "Vovinam123!";
+export const demoPassword = "123";
 export const demoAccounts = [
   { email: "admin@vovinam.test", role: "ADMIN", label: "Quản trị viên" },
   { email: "hlv@vovinam.test", role: "INSTRUCTOR", label: "Huấn luyện viên" },

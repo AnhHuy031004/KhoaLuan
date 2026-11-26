@@ -25,6 +25,12 @@ export default {
       required: true,
     },
     {
+      key: 'examId',
+      label: 'Kỳ thi áp dụng',
+      type: 'exam',
+      required: false,
+    },
+    {
       key: 'reason',
       label: 'Lý do đề xuất',
       type: 'textarea',

@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "path": "/app/attendance?date=2030-01-15",
+      "status": 200
+    },
+    {
+      "path": "/assets/missing-file.js",
+      "status": 404
+    },
+    {
+      "path": "/backend/auth/me",
+      "status": 200
+    },
+    {
+      "path": "/backend/students?limit=1",
+      "status": 200
+    },
+    {
+      "path": "/backend/permissions",
+      "status": 200
+    },
+    {
+      "path": "/backend/organization/navigation?module=classes",
+      "status": 200
+    },
+    {
+      "path": "/backend/health",
+      "proxyDisabled": true,
+      "status": 503
+    }
+  ]
+}

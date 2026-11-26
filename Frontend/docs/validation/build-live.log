@@ -1,0 +1,61 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> vovinam-frontend@1.1.0 build:live
+> vite build --mode live --outDir dist-live
+
+vite v7.3.8 building client environment for live...
+transforming...
+✓ 1800 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-live/index.html                                     2.67 kB │ gzip:   1.36 kB
+dist-live/assets/exportWorker-BjfwH7Tk.js              338.02 kB
+dist-live/assets/resourceService-BmcSTNkD.css            0.40 kB │ gzip:   0.27 kB
+dist-live/assets/PromotionsPage-C0dUPaSX.css             4.87 kB │ gzip:   1.46 kB
+dist-live/assets/ReportsPage-B-WPgD2p.css                4.99 kB │ gzip:   1.46 kB
+dist-live/assets/index-DXMpi_cs.css                    124.30 kB │ gzip:  24.98 kB
+dist-live/assets/filter-BbmupHcU.js                      0.17 kB │ gzip:   0.17 kB
+dist-live/assets/StudentReportPage-sYIEyi8B.js           0.27 kB │ gzip:   0.21 kB
+dist-live/assets/AttendanceReportPage-Dunhf8oF.js        0.27 kB │ gzip:   0.21 kB
+dist-live/assets/TuitionReportPage-CfIsxWre.js           0.27 kB │ gzip:   0.21 kB
+dist-live/assets/PromotionReportPage-VDevEf2C.js         0.27 kB │ gzip:   0.21 kB
+dist-live/assets/ExamsPage-DXeXOsca.js                   0.39 kB │ gzip:   0.28 kB
+dist-live/assets/OrganizationPage-C1ivwxUJ.js            0.40 kB │ gzip:   0.28 kB
+dist-live/assets/OrganizationPage-DALeCfmQ.js            0.40 kB │ gzip:   0.28 kB
+dist-live/assets/UsersPage-2PJkB7G8.js                   0.40 kB │ gzip:   0.28 kB
+dist-live/assets/RolesPage-C3j7PW_E.js                   0.40 kB │ gzip:   0.28 kB
+dist-live/assets/StudentsPage-Bb7Q3S9I.js                0.40 kB │ gzip:   0.28 kB
+dist-live/assets/MastersPage-BWxmA2BV.js                 0.40 kB │ gzip:   0.28 kB
+dist-live/assets/InstructorsPage-BIfmInOM.js             0.40 kB │ gzip:   0.28 kB
+dist-live/assets/ClassesPage-DozenyhN.js                 0.40 kB │ gzip:   0.28 kB
+dist-live/assets/EnrollmentsPage-Z5ynrhDW.js             0.40 kB │ gzip:   0.28 kB
+dist-live/assets/SchedulesPage-CGUhu2rv.js               0.40 kB │ gzip:   0.28 kB
+dist-live/assets/EvaluationsPage-X1uhWA-5.js             0.40 kB │ gzip:   0.28 kB
+dist-live/assets/RanksPage-DUz_orsv.js                   0.40 kB │ gzip:   0.28 kB
+dist-live/assets/ExamResultsPage-DgpxikK8.js             0.40 kB │ gzip:   0.28 kB
+dist-live/assets/BeltHistoryPage-diotjhVT.js             0.40 kB │ gzip:   0.28 kB
+dist-live/assets/TuitionPage-w08nO2Jl.js                 0.40 kB │ gzip:   0.28 kB
+dist-live/assets/InvoicesPage-BVhBgeGu.js                0.40 kB │ gzip:   0.28 kB
+dist-live/assets/OnlinePaymentsPage-RYb5YO8J.js          0.40 kB │ gzip:   0.28 kB
+dist-live/assets/TransactionsPage-DVYffszB.js            0.40 kB │ gzip:   0.28 kB
+dist-live/assets/PaymentConfirmationsPage-Be9r5CvH.js    0.40 kB │ gzip:   0.28 kB
+dist-live/assets/AnnouncementsPage-D8-a4Yvz.js           0.40 kB │ gzip:   0.28 kB
+dist-live/assets/AuditPage-bMloZnu0.js                   0.40 kB │ gzip:   0.28 kB
+dist-live/assets/AttendancePage-CNxcEs4w.js              0.42 kB │ gzip:   0.29 kB
+dist-live/assets/LeavesPage-B8qqzcDl.js                  0.47 kB │ gzip:   0.32 kB
+dist-live/assets/DiscountsPage-DQuXGGWa.js               0.47 kB │ gzip:   0.32 kB
+dist-live/assets/PromotionsPage-DccXHFtA.js              0.48 kB │ gzip:   0.34 kB
+dist-live/assets/SettingsPage-HkBVQUKT.js                0.49 kB │ gzip:   0.33 kB
+dist-live/assets/reviewStatus-CNrft8SO.js                0.67 kB │ gzip:   0.44 kB
+dist-live/assets/RecoveryTools-BzgK2n3q.js               0.86 kB │ gzip:   0.52 kB
+dist-live/assets/permissions-Ply9fp47.js                 1.55 kB │ gzip:   0.75 kB
+dist-live/assets/format-BAyaQdlz.js                      2.38 kB │ gzip:   1.41 kB
+dist-live/assets/uiPolicy-BVH0-lWp.js                    5.13 kB │ gzip:   2.39 kB
+dist-live/assets/ReportsPage-CwLixWZ_.js                 8.26 kB │ gzip:   3.52 kB
+dist-live/assets/routeConfig-qoRcnmn8.js                20.17 kB │ gzip:   4.48 kB
+dist-live/assets/resourceService-DGw1k5t0.js            44.73 kB │ gzip:  14.70 kB
+dist-live/assets/OrganizationScope-DIFJhiiO.js          62.50 kB │ gzip:  22.90 kB
+dist-live/assets/apiProvider-D4R2u_f7.js               105.80 kB │ gzip:  21.46 kB
+dist-live/assets/index-CfPh7l32.js                     272.44 kB │ gzip:  84.25 kB
+dist-live/assets/excelExport-Bz1j5sU8.js               335.89 kB │ gzip: 110.97 kB
+✓ built in 3.83s

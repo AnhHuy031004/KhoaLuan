@@ -1,0 +1,315 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> vovinam-frontend@2.3.3 check
+> npm run lint && npm test && npm run build
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> vovinam-frontend@2.3.3 lint
+> eslint src
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> vovinam-frontend@2.3.3 test
+> node --test tests/*.test.js
+
+✔ all eight new accounts log in and expose the correct identity without credentials (107.087927ms)
+✔ ward/club accounts only see assigned units, coaches assigned classes and learners their own profile (198.237785ms)
+✔ old databases gain accounts once without restoring passwords or edited business records (52.288358ms)
+✔ only admin reviews results even with forged permissions; other workflows unchanged (136.906679ms)
+✔ review publishes one targeted notification, scopes it across roles and marks reads independently (202.634918ms)
+✔ unrelated learners and instructors do not see results of other students/classes (85.534834ms)
+✔ fail/reject notify without changing belts; concurrent admin requests only create one event (65.908454ms)
+✔ legacy admin-only migration removes approval permission without resetting records (50.162017ms)
+✔ unwraps API envelope, encodes filters, skips empty filters and public credentials (7.531803ms)
+✔ concurrent 401 requests rotate a single refresh token and retry with new access token (15.777622ms)
+✔ 403 preserves the session and never attempts refresh (3.186379ms)
+✔ invalid refresh expires the session (2.050619ms)
+✔ logout during refresh cannot restore the session (7.178351ms)
+✔ all configured resource/actions exist in captured OpenAPI (0.908998ms)
+✔ request bodies only send DTO fields with correct nested types (1.726093ms)
+✔ roles are aligned with API and student cannot mutate user accounts (0.442465ms)
+✔ path params are URL encoded and missing params rejected (0.549451ms)
+✔ session roster follows date/enrollments; present confirmation is idempotent and late additions remain possible until close (228.685311ms)
+✔ instructor can only access assigned sessions, student cannot use staff endpoints, permission removal is enforced by mock service (70.737493ms)
+✔ explicit session roster and two same-day sessions are isolated; closing preserves approved leave and snapshots membership (52.604398ms)
+✔ system export includes all business modules beyond 5000 rows, has no credentials, and respects role scope (3731.590163ms)
+✔ XLSX is a readable workbook, preserves numeric/string types and long text, and stores formula-looking text as text (459.684699ms)
+✔ club manager receives an operational function hub with caps independent of the editable role matrix (190.88859ms)
+✔ every master level creates and edits an instructor profile inside its assigned unit (193.523167ms)
+✔ club staff can be assigned to a new local class while tuition remains centrally controlled (74.218872ms)
+✔ shared instructors can be read for local teaching but edited only by their responsible unit (70.954349ms)
+✔ inactive, duplicate and linked instructor records are protected; Admin can attach the login later (112.345575ms)
+✔ club reviews leave and promotion once, marks attendance, and never approves exam results (97.18826ms)
+✔ exports, forms and reports contain local training data and no finance or foreign staff (115.915974ms)
+✔ admin approves/rejects exams once with reviewer; processed plans cannot be changed (128.177722ms)
+✔ result filtering uses class at exam, survives transfer and restricts instructor/student visibility (71.94995ms)
+✔ result rejection does not grant a rank; pass grants once and cannot edit/delete afterwards (391.936678ms)
+✔ new results derive student class, reject duplicates/unapproved exams; migration preserves old rows and later permission choices (80.323619ms)
+✔ export worker transfers a readable XLSX buffer from a separate thread (293.942348ms)
+✔ complete list loader follows server page caps without losing records (4.898001ms)
+✔ incomplete, repeated, changed or capped snapshots cannot be mistaken for full financial totals (0.699585ms)
+✔ date inputs keep the Vietnamese calendar day before 07:00 (179.608845ms)
+✔ export secrecy checks detect nested credentials while allowing normal numbers containing 123 (6.648891ms)
+✔ payment notifications carry exact invoice or review links (0.287743ms)
+Vovinam ready on port 0
+✔ production gateway serves CSP-compatible boot script and forwards login/permissions to configured API (161.290215ms)
+✔ HTTP provider preserves the 31-module contract and role matrix instead of rewriting the UI (1819.09064ms)
+✔ actual HTTP staff roster, scoped denial, contact update and invoice tariff use the same endpoints (87.105678ms)
+✔ invalid list envelopes and network failures stay errors and never fall back to fixtures (2.407873ms)
+✔ form DTOs send typed business fields and omit blank update passwords and presentation data (3.397926ms)
+✔ OpenAPI is current, covers every module and all schema references resolve (375.198776ms)
+✔ production build refuses fixture data unless the fixture build mode is explicitly selected (188.646195ms)
+✔ all delivered response examples and conditional form DTOs validate against the canonical JSON schema (202.422104ms)
+✔ detail endpoints and completed-payment notifications open the owned record rather than a list or forbidden screen (91.772724ms)
+✔ all 31 admin modules render through actual HTTP without replacing screens or showing developer banners (13538.814186ms)
+✔ learner payment/leave flows and manager organization remain available in HTTP mode (657.111183ms)
+✔ login and forgot-password are product screens and never expose fixture reset tokens (452.071214ms)
+✔ server validation errors focus the associated field and keep the user draft (33.739596ms)
+✔ HTTP permissions and own profile remain editable with real requests (1319.461261ms)
+✔ notification outages show an error and retry instead of an empty inbox (698.222342ms)
+✔ reports supply a palette when an otherwise valid response omits chart colors (143.282161ms)
+✔ scope belongs to the signed-in identity and a late manager hierarchy cannot repopulate a learner session (108.610658ms)
+✔ dashboard navigation exposes all permitted groups, searches them, and keeps group state across routes (298.792317ms)
+✔ record lists retain named table regions, mobile labels and explicit empty birthdate on creation (386.855808ms)
+✔ mobile navigation isolates background focus, traps Tab and closes with Escape (216.030815ms)
+✔ student payment notification opens the exact owned invoice and closing clears the link (205.224204ms)
+✔ receipt list follows URL changes without remounting the page (108.385628ms)
+✔ hierarchy has multiple clubs per ward; provincial master manages wards but cannot grant accounts (160.221744ms)
+✔ ward master only reads own ward, its clubs, classes and finances (165.054069ms)
+✔ club master manages local teaching and staff, while finance and provincial administration remain blocked (160.152222ms)
+✔ admin validates master assignments and immediately revokes sessions when scope changes (265.122957ms)
+✔ ward cannot review outside proposals, even with a guessed id or bulk operation (148.987674ms)
+✔ attendance and notices use assigned units, including recipient filtering for tuition proposals (86.823287ms)
+✔ province boundaries apply to reports, exports and forged entity links (327.125188ms)
+✔ legacy migration preserves business records and custom rights, and runs once (75.818105ms)
+✔ unwraps API envelope, encodes filters, skips empty filters and public credentials (8.637254ms)
+✔ concurrent 401 requests rotate a single refresh token and retry with new access token (13.698322ms)
+✔ 403 preserves the session and never attempts refresh (6.905091ms)
+✔ invalid refresh expires the session (3.756406ms)
+✔ logout during refresh cannot restore the session (3.024696ms)
+✔ each reviewer role can be first approver; later approvals/rejections/edits/deletes cannot overwrite the winner (338.834548ms)
+✔ three concurrent review requests yield one winner and preserve their name/role snapshot in XLSX source (212.050667ms)
+✔ student sees only own requests; instructor scope follows requested class, not later class transfers (114.31675ms)
+✔ rejection also records reviewer and locks further processing (43.281798ms)
+✔ old mock DB gains admin approval/student history once, keeps data, and does not invent missing historical reviewers (84.677509ms)
+✔ API permissions use server roles and never grant MASTER or unsupported matrix mutation (6.369914ms)
+✔ lookups and student normalization use actual API payloads, not mock seed (18.268136ms)
+✔ student account fetches own profile and saves only supported contact DTO (23.493511ms)
+✔ create and update DTOs omit mock fields, convert booleans/numbers and preserve line items (1.481961ms)
+✔ resource writes map to declared live routes and encode score DTO for legacy backend (3.090631ms)
+✔ API outage yields visible warning and never fabricates student records (2.364948ms)
+✔ lookup cache is separated when account changes (3.587466ms)
+✔ password change sends only the API DTO fields including MFA code (0.573197ms)
+✔ reading one notification maps to the supported API PATCH endpoint (1.113836ms)
+✔ active mock provider works offline, persists sessions and rejects unauthenticated resource access (509.751731ms)
+✔ navigation cards and available functions follow master level and actual unit totals (270.441198ms)
+✔ selected club limits list data, forms and every chart aggregation (77.340537ms)
+✔ selected scope cannot be bypassed through mutations or bulk review (101.955797ms)
+✔ foreign and mismatched selections fail closed, including zero-result resources (71.95051ms)
+✔ financial navigation stays inside the assigned ward and rejects foreign selections (75.493308ms)
+✔ request query carries selected units only to business resources, never to auth or full export (0.664932ms)
+✔ Vietnamese names match accents, no accents, uppercase and separate words (1.648804ms)
+✔ clubs can be found by name, address and ward context (0.43871ms)
+✔ function search uses titles and groups without inventing extra results (3.316736ms)
+✔ empty search restores every available item and never mutates source records (0.360928ms)
+✔ bulk approval records reviewer, locks processing, and does not grant ranks (92.336243ms)
+✔ batch is atomic for stale, mixed-class, missing and empty selections (65.93534ms)
+✔ permissions and class snapshots remain enforced after transfers (70.653778ms)
+✔ class-based creation validates membership, higher rank and duplicate pending proposals (60.34576ms)
+✔ concurrent reviewers yield one winner and old data migrates only once (64.687074ms)
+✔ center seed exposes exactly four ordered ranks and no dangling rank references (119.774836ms)
+✔ catalog edits flow into lookups/export, duplicates and referenced deletes are blocked (170.765136ms)
+✔ legacy fifth seed is migrated once, existing center customizations remain intact (80.89582ms)
+✔ all reports return complete chart data without tables and totals match the source (119.56712ms)
+✔ class and month filters feed chart aggregates; empty periods have no NaNs (63.20097ms)
+✔ instructors/students cannot see other classes or people through report endpoints (76.866119ms)
+✔ attendance counters count visits and late presence accurately (35.849648ms)
+✔ charts aggregate beyond pagination limits and fill missing months with zero (91.284262ms)
+✔ one burst across resources reloads a shared subscriber once and unsubscribe removes listeners (2.207363ms)
+✔ F01 historical PASS records the award without downgrading the current belt (69.75991ms)
+✔ F02 membership for an unopened old session survives an effective class transfer (72.052714ms)
+✔ F03 reading a roster does not freeze the schedule or its membership (38.584344ms)
+✔ F04 correction needs a reason, preserves before/after and allows controlled changes after close (61.848963ms)
+✔ F05 malformed or unsupported local DB is never overwritten by seed (26.104087ms)
+✔ F08 same class, coach or venue cannot be double booked (25.299859ms)
+✔ F09 account profile updates the canonical person (35.588223ms)
+✔ F10 new invoices use the exact period tariff and require a reason for changing it (32.115226ms)
+✔ FE01-FE04 labels and filters use domain-specific statuses (1.575837ms)
+✔ F09 admin account edits and student contact edits keep the same linked identity (40.02608ms)
+✔ F10 fallback tariffs have the same override guard and only Admin may override (46.336996ms)
+✔ F05 valid JSON with a broken database structure is preserved for recovery (27.040004ms)
+✔ read cache avoids storage writes for previews and notices external tab changes (50.717587ms)
+✔ score totals preserve zeros, decimals and incomplete states (1.832254ms)
+✔ score notes round trip through the existing API DTO (3.026251ms)
+✔ legacy records show missing scores instead of fabricated zeros (0.490062ms)
+✔ instructor submits class member; admin/master notified; student only receives final decision (122.000967ms)
+✔ permissions, foreign classes, invalid amounts/months and duplicates are enforced (91.555768ms)
+✔ hierarchical approval escalation: club master -> ward/province/admin; ward master -> province/admin; province master -> admin (190.030422ms)
+✔ exemption is 100%, concurrent reviewers yield one winner; rejection can be resubmitted (98.035113ms)
+✔ listing/export/student privacy and notification read states are scoped (108.089587ms)
+WebSocket server error: Port 24678 is already in use
+✔ URL filters update atomically and browser history restores the prior class/status/page (1027.91821ms)
+✔ dialog Escape uses current dirty/busy state and cancellation protects edits (24.515487ms)
+✔ exam result form keeps student choices without a class field and guards the cancel button (98.135498ms)
+✔ invoice form follows class and period tariffs, previews relief, clears stale student and focuses validation (80.290759ms)
+✔ attendance row selection does not mark present until confirmed; failed search reports no match (635.004389ms)
+✔ learner can reselect their class without losing the disabled identity field (12.831854ms)
+✔ explicit organization switch clears dependent filters while preserving the workflow filter (30.394631ms)
+✔ proposal form protects unsaved reason edits when dismissed (181.493999ms)
+✔ complete application opens the appropriate dashboard for learner, coach and admin (697.434037ms)
+✔ payment status filter displays SUCCESS and both detail/review dialogs remain usable (570.608774ms)
+✔ recovery rejects changed backups and enables restoration only after checksum and explicit confirmation (67.720269ms)
+✔ cash and receipt dialogs render their final actions; busy dialogs cannot close (55.936491ms)
+✔ list navigation reaches every record when server page cap is lower than requested (73.659623ms)
+✔ recurring schedule creation saves through the dialog footer and preserves failed sessions (87.282171ms)
+✔ selecting cash collection applies to the visible page and preserves explicit selections on other pages (770.750937ms)
+✔ v2.2.0 #1: pay-online notifies managers and reject/approve notifies student with reason (136.999299ms)
+✔ v2.2.0 #3: revoking instructor cash permission blocks collect-cash with 403 (79.529674ms)
+✔ v2.2.0 #5: cash collection auto-closes pending bank transfer and enforces idempotency (113.195655ms)
+✔ v2.2.0 #6 & #7: validates DOB/phone/name and generates strictly unique studentCode after delete (90.225302ms)
+✔ v2.2.0 #10: blocks future attendance close for coach and requires reason for manager (67.318797ms)
+✔ v2.2.0 #11: fetchAllPages retrieves all 1200 records when server caps page limit to 100 (1.47584ms)
+✔ v2.2.0 #4: OpenAPI contract includes collect-cash and pay-online endpoints (10.293247ms)
+✔ v2.3.0: generateRecurringSessions builds exact weekly slots and flags duplicates (2.602834ms)
+✔ v2.3.0: generateRecurringSessions rejects invalid time ranges, empty weekdays, and impossible dates (0.371153ms)
+✔ v2.3.0: recurring schedule batch creation persists cleanly through mock API (96.247125ms)
+✔ v2.3.0: modular architecture cleanup and UI/UX print & rejection hooks are wired (26.962892ms)
+✔ v2.3.2: old localStorage with hierarchyVersion=1 and Vovinam123! auto-migrates to 123 on login (32.416602ms)
+✔ all financial and management cards start at the assigned level (1.910874ms)
+✔ both ward accounts only receive their own units, people and financial records (1391.719513ms)
+✔ URL filters and guessed identifiers cannot reveal or alter another ward (106.348258ms)
+✔ reports and full export aggregate every local record without including the other ward (82.243324ms)
+✔ existing sessions immediately follow the stricter boundary without resetting data or custom rights (53.626546ms)
+✔ scope boundaries still apply if the editable role matrix grants every operation (42.687478ms)
+✔ new proposals only notify the responsible ward while provincial reviewers still receive them (66.220266ms)
+✔ unknown actions, malformed URLs and GET/PATCH action attempts cannot mutate state (198.226401ms)
+✔ leave submission alerts scoped reviewers; first decision notifies learner and locks subsequent decisions (70.239118ms)
+✔ invalid or duplicate leave requests are rejected without creating events (59.636967ms)
+✔ bulk proposal review notifies each affected learner once and learners only read personal proposals (71.556912ms)
+✔ payment submission and confirmation notify reviewers and learner, store reviewer, settle once (102.846794ms)
+✔ approved relief prices new invoices, never mutates issued invoices, and rejects duplicate billing (59.994866ms)
+✔ issued invoices cannot change underneath a pending payment and completed invoices cannot be deleted (93.249356ms)
+✔ enrollment transfer pauses previous active enrollment, announcement CLASS requires classId, and instructor user edit syncs profile (40.986514ms)
+✔ all four roles can read exactly their permitted modules, with nonempty seeded resources (1563.993615ms)
+✔ student ownership, instructor scope and exact matrix actions are enforced server-side (43.341264ms)
+✔ CRUD, searching, pagination and persistence preserve relations and redact credentials (40.278728ms)
+✔ leave student submission/history flow and instructor approval are stateful and cannot be repeated (29.88168ms)
+✔ admin approval of exam results updates belt history and rejects double approval (35.845192ms)
+✔ student payment -> request -> master confirmation updates invoice and transaction once (42.287785ms)
+✔ reports respond to month and class filters and announcements publishing has state (21.740979ms)
+✔ wrong credentials, expired reset and logout are enforced (27.557886ms)
+✔ admin can create, assign, edit and delete an unused custom role; protected admin rights cannot be removed (61.105801ms)
+✔ new instructor accounts share staff identity and see only their assigned class (41.858322ms)
+ℹ tests 186
+ℹ suites 0
+ℹ pass 186
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22800.739157
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> vovinam-frontend@2.3.3 build
+> vite build
+
+vite v7.3.8 building client environment for production...
+transforming...
+✓ 1805 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                     1.45 kB │ gzip:   0.89 kB
+dist/assets/exportWorker-CLKOSARC.js              338.06 kB
+dist/assets/FeaturePage-BmcSTNkD.css                0.40 kB │ gzip:   0.27 kB
+dist/assets/ReportsPage-B-WPgD2p.css                4.99 kB │ gzip:   1.46 kB
+dist/assets/PromotionsPage-KO3Ti_Fp.css             5.15 kB │ gzip:   1.47 kB
+dist/assets/OrganizationNavigator-CxTJoxyP.css      7.23 kB │ gzip:   2.09 kB
+dist/assets/MainLayout-CZ-klghT.css                 9.77 kB │ gzip:   2.04 kB
+dist/assets/index-CjaixKHV.css                    163.15 kB │ gzip:  30.79 kB
+dist/assets/check-D0NRWB60.js                       0.12 kB │ gzip:   0.14 kB
+dist/assets/chevron-right-sUlv0eIh.js               0.13 kB │ gzip:   0.14 kB
+dist/assets/filter-301bCfK0.js                      0.16 kB │ gzip:   0.16 kB
+dist/assets/arrow-left-B48kcBy6.js                  0.16 kB │ gzip:   0.16 kB
+dist/assets/search-D-PCnvE_.js                      0.17 kB │ gzip:   0.16 kB
+dist/assets/check-check-GAQAv0es.js                 0.18 kB │ gzip:   0.17 kB
+dist/assets/user-round-DicFGhgy.js                  0.18 kB │ gzip:   0.17 kB
+dist/assets/clock-CUxmvXH2.js                       0.18 kB │ gzip:   0.17 kB
+dist/assets/clock-3-BXR1C7TJ.js                     0.18 kB │ gzip:   0.17 kB
+dist/assets/rotate-ccw-D5cY_RPg.js                  0.20 kB │ gzip:   0.18 kB
+dist/assets/credit-card-l7ac2aCf.js                 0.20 kB │ gzip:   0.18 kB
+dist/assets/history-BcX9oABC.js                     0.23 kB │ gzip:   0.19 kB
+dist/assets/file-check-2-BmbvOJET.js                0.25 kB │ gzip:   0.20 kB
+dist/assets/map-pin-CBIHEo1H.js                     0.26 kB │ gzip:   0.22 kB
+dist/assets/triangle-alert-DvJakn64.js              0.26 kB │ gzip:   0.21 kB
+dist/assets/award-laSXrw9v.js                       0.27 kB │ gzip:   0.22 kB
+dist/assets/wallet-nvQPjCy3.js                      0.28 kB │ gzip:   0.20 kB
+dist/assets/receipt-text-DIiRJ8AX.js                0.29 kB │ gzip:   0.20 kB
+dist/assets/users-D3wjDLFs.js                       0.30 kB │ gzip:   0.23 kB
+dist/assets/badge-check-UpV4to5F.js                 0.31 kB │ gzip:   0.21 kB
+dist/assets/refresh-cw-C5QwE-ce.js                  0.32 kB │ gzip:   0.23 kB
+dist/assets/save-00TpNwyE.js                        0.32 kB │ gzip:   0.22 kB
+dist/assets/OrganizationScope-DP47PV16.js           0.33 kB │ gzip:   0.30 kB
+dist/assets/file-text-iQro3NUr.js                   0.33 kB │ gzip:   0.22 kB
+dist/assets/StudentReportPage-DTUtit3T.js           0.40 kB │ gzip:   0.28 kB
+dist/assets/AttendanceReportPage-D-XEFvjM.js        0.40 kB │ gzip:   0.28 kB
+dist/assets/TuitionReportPage-AsHPuI2I.js           0.40 kB │ gzip:   0.28 kB
+dist/assets/PromotionReportPage-B2SDIdGj.js         0.40 kB │ gzip:   0.28 kB
+dist/assets/layers-B34b7iZ3.js                      0.42 kB │ gzip:   0.24 kB
+dist/assets/building-2-lK1cD8w0.js                  0.44 kB │ gzip:   0.25 kB
+dist/assets/trash-2-C1wCcvQd.js                     0.46 kB │ gzip:   0.29 kB
+dist/assets/useRemote-13hAKFn9.js                   0.49 kB │ gzip:   0.36 kB
+dist/assets/calendar-days-B1dxsl3W.js               0.49 kB │ gzip:   0.26 kB
+dist/assets/EmptyState-Bvg33MIM.js                  0.55 kB │ gzip:   0.41 kB
+dist/assets/invoicesService-C2VnqFKq.js             0.65 kB │ gzip:   0.44 kB
+dist/assets/reviewStatus-CYI5aPoB.js                0.68 kB │ gzip:   0.45 kB
+dist/assets/fetchAllPages-fQRd4roH.js               0.84 kB │ gzip:   0.55 kB
+dist/assets/clipboard-check-DzDG2BFa.js             0.87 kB │ gzip:   0.47 kB
+dist/assets/useListFilters-DDwV1mrG.js              0.90 kB │ gzip:   0.50 kB
+dist/assets/OrganizationPage-ikgs734W.js            0.97 kB │ gzip:   0.54 kB
+dist/assets/OrganizationPage-BgWZnRhx.js            0.97 kB │ gzip:   0.54 kB
+dist/assets/UsersPage-DKf4SW-2.js                   0.97 kB │ gzip:   0.54 kB
+dist/assets/RolesPage-DMNE5WBa.js                   0.97 kB │ gzip:   0.54 kB
+dist/assets/StudentsPage-CZ4IJT9b.js                0.97 kB │ gzip:   0.54 kB
+dist/assets/MastersPage-CvgpaFSA.js                 0.97 kB │ gzip:   0.54 kB
+dist/assets/InstructorsPage-v9PitJhb.js             0.97 kB │ gzip:   0.54 kB
+dist/assets/ClassesPage-DRHtQwWK.js                 0.97 kB │ gzip:   0.54 kB
+dist/assets/RanksPage-DbvQy8c2.js                   0.97 kB │ gzip:   0.54 kB
+dist/assets/ExamsPage-Bo0X6HdZ.js                   0.97 kB │ gzip:   0.54 kB
+dist/assets/ExamResultsPage-DM0Qjr6_.js             0.97 kB │ gzip:   0.54 kB
+dist/assets/BeltHistoryPage-CKfo6aRl.js             0.97 kB │ gzip:   0.54 kB
+dist/assets/TuitionPage-f7lwe9Qs.js                 0.97 kB │ gzip:   0.54 kB
+dist/assets/TransactionsPage-BVNji5Ld.js            0.97 kB │ gzip:   0.54 kB
+dist/assets/AnnouncementsPage-CLnLDMHs.js           0.97 kB │ gzip:   0.54 kB
+dist/assets/AuditPage-Bz2jiHqF.js                   0.97 kB │ gzip:   0.54 kB
+dist/assets/LeavesPage-DdR1-mu6.js                  1.04 kB │ gzip:   0.59 kB
+dist/assets/DiscountsPage-CZivwsrX.js               1.04 kB │ gzip:   0.59 kB
+dist/assets/ListNavigation-BrUn9hkC.js              1.12 kB │ gzip:   0.66 kB
+dist/assets/SettingsPage-Dm0pAzav.js                1.28 kB │ gzip:   0.74 kB
+dist/assets/ExportSystemButton-SvOxS6Y-.js          1.43 kB │ gzip:   0.90 kB
+dist/assets/user-plus-DxAs_4LZ.js                   2.05 kB │ gzip:   0.92 kB
+dist/assets/uiPolicy-BWUfBOQU.js                    2.16 kB │ gzip:   0.87 kB
+dist/assets/format-DV-cIHwV.js                      2.93 kB │ gzip:   1.69 kB
+dist/assets/apiProvider-CExNG3Eh.js                 3.47 kB │ gzip:   1.67 kB
+dist/assets/RecordDetail-DY6A6SSC.js                3.81 kB │ gzip:   1.71 kB
+dist/assets/ReceiptPrintModal-DUmIu-0e.js           3.83 kB │ gzip:   1.55 kB
+dist/assets/ForgotPasswordPage-CZuddsAn.js          4.62 kB │ gzip:   1.64 kB
+dist/assets/resourceService-EcXIlnXt.js             5.01 kB │ gzip:   2.45 kB
+dist/assets/ProfilePage-BsbxTfgJ.js                 5.17 kB │ gzip:   2.14 kB
+dist/assets/ReportsPage-DdOQ3nAR.js                 6.67 kB │ gzip:   2.79 kB
+dist/assets/SchedulesPage-DKuLAWB-.js               8.93 kB │ gzip:   3.75 kB
+dist/assets/OrganizationNavigator-BxaEcNiE.js       9.16 kB │ gzip:   3.46 kB
+dist/assets/EnrollmentsPage-Bqzdz4uW.js            10.02 kB │ gzip:   3.81 kB
+dist/assets/EvaluationsPage-CuQ5Y4Wz.js            10.94 kB │ gzip:   4.35 kB
+dist/assets/DashboardPage-ngbtQaU9.js              10.98 kB │ gzip:   3.67 kB
+dist/assets/PaymentConfirmationsPage-Br65txMk.js   11.36 kB │ gzip:   4.18 kB
+dist/assets/PromotionsPage-CuHj1gbz.js             13.86 kB │ gzip:   4.47 kB
+dist/assets/InvoicesPage-CJ67EZvN.js               17.04 kB │ gzip:   6.07 kB
+dist/assets/RecordForm-Dyn3WO1j.js                 18.52 kB │ gzip:   6.69 kB
+dist/assets/AttendancePage-C1xpTBH3.js             21.31 kB │ gzip:   7.01 kB
+dist/assets/MainLayout-CMQ3udR5.js                 22.45 kB │ gzip:   7.42 kB
+dist/assets/FeaturePage-J93PTKcH.js                26.88 kB │ gzip:   9.71 kB
+dist/assets/OnlinePaymentsPage-Cos8Nt2B.js         29.53 kB │ gzip:   8.45 kB
+dist/assets/index-Bq45JZkl.js                     322.60 kB │ gzip: 101.41 kB
+dist/assets/excelExport-BHNBlGhw.js               335.88 kB │ gzip: 110.96 kB
+✓ built in 5.61s

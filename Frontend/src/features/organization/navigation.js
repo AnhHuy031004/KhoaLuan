@@ -1,6 +1,6 @@
 export const ORGANIZATION_MODULES = ['instructors','classes','students','enrollments','schedules','attendance','leaves','evaluations','promotions','exam-results','belt-history','tuition','invoices','online-payments','transactions','payment-confirmations','discounts','announcements','student-report','attendance-report','tuition-report','promotion-report'];
 export const FINANCIAL_MODULES = ['tuition','invoices','online-payments','transactions','payment-confirmations','discounts','tuition-report'];
-const normalizeSearch=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').toLocaleLowerCase('vi').replace(/\s+/g,' ').trim();
+export const normalizeSearch=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').toLocaleLowerCase('vi').replace(/\s+/g,' ').trim();
 export function matchesOrganizationSearch(item,search,context='') {
   const text=normalizeSearch([item.name,item.title,item.address,item.group,context].filter(Boolean).join(' '));
   return normalizeSearch(search).split(' ').filter(Boolean).every(word=>text.includes(word));

@@ -1,9 +1,17 @@
+import RecordDetail from './RecordDetail.jsx';
+import WorkflowDialog from './WorkflowDialog.jsx';
+import useListFilters from '../../hooks/useListFilters.js';
+import { statusesFor, createLabels } from '../../config/uiPolicy.js';
+import FilteredExportButton from './FilteredExportButton.jsx';
 import OrganizationScope from './OrganizationScope.jsx';
-import { MASTER_LEVELS } from '../../utils/permissions.js';
+import {
+  MASTER_LEVELS,
+  canReviewReliefByHierarchy,
+  requiredApproverLabel,
+  roleLabel,
+} from '../../utils/permissions.js';
 import LeaveStatus from '../../features/leaves/components/LeaveStatus.jsx';
-import { IS_MOCK } from '../../services/api.js';
 import Table from './Table.jsx';
-import ExportSystemButton from './ExportSystemButton.jsx';
 import RankCards from '../../features/ranks/components/RankCards.jsx';
 import AnnouncementList from '../../features/announcements/components/AnnouncementList.jsx';
 import ScheduleGrid from '../../features/schedules/components/ScheduleGrid.jsx';
@@ -14,7 +22,8 @@ import {
   Plus,
   Search,
   RefreshCw,
-  Eye,
+  Lock,
+  Unlock,
   PenLine,
   Trash2,
   Check,
@@ -32,7 +41,6 @@ import {
 import Button from './Button.jsx';
 import Modal from './Modal.jsx';
 import RecordForm from './RecordForm.jsx';
-import Pagination from './Pagination.jsx';
 import Loading from './Loading.jsx';
 import EmptyState from './EmptyState.jsx';
 import ErrorState from './ErrorState.jsx';
@@ -48,13 +56,17 @@ import {
   statusLabels,
   currency,
   formatDate,
+  formatDateTime,
 } from '../../utils/format.js';
 const extraLabels = {
   assignedClassNames: 'Lớp phụ trách',
+  priceOverrideReason: 'Lý do điều chỉnh học phí',
   baseAmount: 'Học phí gốc',
   appliedPercent: 'Mức giảm áp dụng (%)',
   reliefId: 'Mã đề xuất miễn giảm',
-  submittedName: 'HLV đề xuất',
+  submittedName: 'Người đề xuất',
+  submittedRoleLabel: 'Cấp người đề xuất',
+  requiredApproverText: 'Cấp xét duyệt theo quy định',
   present: 'Có mặt / đi muộn',
   absent: 'Vắng mặt',
   total: 'Tổng buổi',
@@ -86,6 +98,10 @@ const extraLabels = {
   theoryFitnessScore: 'Lý thuyết / thể lực',
   basicScore: 'Điểm căn bản',
   sparringScore: 'Điểm đối kháng',
+  paymentMethod: 'Hình thức thanh toán',
+  method: 'Hình thức thanh toán',
+  paidAt: 'Ngày thanh toán',
+  note: 'Ghi chú',
 };
 export default function FeaturePage({ config, service }) {
   const { user } = useAuth(),
@@ -93,36 +109,45 @@ export default function FeaturePage({ config, service }) {
     [url, setUrl] = useSearchParams();
   const wardScope = url.get('wardId') || '',
     clubScope = url.get('clubId') || '';
-  const [search, setSearch] = useState(url.get('q') || ''),
-    [status, setStatus] = useState(
-      config.id === 'payment-confirmations' ? 'PENDING' : '',
-    ),
-    [classId, setClassId] = useState(''),
-    [month, setMonth] = useState(''),
-    [page, setPage] = useState(1),
-    [limit, setLimit] = useState(8),
-    [view, setView] = useState(
-      config.custom === 'schedules' ? 'calendar' : 'list',
-    ),
-    [dialog, setDialog] = useState(null),
+  const { values: filters, setters } = useListFilters({
+    q: '',
+    status: config.id === 'payment-confirmations' ? 'PENDING' : '',
+    classId: '',
+    month: '',
+    page: 1,
+    limit: 500,
+    view: config.custom === 'schedules' ? 'calendar' : 'list',
+  });
+  const { q: search, status, classId, month, page, limit, view } = filters;
+  const {
+    q: setSearch,
+    status: setStatus,
+    classId: setClassId,
+    month: setMonth,
+    page: setPage,
+    limit: setLimit,
+    view: setView,
+  } = setters;
+  const [dialog, setDialog] = useState(null),
     [busy, setBusy] = useState(false),
     [actionError, setActionError] = useState(null);
-  const classResults =
-    IS_MOCK && config.id === 'exam-results' && user.role !== 'STUDENT';
+  const classResults = config.id === 'exam-results';
   const examWorkflow = [
     'exams',
     'exam-results',
     'discounts',
     'payment-confirmations',
   ].includes(config.id);
-  const lockedWorkflow =
-    IS_MOCK && ['leaves', 'exams', 'exam-results'].includes(config.id);
+  const lockedWorkflow = [
+    'leaves',
+    'promotions',
+    'exams',
+    'exam-results',
+    'discounts',
+    'payment-confirmations',
+  ].includes(config.id);
   const debounced = useDebounce(search);
-  useEffect(() => setSearch(url.get('q') || ''), [url.get('q')]);
-  useEffect(() => {
-    setClassId('');
-    setPage(1);
-  }, [wardScope, clubScope]);
+
   const readable =
     can(config, user.role, 'V') ||
     (config.id === 'online-payments' && can(config, user.role, 'P'));
@@ -151,7 +176,7 @@ export default function FeaturePage({ config, service }) {
     ],
   );
   useEffect(() => {
-    if (config.id !== 'leaves' || !IS_MOCK || !api.subscribeLeaves) return;
+    if (config.id !== 'leaves' || !api.subscribeLeaves) return;
     let timer,
       alive = true;
     const synchronize = () => {
@@ -187,6 +212,22 @@ export default function FeaturePage({ config, service }) {
       unsubscribe();
     };
   }, [config.id, remote.reload, dialog?.kind, dialog?.row?.id]);
+  useEffect(() => {
+    const id = url.get('record');
+    if (!id) return;
+    let active = true;
+    api
+      .request(config.endpoint + '/' + encodeURIComponent(id))
+      .then((row) => {
+        if (active) setDialog({ kind: 'detail', row });
+      })
+      .catch((e) => {
+        if (active) setActionError(e);
+      });
+    return () => {
+      active = false;
+    };
+  }, [url.get('record'), config.id]);
   const {
     items = [],
     total = 0,
@@ -208,20 +249,24 @@ export default function FeaturePage({ config, service }) {
     }
   }, [classResults, classId, lookups.classes]);
   useEffect(() => {
-    if (!IS_MOCK || !api.subscribeResource) return;
+    if (!api.subscribeResource) return;
     return api.subscribeResource(config.id, remote.reload);
   }, [config.id, remote.reload]);
   const columns = (remote.data?.columns || config.columns).filter(
     (key) =>
       (!classResults || key !== 'classId') &&
-      !(user.role === 'MASTER' && user.masterLevel === 'CLUB' && key === 'tuition'),
+      !(
+        user.role === 'MASTER' &&
+        user.masterLevel === 'CLUB' &&
+        key === 'tuition'
+      ),
   );
   const columnLabel = (k) =>
     config.fields.find((f) => f.key === k)?.label ||
     labels[k] ||
     extraLabels[k] ||
     k;
-  function resolve(key, value) {
+  function resolve(key, value, row = null) {
     const maps = {
       provinceId: ['provinces', 'name'],
       wardId: ['wards', 'name'],
@@ -270,14 +315,18 @@ export default function FeaturePage({ config, service }) {
     if (key === 'percent') return value + '%';
     if (key === 'status') return statusLabels[value] || value;
     if (['amount', 'tuition', 'fee'].includes(key)) return currency(value);
+    if (['createdAt', 'reviewedAt', 'paidAt', 'updatedAt'].includes(key))
+      return formatDateTime(value);
     if (/Date$|At$/.test(key) || key === 'dob') return formatDate(value);
     if (key === 'gender') return value === 'MALE' ? 'Nam' : 'Nữ';
-    if (key === 'method')
+    if (key === 'method' || key === 'paymentMethod')
       return value === 'BANK'
         ? 'Chuyển khoản'
         : value === 'CASH'
           ? 'Tiền mặt'
-          : value;
+          : 'Chưa thanh toán';
+    if (key === 'submittedName' && row?.submittedRoleLabel)
+      return `${value} (${row.submittedRoleLabel})`;
     if (key === 'audience')
       return value === 'ALL' ? 'Tất cả võ sinh' : 'Theo lớp';
     return value ?? '—';
@@ -333,6 +382,30 @@ export default function FeaturePage({ config, service }) {
     setter(value);
     setPage(1);
   };
+  async function toggleUserLock(row) {
+    if (busy) return;
+    if (row.id === user.id) {
+      toast('Không thể tự khóa tài khoản đang đăng nhập.', 'error');
+      return;
+    }
+    setBusy(true);
+    setActionError(null);
+    const nextStatus = row.status === 'PAUSED' ? 'ACTIVE' : 'PAUSED';
+    try {
+      await service.update(row.id, { ...row, status: nextStatus });
+      toast(
+        nextStatus === 'PAUSED'
+          ? `Đã khóa tài khoản ${row.fullName || row.email}.`
+          : `Đã mở khóa tài khoản ${row.fullName || row.email}.`,
+      );
+      remote.reload();
+    } catch (e) {
+      setActionError(e);
+      toast(e.message || 'Không thể cập nhật trạng thái tài khoản.', 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
   const rowActions = (row) => (
     <div
       className={
@@ -340,14 +413,6 @@ export default function FeaturePage({ config, service }) {
         (config.id === 'leaves' || examWorkflow ? ' leave-row-actions' : '')
       }
     >
-      <button
-        className="icon-btn"
-        aria-label={'Xem ' + (row.fullName || row.code || row.title || row.id)}
-        title="Xem chi tiết"
-        onClick={() => open('detail', row)}
-      >
-        <Eye size={16} />
-      </button>
       {!row.__readOnly &&
         !row.systemEvent &&
         can(config, user.role, 'E') &&
@@ -360,12 +425,16 @@ export default function FeaturePage({ config, service }) {
             title="Chỉnh sửa"
             onClick={() => open('form', row)}
           >
-            <PenLine size={15} />
+            <PenLine size={16} />
           </button>
         )}
       {!row.__readOnly &&
         can(config, user.role, 'A') &&
-        row.status === 'PENDING' && (
+        row.status === 'PENDING' &&
+        (config.id !== 'discounts' ||
+          (row.canApprove !== undefined
+            ? row.canApprove
+            : canReviewReliefByHierarchy(user, row))) && (
           <>
             <button
               className={
@@ -378,7 +447,7 @@ export default function FeaturePage({ config, service }) {
               title="Phê duyệt"
               onClick={() => open('approve', row)}
             >
-              <Check size={18} />
+              <Check size={16} />
             </button>
             <button
               className={
@@ -391,7 +460,7 @@ export default function FeaturePage({ config, service }) {
               title="Từ chối"
               onClick={() => open('reject', row)}
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           </>
         )}
@@ -409,7 +478,34 @@ export default function FeaturePage({ config, service }) {
             }
             onClick={() => open('process', row)}
           >
-            <Send size={16} />
+<Send size={16} />
+          </button>
+        )}
+      {config.id === 'users' &&
+        !row.__readOnly &&
+        can(config, user.role, 'E') &&
+        row.id !== user.id && (
+          <button
+            className={
+              'icon-btn ' +
+              (row.status === 'PAUSED' ? 'unlock-icon' : 'lock-icon')
+            }
+            aria-label={
+              (row.status === 'PAUSED' ? 'Mở khóa ' : 'Khóa ') +
+              (row.fullName || row.email)
+            }
+            title={
+              row.status === 'PAUSED' ? 'Mở khóa tài khoản' : 'Khóa tài khoản'
+            }
+            disabled={busy}
+            onClick={() => toggleUserLock(row)}
+          >
+            {row.status === 'PAUSED' ? (
+              <Unlock size={15} />
+            ) : (
+              <Lock size={15} />
+            )}
+
           </button>
         )}
       {!row.__readOnly &&
@@ -425,7 +521,7 @@ export default function FeaturePage({ config, service }) {
             title="Xóa"
             onClick={() => open('delete', row)}
           >
-            <Trash2 size={15} />
+            <Trash2 size={16} />
           </button>
         )}
     </div>
@@ -455,6 +551,9 @@ export default function FeaturePage({ config, service }) {
   return (
     <div className="feature-page">
       <OrganizationScope />
+      {actionError && !dialog && (
+        <ErrorState error={actionError} retry={remote.reload} />
+      )}
       <div className="page-heading">
         <div>
           <div className="section-kicker">
@@ -470,28 +569,21 @@ export default function FeaturePage({ config, service }) {
           </p>
         </div>
         <div className="heading-actions">
-          {!IS_MOCK && config.id === 'exams' && can(config, user.role, 'P') && (
-            <Button onClick={() => open('register', null)}>
-              <Plus size={18} />
-              Đăng ký thi
-            </Button>
-          )}
-          <ExportSystemButton />
+          <FilteredExportButton
+            config={config}
+            service={service}
+            query={query}
+            lookups={lookups}
+          />
           {can(config, user.role, 'C') && (
             <Button onClick={() => open('form', null)}>
               <Plus size={18} />
-              {config.id === 'discounts'
-                ? 'Gửi đề xuất'
-                : config.id === 'leaves'
-                  ? 'Tạo đơn xin nghỉ'
-                  : config.id === 'online-payments'
-                    ? 'Tạo giao dịch'
-                    : 'Thêm mới'}
+              {createLabels[config.id] || 'Thêm ' + config.title.toLowerCase()}
             </Button>
           )}
         </div>
       </div>
-      {!IS_MOCK && remote.data?.warnings?.length > 0 && (
+      {remote.data?.warnings?.length > 0 && (
         <div className="api-notice">
           <div>
             <strong>Một số dữ liệu chưa tải được</strong>
@@ -524,8 +616,8 @@ export default function FeaturePage({ config, service }) {
           <div>
             <h3>Chủ động hoàn tất học phí</h3>
             <p>
-              Chọn hóa đơn, tạo giao dịch và gửi yêu cầu xác nhận. Thanh toán
-              hiện là mô phỏng; không chuyển tiền thật.
+              Chọn hóa đơn cần thanh toán, kiểm tra số tiền và gửi yêu cầu xác
+              nhận. Theo dõi kết quả xử lý ngay tại đây.
             </p>
           </div>
           <span className="secure-label">
@@ -571,17 +663,17 @@ export default function FeaturePage({ config, service }) {
                 <div className="segmented">
                   <button
                     className={view === 'calendar' ? 'selected' : ''}
-                    aria-label="Xem dạng lịch"
+                    aria-label="Xem dạng thẻ"
                     onClick={() => setView('calendar')}
                   >
-                    <CalendarDays size={16} />
+                    <CalendarDays size={16} /> Dạng thẻ
                   </button>
                   <button
                     className={view === 'list' ? 'selected' : ''}
                     aria-label="Xem dạng danh sách"
                     onClick={() => setView('list')}
                   >
-                    <List size={16} />
+                    <List size={16} /> Danh sách
                   </button>
                 </div>
               )}
@@ -640,30 +732,24 @@ export default function FeaturePage({ config, service }) {
                 'audit',
                 'settings',
                 'belt-history',
-              ].includes(config.id) && (
-                <select
-                  aria-label="Lọc trạng thái"
-                  value={status}
-                  onChange={(e) => filter(setStatus, e.target.value)}
-                >
-                  <option value="">Tất cả trạng thái</option>
-                  {(
-                    (config.id === 'discounts'
-                      ? [
-                          ['PENDING', 'Chờ duyệt'],
-                          ['APPROVED', 'Đã duyệt'],
-                          ['REJECTED', 'Từ chối'],
-                        ]
-                      : null) ||
-                    config.fields.find((f) => f.key === 'status')?.options ||
-                    Object.entries(statusLabels)
-                  ).map(([v, l]) => (
-                    <option key={v} value={v}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
-              )}
+              ].includes(config.id) &&
+                statusesFor(config).length > 0 && (
+                  <select
+                    aria-label="Lọc trạng thái"
+                    value={status}
+                    onChange={(e) => filter(setStatus, e.target.value)}
+                  >
+                    <option value="">Tất cả trạng thái</option>
+                    {statusesFor(config).map((v) => (
+                      <option key={v} value={v}>
+                        {v === 'SUCCESS' &&
+                        config.id === 'payment-confirmations'
+                          ? 'Đã xác nhận'
+                          : statusLabels[v] || v}
+                      </option>
+                    ))}
+                  </select>
+                )}
               {[
                 'discounts',
                 'attendance',
@@ -684,21 +770,19 @@ export default function FeaturePage({ config, service }) {
                 <button
                   className="text-btn"
                   onClick={() => {
-                    setSearch('');
-                    setStatus('');
-                    setClassId(
-                      classResults ? lookups.classes?.[0]?.id || '' : '',
-                    );
-                    setMonth('');
-                    setPage(1);
-                    setUrl(
-                      (prev) => {
-                        const next = new URLSearchParams(prev);
-                        next.delete('q');
-                        return next;
-                      },
-                      { replace: true },
-                    );
+                    const next = new URLSearchParams(url);
+                    for (const key of [
+                      'q',
+                      'status',
+                      'classId',
+                      'month',
+                      'page',
+                    ])
+                      next.delete(key);
+                    next.set('status', '');
+                    if (classResults && lookups.classes?.[0])
+                      next.set('classId', lookups.classes[0].id);
+                    setUrl(next, { replace: true });
                   }}
                 >
                   Đặt lại
@@ -724,21 +808,40 @@ export default function FeaturePage({ config, service }) {
           ) : remote.error ? (
             <ErrorState error={remote.error} retry={remote.reload} />
           ) : !items.length ? (
-            <EmptyState />
+            <EmptyState
+              text={
+                search || status || classId || month
+                  ? 'Không có kết quả theo bộ lọc'
+                  : 'Chưa có dữ liệu'
+              }
+              description={
+                search || status || classId || month
+                  ? 'Hãy xóa từ khóa hoặc đặt lại bộ lọc để xem lại danh sách.'
+                  : can(config, user.role, 'C')
+                    ? 'Dùng nút tạo phía trên để bắt đầu.'
+                    : 'Dữ liệu sẽ xuất hiện khi quản lý phân công hoặc cập nhật.'
+              }
+            />
           ) : config.custom === 'schedules' && view === 'calendar' ? (
             <ScheduleGrid
               items={items}
               resolve={resolve}
               rowActions={rowActions}
+              onSelect={(row) => open('detail', row)}
             />
           ) : config.id === 'announcements' ? (
             <AnnouncementList
               items={items}
               resolve={resolve}
               rowActions={rowActions}
+              onSelect={(row) => open('detail', row)}
             />
           ) : config.id === 'ranks' ? (
-            <RankCards items={items} rowActions={rowActions} />
+            <RankCards
+              items={items}
+              rowActions={rowActions}
+              onSelect={(row) => open('detail', row)}
+            />
           ) : (
             <Table
               config={config}
@@ -750,27 +853,16 @@ export default function FeaturePage({ config, service }) {
               columnLabel={columnLabel}
               resolve={resolve}
               rowActions={rowActions}
+              showActions={
+                can(config, user.role, 'E') ||
+                can(config, user.role, 'D') ||
+                can(config, user.role, 'A') ||
+                can(config, user.role, 'P')
+              }
+              onRowClick={(row) => open('detail', row)}
             />
           )}
-          <Pagination
-            page={page}
-            total={total}
-            limit={limit}
-            onChange={setPage}
-            onLimit={(v) => {
-              setLimit(v);
-              setPage(1);
-            }}
-          />
         </section>
-      )}
-      {dialog?.kind === 'register' && (
-        <LiveExamRegistration
-          lookups={lookups}
-          service={service}
-          onClose={() => setDialog(null)}
-          onSaved={remote.reload}
-        />
       )}
       {dialog?.kind === 'form' && (
         <RecordForm
@@ -794,261 +886,30 @@ export default function FeaturePage({ config, service }) {
         />
       )}
       {dialog?.kind === 'detail' && (
-        <Modal
-          title="Chi tiết thông tin"
-          subtitle={config.title}
+        <RecordDetail
+          row={dialog.row}
+          config={config}
+          user={user}
+          lockedWorkflow={lockedWorkflow}
+          resolve={resolve}
+          columnLabel={columnLabel}
           onClose={() => setDialog(null)}
-          wide
-        >
-          {dialog.row.roster && (
-            <div className="form-info">
-              <strong>Học viên đang học ({dialog.row.studentCount})</strong>
-              <p>
-                {dialog.row.roster.map((s) => s.fullName).join(' · ') ||
-                  'Chưa có học viên'}
-              </p>
-            </div>
-          )}
-          <div className="detail-grid">
-            {Object.entries(dialog.row)
-              .filter(
-                ([key, value]) =>
-                  value !== undefined &&
-                  !key.startsWith('__') &&
-                  key !== 'roster' &&
-                  ![
-                    'id',
-                    'createdBy',
-                    'reviewedBy',
-                    'password',
-                    'system',
-                    'systemEvent',
-                    'workflowModule',
-                    'workflowRecordId',
-                    'recipientUserIds',
-                    'resultId',
-                    'reliefId',
-                  ].includes(key),
-              )
-              .map(([key, value]) => (
-                <div key={key}>
-                  <span>{columnLabel(key)}</span>
-                  <strong>
-                    {key === 'status' ? (
-                      [
-                        'leaves',
-                        'discounts',
-                        'payment-confirmations',
-                      ].includes(config.id) ? (
-                        <LeaveStatus row={dialog.row} />
-                      ) : (
-                        <Badge value={value} />
-                      )
-                    ) : (
-                      String(resolve(key, value, dialog.row))
-                    )}
-                  </strong>
-                </div>
-              ))}
-          </div>
-          <div className="modal-actions">
-            <Button variant="secondary" onClick={() => setDialog(null)}>
-              Đóng
-            </Button>
-            {!dialog.row.__readOnly &&
-              !dialog.row.systemEvent &&
-              can(config, user.role, 'E') &&
-              (!lockedWorkflow || dialog.row.status === 'PENDING') && (
-                <Button onClick={() => open('form', dialog.row)}>
-                  <PenLine size={15} />
-                  Chỉnh sửa
-                </Button>
-              )}
-          </div>
-        </Modal>
+          onEdit={() => open('form', dialog.row)}
+        />
       )}
       {dialog &&
         ['delete', 'approve', 'reject', 'process'].includes(dialog.kind) && (
-          <Modal
-            title={
-              config.id === 'leaves' && dialog.kind === 'approve'
-                ? 'Duyệt đơn xin nghỉ?'
-                : config.id === 'leaves' && dialog.kind === 'reject'
-                  ? 'Từ chối đơn xin nghỉ?'
-                  : dialog.kind === 'delete'
-                    ? 'Xóa bản ghi?'
-                    : dialog.kind === 'approve'
-                      ? 'Phê duyệt thông tin'
-                      : dialog.kind === 'reject'
-                        ? 'Từ chối yêu cầu?'
-                        : config.id === 'announcements'
-                          ? 'Phát hành thông báo?'
-                          : 'Gửi xác nhận thanh toán?'
-            }
+          <WorkflowDialog
+            config={config}
+            dialog={dialog}
+            user={user}
+            busy={busy}
+            resolve={resolve}
+            actionError={actionError}
             onClose={() => !busy && setDialog(null)}
-          >
-            {config.id === 'discounts' &&
-              ['approve', 'reject'].includes(dialog.kind) && (
-                <div className="leave-confirm-summary">
-                  <strong>{resolve('studentId', dialog.row.studentId)}</strong>
-                  <span>
-                    {resolve('classId', dialog.row.classId)} · Tháng{' '}
-                    {dialog.row.period}
-                  </span>
-                  <span>
-                    {resolve('reliefType', dialog.row.reliefType)} ·{' '}
-                    {dialog.row.percent}%
-                  </span>
-                  <p>{dialog.row.reason}</p>
-                  <small>HLV đề xuất: {dialog.row.submittedName}</small>
-                </div>
-              )}
-            {config.id === 'leaves' &&
-              ['approve', 'reject'].includes(dialog.kind) && (
-                <div className="leave-confirm-summary">
-                  <strong>{resolve('studentId', dialog.row.studentId)}</strong>
-                  <span>
-                    {resolve('classId', dialog.row.classId)} ·{' '}
-                    {formatDate(dialog.row.sessionDate)}
-                  </span>
-                  <p>{dialog.row.reason}</p>
-                  <small>
-                    Người xử lý: {user.fullName} · {ROLES[user.role]}
-                  </small>
-                </div>
-              )}
-            <p className="confirm-copy">
-              {dialog.kind === 'delete'
-                ? 'Bản ghi sẽ được xóa khỏi hệ thống. Dữ liệu đang có liên kết sẽ được bảo vệ.'
-                : dialog.kind === 'approve' &&
-                    config.id === 'payment-confirmations'
-                  ? 'Chỉ xác nhận khi đã đối chiếu khoản thanh toán. Hóa đơn và lịch sử giao dịch sẽ được cập nhật.'
-                  : dialog.kind === 'process' && config.id === 'online-payments'
-                    ? 'Giao dịch mô phỏng sẽ được chuyển đến người có quyền xác nhận. Không có tiền thật được chuyển.'
-                    : config.id === 'leaves'
-                      ? 'Đơn chỉ được xử lý một lần. Sau khi xác nhận, các người phụ trách khác sẽ chỉ xem kết quả.'
-                      : 'Vui lòng kiểm tra thông tin trước khi tiếp tục.'}
-            </p>
-            {actionError && <ErrorState error={actionError} />}
-            <div className="modal-actions">
-              <Button
-                variant="secondary"
-                disabled={busy}
-                onClick={() => setDialog(null)}
-              >
-                Hủy bỏ
-              </Button>
-              {dialog.kind === 'approve' && config.id === 'exam-results' ? (
-                <>
-                  <Button
-                    variant="secondary"
-                    disabled={busy}
-                    onClick={() =>
-                      act('approve', dialog.row, { outcome: 'FAIL' })
-                    }
-                  >
-                    Chưa đạt
-                  </Button>
-                  <Button
-                    disabled={busy}
-                    onClick={() =>
-                      act('approve', dialog.row, { outcome: 'PASS' })
-                    }
-                  >
-                    Đạt & cấp đai
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant={
-                    ['delete', 'reject'].includes(dialog.kind)
-                      ? 'danger'
-                      : 'primary'
-                  }
-                  disabled={busy}
-                  onClick={() => act(dialog.kind, dialog.row)}
-                >
-                  {busy
-                    ? 'Đang xử lý…'
-                    : dialog.kind === 'delete'
-                      ? 'Xóa bản ghi'
-                      : 'Xác nhận'}
-                </Button>
-              )}
-            </div>
-          </Modal>
+            onAct={act}
+          />
         )}
     </div>
-  );
-}
-
-function LiveExamRegistration({ lookups, service, onClose, onSaved }) {
-  const toast = useToast();
-  const [examId, setExamId] = useState(''),
-    [studentId, setStudentId] = useState(lookups.students?.[0]?.id || ''),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState(null);
-  return (
-    <Modal title="Đăng ký kỳ thi" onClose={onClose}>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setBusy(true);
-          setError(null);
-          try {
-            await service.action(examId, 'register', { studentId });
-            toast('Đã đăng ký kỳ thi.');
-            onSaved();
-            onClose();
-          } catch (e) {
-            setError(e);
-          } finally {
-            setBusy(false);
-          }
-        }}
-      >
-        <div className="stack-form">
-          <label className="field">
-            <span>Kỳ thi đang mở đăng ký</span>
-            <select
-              required
-              value={examId}
-              onChange={(e) => setExamId(e.target.value)}
-            >
-              <option value="">Chọn kỳ thi</option>
-              {lookups.exams
-                ?.filter((e) => e.status === 'OPEN')
-                .map((e) => (
-                  <option key={e.id} value={e.id}>
-                    {e.title}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <label className="field">
-            <span>Võ sinh dự thi</span>
-            <select
-              required
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-            >
-              <option value="">Chọn võ sinh</option>
-              {lookups.students?.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.fullName}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        {error && <ErrorState error={error} />}
-        <div className="modal-actions">
-          <Button variant="secondary" type="button" onClick={onClose}>
-            Hủy
-          </Button>
-          <Button disabled={busy}>Xác nhận đăng ký</Button>
-        </div>
-      </form>
-    </Modal>
   );
 }

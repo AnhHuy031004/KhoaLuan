@@ -1,60 +1,97 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Check, X, Plus, RefreshCw, PenLine, Trash2 } from 'lucide-react';
-import FeaturePage from '../../../components/common/FeaturePage.jsx';
 import OrganizationScope from '../../../components/common/OrganizationScope.jsx';
 import Modal from '../../../components/common/Modal.jsx';
 import Button from '../../../components/common/Button.jsx';
-import ExportSystemButton from '../../../components/common/ExportSystemButton.jsx';
+import Pagination from '../../../components/common/Pagination.jsx';
+import FilteredExportButton from '../../../components/common/FilteredExportButton.jsx';
+import useListFilters from '../../../hooks/useListFilters.js';
 import LeaveStatus from '../../leaves/components/LeaveStatus.jsx';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { useToast } from '../../../contexts/ToastContext.jsx';
-import { api, IS_MOCK } from '../../../services/api.js';
+import { api } from '../../../services/api.js';
+import { fetchAllPages } from '../../../utils/fetchAllPages.js';
 import { can } from '../../../utils/permissions.js';
 import config from '../module.js';
 import service from '../services/promotionsService.js';
 import '../../../styles/promotions.css';
 export default function PromotionsPage() {
-  return IS_MOCK ? (
-    <MockPromotions />
-  ) : (
-    <FeaturePage config={config} service={service} />
-  );
-}
-function MockPromotions() {
   const { user } = useAuth(),
     toast = useToast(),
-    [url] = useSearchParams();
+    [url, setUrl] = useSearchParams();
   const wardScope = url.get('wardId') || '',
     clubScope = url.get('clubId') || '';
+  const { values: filters, setters } = useListFilters({
+    classId: '',
+    status: '',
+    q: '',
+    page: 1,
+  });
+  const { classId, status, q: search, page } = filters,
+    {
+      classId: setClassId,
+      status: setStatus,
+      q: setSearch,
+      page: setPage,
+    } = setters;
   const [data, setData] = useState(null),
-    [classId, setClassId] = useState(''),
-    [status, setStatus] = useState(''),
-    [search, setSearch] = useState(''),
-    [page, setPage] = useState(1),
     [selected, setSelected] = useState([]),
     [form, setForm] = useState(null),
     [review, setReview] = useState(null),
+    [detail, setDetail] = useState(null),
     [busy, setBusy] = useState(false),
     [loading, setLoading] = useState(true),
     [error, setError] = useState('');
   const sequence = useRef(0),
-    alive = useRef(true);
+    alive = useRef(true),
+    formBaseline = useRef('');
+  const formDirty =
+    Boolean(form) && JSON.stringify(form) !== formBaseline.current;
+  function openForm(value) {
+    formBaseline.current = JSON.stringify(value);
+    setForm(value);
+  }
+  function closeForm() {
+    if (
+      !busy &&
+      (!formDirty ||
+        window.confirm('Bạn có thay đổi chưa lưu. Bỏ các thay đổi này?'))
+    )
+      setForm(null);
+  }
+  useEffect(() => {
+    if (!formDirty && !busy) return;
+    const unload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    const click = (e) => {
+      if (
+        e.target.closest('a[href]') &&
+        (busy || !window.confirm('Bạn có thay đổi chưa lưu. Rời trang?'))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener('beforeunload', unload);
+    document.addEventListener('click', click, true);
+    return () => {
+      window.removeEventListener('beforeunload', unload);
+      document.removeEventListener('click', click, true);
+    };
+  }, [formDirty, busy]);
   async function load() {
     const request = ++sequence.current;
     try {
       setError('');
-      let all = [],
-        result,
-        p = 1;
-      do {
-        result = await service.list({ page: p++, limit: 5000 });
-        all.push(...result.items);
-      } while (all.length < result.total && result.items.length);
+      const result = await fetchAllPages(service, {});
+      const all = result.items || [];
       if (alive.current && request === sequence.current) {
         setData({ ...result, items: all });
         setClassId((v) =>
-          user.role === 'STUDENT'
+          ['STUDENT', 'ADMIN', 'MASTER'].includes(user.role)
             ? v && result.lookups.classes.some((c) => c.id === v)
               ? v
               : ''
@@ -71,7 +108,11 @@ function MockPromotions() {
         );
       }
     } catch (e) {
-      if (alive.current) setError(e.message);
+      if (alive.current) {
+        setData(null);
+        setSelected([]);
+        setError(e.message || 'Không thể tải đầy đủ danh sách đề xuất.');
+      }
     } finally {
       if (alive.current) setLoading(false);
     }
@@ -88,7 +129,6 @@ function MockPromotions() {
   }, [wardScope, clubScope]);
   useEffect(() => {
     setSelected([]);
-    setPage(1);
   }, [classId, status, search]);
   const lookup = data?.lookups || { classes: [], students: [], ranks: [] },
     name = (kind, id) =>
@@ -105,13 +145,13 @@ function MockPromotions() {
           .toLowerCase()
           .includes(search.toLowerCase()),
     ),
-    pages = Math.max(1, Math.ceil(filtered.length / 10)),
+    pageSize = 20,
+    pages = Math.max(1, Math.ceil(filtered.length / pageSize)),
     currentPage = Math.min(page, pages),
-    visible = filtered.slice((currentPage - 1) * 10, currentPage * 10),
+    visible = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize),
     pending = visible.filter((r) => r.status === 'PENDING' && !r.__readOnly),
     chosen = visible.filter(
-      (r) =>
-        selected.includes(r.id) && r.status === 'PENDING' && !r.__readOnly,
+      (r) => selected.includes(r.id) && r.status === 'PENDING' && !r.__readOnly,
     );
   const batchRows = chosen.length
     ? chosen
@@ -119,13 +159,21 @@ function MockPromotions() {
   useEffect(() => {
     setSelected([]);
   }, [page]);
+  useEffect(() => {
+    const id = url.get('record');
+    if (!id || !data) return;
+    const row = data.items.find((r) => r.id === id);
+    if (row) setDetail(row);
+    else setError('Không tìm thấy đề xuất trong phạm vi được cấp quyền.');
+  }, [url.get('record'), data]);
   async function submit(e) {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
     try {
+      const pickedStudent = lookup.students.find((s) => s.id === form.studentId);
       const body = {
-        classId,
+        classId: classId || form.classId || pickedStudent?.classId || '',
         studentId: form.studentId,
         rankId: form.rankId,
         reason: form.reason,
@@ -149,15 +197,40 @@ function MockPromotions() {
         await service.remove(review.rows[0].id);
         toast('Đã xóa đề xuất.');
       } else {
-        const targetClassId = classId || review.rows[0]?.classId;
-        const result = await service.bulkReview({
-          classId: targetClassId,
-          ids: review.rows.map((r) => r.id),
-          action: review.action,
-        });
-        toast(
-          `Đã ${review.action === 'approve' ? 'duyệt' : 'từ chối'} ${result.count} đề xuất.`,
-        );
+        const byClass = {};
+        for (const r of review.rows) {
+          const cid = r.classId || classId;
+          if (!byClass[cid]) byClass[cid] = [];
+          byClass[cid].push(r.id);
+        }
+        let totalCount = 0;
+        const failedIds = [];
+        const failedClasses = [];
+        for (const [cid, ids] of Object.entries(byClass)) {
+          try {
+            const result = await service.bulkReview({
+              classId: cid,
+              ids,
+              action: review.action,
+            });
+            totalCount += result.count || ids.length;
+          } catch (groupErr) {
+            failedIds.push(...ids);
+            failedClasses.push(`${name('classes', cid)}: ${groupErr.message || 'Lỗi xử lý'}`);
+          }
+        }
+        const verb = review.action === 'approve' ? 'duyệt' : 'từ chối';
+        if (failedIds.length) {
+          toast(
+            `Đã ${verb} ${totalCount} đề xuất; còn ${failedIds.length} đề xuất lỗi (${failedClasses.join('; ')}).`,
+            'error',
+          );
+          setReview(null);
+          await load();
+          setSelected(failedIds);
+          return;
+        }
+        toast(`Đã ${verb} ${totalCount} đề xuất.`);
       }
       setReview(null);
       setSelected([]);
@@ -186,11 +259,18 @@ function MockPromotions() {
           </p>
         </div>
         <div className="promotion-actions">
-          <ExportSystemButton />
+          <FilteredExportButton
+            config={config}
+            rows={filtered}
+            lookups={lookup}
+            query={{ classId, status, search }}
+          />
           {can(config, user.role, 'C') && (
             <Button
               disabled={!classId || busy}
-              onClick={() => setForm({ studentId: '', rankId: '', reason: '' })}
+              onClick={() =>
+                openForm({ studentId: '', rankId: '', reason: '' })
+              }
             >
               <Plus size={16} />
               Thêm đề xuất
@@ -205,11 +285,14 @@ function MockPromotions() {
             <select
               aria-label="Lớp đề xuất"
               value={classId}
-              onChange={(e) => setClassId(e.target.value)}
+              onChange={(e) => {
+                setClassId(e.target.value);
+                setPage(1);
+              }}
             >
-              {user.role === 'STUDENT' && (
-                <option value="">Tất cả lớp</option>
-              )}
+              <option value="">
+                Tất cả lớp trong phạm vi ({lookup.classes.length})
+              </option>
               {lookup.classes.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -222,7 +305,10 @@ function MockPromotions() {
             <select
               aria-label="Trạng thái đề xuất"
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => {
+                setStatus(e.target.value);
+                setPage(1);
+              }}
             >
               <option value="">Tất cả trạng thái</option>
               <option value="PENDING">Chờ duyệt</option>
@@ -236,7 +322,10 @@ function MockPromotions() {
               aria-label="Tìm đề xuất"
               placeholder="Tên võ sinh, cấp đai, lý do…"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
             />
           </label>
           <Button variant="secondary" disabled={busy} onClick={load}>
@@ -280,7 +369,9 @@ function MockPromotions() {
                 }
               >
                 <Check size={15} />
-                Duyệt tất cả
+                {chosen.length
+                  ? `Duyệt ${chosen.length} đề xuất đã chọn`
+                  : `Duyệt ${batchRows.length} đề xuất theo bộ lọc`}
               </button>
               <button
                 className="promotion-review reject"
@@ -294,7 +385,9 @@ function MockPromotions() {
                 }
               >
                 <X size={15} />
-                Từ chối tất cả
+                {chosen.length
+                  ? `Từ chối ${chosen.length} đã chọn`
+                  : `Từ chối ${batchRows.length} theo bộ lọc`}
               </button>
             </div>
           </div>
@@ -343,10 +436,23 @@ function MockPromotions() {
               {visible.map((r) => (
                 <tr
                   key={r.id}
-                  className={selected.includes(r.id) ? 'selected' : ''}
+                  className={'clickable-row ' + (selected.includes(r.id) ? 'selected' : '')}
+                  tabIndex={0}
+                  role="button"
+                  title="Bấm để xem chi tiết đề xuất"
+                  onClick={() => setDetail(r)}
+                  onKeyDown={(e) => {
+                    if (
+                      e.target === e.currentTarget &&
+                      (e.key === 'Enter' || e.key === ' ')
+                    ) {
+                      e.preventDefault();
+                      setDetail(r);
+                    }
+                  }}
                 >
                   {canReview && (
-                    <td>
+                    <td data-label="Chọn" onClick={(e) => e.stopPropagation()}>
                       {r.status === 'PENDING' && !r.__readOnly ? (
                         <input
                           type="checkbox"
@@ -366,17 +472,17 @@ function MockPromotions() {
                       )}
                     </td>
                   )}
-                  <td>
+                  <td data-label="Võ sinh">
                     <strong>{name('students', r.studentId)}</strong>
                     <small>{name('classes', r.classId)}</small>
                   </td>
-                  <td>{name('ranks', r.rankId)}</td>
-                  <td>{r.reason}</td>
-                  <td>
+                  <td data-label="Cấp đai đề xuất">{name('ranks', r.rankId)}</td>
+                  <td data-label="Lý do đề xuất">{r.reason}</td>
+                  <td data-label="Trạng thái">
                     <LeaveStatus row={r} />
                   </td>
-                  <td>
-                    <div className="promotion-row-actions">
+                  <td data-label="Thao tác" className="action-cell" onClick={(e) => e.stopPropagation()}>
+                    <div className="row-actions">
                       {r.status === 'PENDING' && !r.__readOnly ? (
                         <>
                           {canReview && (
@@ -420,14 +526,14 @@ function MockPromotions() {
                                 'Sửa đề xuất của ' +
                                 name('students', r.studentId)
                               }
-                              onClick={() => setForm({ ...r })}
+                              onClick={() => openForm({ ...r })}
                             >
                               <PenLine size={16} />
                             </button>
                           )}
                           {can(config, user.role, 'D') && (
                             <button
-                              className="icon-btn"
+                              className="icon-btn danger-icon"
                               title="Xóa đề xuất"
                               disabled={busy}
                               aria-label={
@@ -463,28 +569,58 @@ function MockPromotions() {
             </tbody>
           </table>
         </div>
-        <div className="promotion-pagination">
-          <span>
-            {filtered.length} đề xuất · Trang {currentPage}/{pages}
-          </span>
-          <div className="promotion-actions">
-            <Button
-              variant="secondary"
-              disabled={currentPage === 1 || busy}
-              onClick={() => setPage(currentPage - 1)}
-            >
-              Trước
-            </Button>
-            <Button
-              variant="secondary"
-              disabled={currentPage === pages || busy}
-              onClick={() => setPage(currentPage + 1)}
-            >
-              Sau
+        {filtered.length > pageSize && (
+          <Pagination
+            page={currentPage}
+            total={filtered.length}
+            limit={pageSize}
+            onChange={setPage}
+          />
+        )}
+      </section>
+      {detail && (
+        <Modal
+          title="Chi tiết đề xuất thăng đai"
+          onClose={() => {
+            setDetail(null);
+            if (url.get('record')) {
+              const next = new URLSearchParams(url);
+              next.delete('record');
+              setUrl(next, { replace: true });
+            }
+          }}
+        >
+          <dl className="detail-grid">
+            <div>
+              <dt>Võ sinh</dt>
+              <dd>{name('students', detail.studentId)}</dd>
+            </div>
+            <div>
+              <dt>Lớp học</dt>
+              <dd>{name('classes', detail.classId)}</dd>
+            </div>
+            <div>
+              <dt>Cấp đai đề xuất</dt>
+              <dd>{name('ranks', detail.rankId)}</dd>
+            </div>
+            <div>
+              <dt>Trạng thái</dt>
+              <dd>
+                <LeaveStatus row={detail} />
+              </dd>
+            </div>
+            <div>
+              <dt>Lý do</dt>
+              <dd>{detail.reason}</dd>
+            </div>
+          </dl>
+          <div className="modal-actions">
+            <Button variant="secondary" onClick={() => setDetail(null)}>
+              Đóng
             </Button>
           </div>
-        </div>
-      </section>
+        </Modal>
+      )}
       {form && (
         <Modal
           title={
@@ -492,6 +628,8 @@ function MockPromotions() {
           }
           subtitle={'Lớp ' + name('classes', classId)}
           onClose={() => !busy && setForm(null)}
+          dirty={formDirty}
+          busy={busy}
         >
           <form className="promotion-form" onSubmit={submit}>
             <label>
@@ -508,19 +646,20 @@ function MockPromotions() {
                 {lookup.students
                   .filter(
                     (s) =>
-                      (s.classId === classId && s.status === 'ACTIVE') ||
+                      ((!classId || s.classId === classId) && s.status === 'ACTIVE') ||
                       s.id === form.studentId,
                   )
                   .map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.fullName}
+                      {s.fullName}{!classId ? ` · ${name('classes', s.classId)}` : ''}
                     </option>
                   ))}
               </select>
             </label>
             {student && (
               <p>
-                Cấp đai hiện tại: <strong>{name('ranks', student.rankId)}</strong>
+                Cấp đai hiện tại:{' '}
+                <strong>{name('ranks', student.rankId)}</strong>
               </p>
             )}
             <label>
@@ -556,7 +695,7 @@ function MockPromotions() {
                 type="button"
                 variant="secondary"
                 disabled={busy}
-                onClick={() => setForm(null)}
+                onClick={closeForm}
               >
                 Hủy
               </Button>
@@ -578,6 +717,7 @@ function MockPromotions() {
           }
           subtitle={`${name('classes', classId || review.rows[0]?.classId)} · ${review.rows.length} đề xuất`}
           onClose={() => !busy && setReview(null)}
+          busy={busy}
         >
           {review.scope && (
             <p className="promotion-muted">

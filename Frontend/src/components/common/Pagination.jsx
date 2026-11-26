@@ -13,17 +13,19 @@ export default function Pagination({ page, total, limit, onChange, onLimit }) {
         trên {total} bản ghi
       </span>
       <div>
-        <select
-          aria-label="Số dòng mỗi trang"
-          value={limit}
-          onChange={(e) => onLimit(Number(e.target.value))}
-        >
-          {[8, 15, 30, 50].map((v) => (
-            <option key={v} value={v}>
-              {v} / trang
-            </option>
-          ))}
-        </select>
+        {typeof onLimit === 'function' && (
+          <select
+            aria-label="Số dòng mỗi trang"
+            value={limit}
+            onChange={(e) => onLimit(Number(e.target.value))}
+          >
+            {[8, 15, 25, 30, 50].map((v) => (
+              <option key={v} value={v}>
+                {v} / trang
+              </option>
+            ))}
+          </select>
+        )}
         <button
           className="icon-btn"
           disabled={page === 1}

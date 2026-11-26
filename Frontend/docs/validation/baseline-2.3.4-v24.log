@@ -1,0 +1,55 @@
+✖ v2.4.0: RBAC fixes — Admin can publish announcements, Instructor blocked from audit, Master read-only on ranks, Instructor can create leaves (9.579263ms)
+✖ v2.4.0: UX & UI upgrades — Finance naming, BatchInvoiceModal, theme-aware header-scope.css, clean packaging (0.835231ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 297.042952
+
+✖ failing tests:
+
+test at baseline_234/Frontend/tests/upgrade-v24.test.js:43:1
+✖ v2.4.0: RBAC fixes — Admin can publish announcements, Instructor blocked from audit, Master read-only on ranks, Instructor can create leaves (9.579263ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(announcements.permissions.ADMIN.includes('P'))
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/5ab511c2a3a3/baseline_234/Frontend/tests/upgrade-v24.test.js:44:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at baseline_234/Frontend/tests/upgrade-v24.test.js:69:1
+✖ v2.4.0: UX & UI upgrades — Finance naming, BatchInvoiceModal, theme-aware header-scope.css, clean packaging (0.835231ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'Thu phí khóa học'
+  - 'Thu phí & Công nợ'
+             ^
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/5ab511c2a3a3/baseline_234/Frontend/tests/upgrade-v24.test.js:70:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Thu phí khóa học',
+    expected: 'Thu phí & Công nợ',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

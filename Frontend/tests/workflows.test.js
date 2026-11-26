@@ -80,7 +80,9 @@ test('student ownership, instructor scope and exact matrix actions are enforced 
   const c = await setup('INSTRUCTOR');
   assert.equal((await c.call('/students')).data.total, 8);
   assert.equal((await c.call('/students', 'POST', {})).status, 403);
-  assert.equal((await c.call('/invoices')).status, 403);
+  const coachInvoices = await c.call('/invoices');
+  assert.equal(coachInvoices.status, 200);
+  assert(coachInvoices.data.items.every((i) => ['c-1', 'c-2'].includes(i.classId)));
   assert.equal(
     (
       await c.call('/promotions', 'POST', {
@@ -295,14 +297,14 @@ test('admin can create, assign, edit and delete an unused custom role; protected
   const user = await s.call('/users', 'POST', {
     fullName: 'Trợ lý mẫu',
     email: 'assistant@example.test',
-    password: MOCK_PASSWORD,
+    password: 'Vovinam123!',
     role: role.data.code,
     status: 'ACTIVE',
   });
   assert.equal(user.status, 200, user.message);
   const auth = await s.raw('/auth/login', 'POST', {
     email: 'assistant@example.test',
-    password: MOCK_PASSWORD,
+    password: 'Vovinam123!',
   });
   assert.equal(
     (await s.raw('/students', 'GET', null, auth.data.tokens.accessToken))
@@ -335,7 +337,7 @@ test('new instructor accounts share staff identity and see only their assigned c
   const user = await s.call('/users', 'POST', {
     fullName: 'HLV mới',
     email: 'newcoach@example.test',
-    password: MOCK_PASSWORD,
+    password: 'Vovinam123!',
     role: 'INSTRUCTOR',
     status: 'ACTIVE',
   });
@@ -354,7 +356,7 @@ test('new instructor accounts share staff identity and see only their assigned c
   assert.equal(cls.status, 200, cls.message);
   const auth = await s.raw('/auth/login', 'POST', {
     email: 'newcoach@example.test',
-    password: MOCK_PASSWORD,
+    password: 'Vovinam123!',
   });
   const classes = await s.raw(
     '/classes',

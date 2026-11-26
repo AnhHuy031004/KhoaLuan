@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 import { Save } from 'lucide-react';
 import Modal from './Modal.jsx';
 import Button from './Button.jsx';
 import ErrorState from './ErrorState.jsx';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useToast } from '../../contexts/ToastContext.jsx';
-import { monthKey } from '../../utils/format.js';
+import { invoiceBaseAmount, priceInvoice } from '../../utils/tuition.js';
+import { monthKey, currency } from '../../utils/format.js';
+import { validateDob, validatePhone, validateEmail, validateFullName, normalizeWhitespace, normalizePhone } from '../../utils/validation.js';
 const options = (field, lookups) => {
   if (field.key === 'role' && lookups.roles)
     return lookups.roles.map((r) => [r.code, r.name]);
@@ -53,34 +55,43 @@ export default function RecordForm({
     ),
     students: lookups.students?.filter(
       (s) =>
-        !lookups.writableStudentIds || lookups.writableStudentIds.includes(s.id),
+        !lookups.writableStudentIds ||
+        lookups.writableStudentIds.includes(s.id),
     ),
   };
   const toast = useToast();
-  const candidates = config.apiMode
-    ? (record
-        ? user.role === 'STUDENT' && config.id === 'students'
-          ? config.ownEditFields
-          : config.editFields
-        : config.createFields) || config.fields
-    : config.fields;
-  const fields = config.apiMode
-    ? candidates
-    : candidates
-        .filter(
-          (f) =>
-            !(
-              user.role === 'MASTER' &&
-              user.masterLevel === 'CLUB' &&
-              config.id === 'classes' &&
-              f.key === 'tuition'
-            ),
-        )
-        .filter(
-          (f) =>
-            !(user.role === 'STUDENT' && config.id === 'students') ||
-            ['phone', 'email'].includes(f.key),
-        );
+  const baseFields = config.fields
+    .filter(
+      (f) =>
+        !(
+          user.role === 'MASTER' &&
+          user.masterLevel === 'CLUB' &&
+          config.id === 'classes' &&
+          f.key === 'tuition'
+        ),
+    )
+    .filter(
+      (f) =>
+        !(user.role === 'STUDENT' && config.id === 'students') ||
+        ['phone', 'email'].includes(f.key),
+    );
+  const fields = [...baseFields];
+  const ci = fields.findIndex((f) => f.key === 'classId'),
+    si = fields.findIndex((f) => f.key === 'studentId');
+  if (ci > si && si >= 0) fields.splice(si, 0, ...fields.splice(ci, 1));
+  const sectionFor = (f) =>
+    ['classId', 'rankId', 'qualification', 'status'].includes(f.key)
+      ? 'Thông tin học tập'
+      : ['phone', 'email', 'address'].includes(f.key)
+        ? 'Liên hệ'
+        : 'Thông tin cá nhân';
+  const grouped = ['students', 'instructors', 'masters'].includes(config.id);
+  if (grouped) {
+    const order = ['Thông tin cá nhân', 'Thông tin học tập', 'Liên hệ'];
+    fields.sort(
+      (a, b) => order.indexOf(sectionFor(a)) - order.indexOf(sectionFor(b)),
+    );
+  }
   const initial = Object.fromEntries(
     fields.map((f) => [
       f.key,
@@ -92,7 +103,9 @@ export default function RecordForm({
             (f.type === 'month'
               ? monthKey()
               : f.type === 'date'
-                ? new Date().toISOString().slice(0, 10)
+                ? f.key === 'dob'
+                  ? ''
+                  : new Date().toISOString().slice(0, 10)
                 : f.type === 'color'
                   ? '#0877c9'
                   : (f.options?.[0]?.[0] ?? ''))),
@@ -109,7 +122,12 @@ export default function RecordForm({
       (lookups.classes?.length === 1 ? lookups.classes[0].id : '');
   if (config.id === 'discounts' && !record) {
     initial.classId = lookups.classes?.[0]?.id || '';
+    initial.studentId =
+      lookups.students?.find(
+        (s) => s.classId === initial.classId && s.status === 'ACTIVE',
+      )?.id || '';
     initial.reliefType = 'REDUCTION';
+    initial.percent = 20;
   }
   if (
     config.id === 'announcements' &&
@@ -127,11 +145,57 @@ export default function RecordForm({
     if (config.id === 'clubs' && lookups.wards?.length === 1)
       initial.wardId = lookups.wards[0].id;
   }
+  if (config.id === 'invoices' && record) {
+    initial.amount = record.baseAmount ?? record.amount;
+    initial.priceOverrideReason = record.priceOverrideReason || '';
+  }
+  const baseline = useRef(JSON.stringify(initial)),
+    formId = useId(),
+    formRef = useRef(null);
+  const [fieldErrors, setFieldErrors] = useState({});
   const [values, setValues] = useState(initial),
     [error, setError] = useState(null),
     [busy, setBusy] = useState(false);
 
+  const dirty = JSON.stringify(values) !== baseline.current;
+  let pricing = null;
+  if (config.id === 'invoices') {
+    try {
+      pricing = priceInvoice(
+        {
+          tuitionRelief: lookups.tuitionRelief || [],
+          discounts: lookups.discounts || [],
+        },
+        values,
+      );
+    } catch (error) {
+      pricing = null;
+    }
+  }
+  useEffect(() => {
+    if (!dirty && !busy) return;
+    const unload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    const click = (e) => {
+      if (
+        e.target.closest('a[href]') &&
+        (busy || !window.confirm('Bạn có thay đổi chưa lưu. Rời trang?'))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener('beforeunload', unload);
+    document.addEventListener('click', click, true);
+    return () => {
+      window.removeEventListener('beforeunload', unload);
+      document.removeEventListener('click', click, true);
+    };
+  }, [dirty, busy]);
   function updateField(key, nextValue) {
+    setFieldErrors((previous) => ({ ...previous, [key]: '' }));
     setValues((v) => {
       const next = { ...v, [key]: nextValue };
       if (
@@ -150,7 +214,10 @@ export default function RecordForm({
         }
       }
       if (config.id === 'discounts' && key === 'classId') {
-        next.studentId = '';
+        next.studentId =
+          lookups.students?.find(
+            (s) => s.classId === nextValue && s.status === 'ACTIVE',
+          )?.id || '';
       }
       if (config.id === 'discounts' && key === 'reliefType') {
         next.percent = nextValue === 'EXEMPTION' ? 100 : '';
@@ -161,28 +228,31 @@ export default function RecordForm({
           next.classId = lookups.classes[0].id;
       }
       if (
-        ['invoices', 'evaluations', 'leaves'].includes(config.id) &&
-        key === 'studentId' &&
-        nextValue
+        ['invoices', 'evaluations', 'leaves', 'exam-results'].includes(
+          config.id,
+        )
       ) {
-        const student = lookups.students?.find((s) => s.id === nextValue);
-        if (student?.classId) {
-          next.classId = student.classId;
-          if (config.id === 'invoices' && !record && !v.amount) {
-            const cls = lookups.classes?.find((c) => c.id === student.classId);
-            if (cls?.tuition) next.amount = cls.tuition;
-          }
+        if (key === 'classId')
+          next.studentId =
+            user.role === 'STUDENT' ? user.studentId || initial.studentId : '';
+        if (key === 'studentId') {
+          const student = lookups.students?.find((s) => s.id === nextValue);
+          if (student) next.classId = student.classId;
         }
       }
-      if (config.id === 'invoices' && key === 'classId' && !record) {
-        const cls = lookups.classes?.find((c) => c.id === nextValue);
-        const prevCls = lookups.classes?.find((c) => c.id === v.classId);
-        if (
-          cls?.tuition &&
-          (!v.amount || Number(v.amount) === Number(prevCls?.tuition))
-        ) {
-          next.amount = cls.tuition;
-        }
+      if (
+        config.id === 'invoices' &&
+        !record &&
+        ['classId', 'studentId', 'period'].includes(key)
+      ) {
+        next.amount =
+          invoiceBaseAmount(
+            lookups.tuition,
+            lookups.classes,
+            next.classId,
+            next.period,
+          ) ?? '';
+        next.priceOverrideReason = '';
       }
       return next;
     });
@@ -190,24 +260,108 @@ export default function RecordForm({
 
   async function submit(e) {
     e.preventDefault();
+    const invalid = Array.from(e.currentTarget.elements).filter(
+      (el) => el.willValidate && !el.validity.valid,
+    );
+    if (invalid.length) {
+      setError({
+        message:
+          'Vui lòng kiểm tra các trường bắt buộc và giá trị chưa hợp lệ.',
+      });
+      setFieldErrors(
+        Object.fromEntries(
+          invalid.map((el) => [el.name, el.validationMessage]),
+        ),
+      );
+      invalid[0].focus();
+      return;
+    }
+    const customErrors = {};
+    const sanitized = { ...values };
+    for (const f of fields) {
+      const val = sanitized[f.key];
+      if (f.key === 'fullName' && val !== undefined) {
+        sanitized.fullName = normalizeWhitespace(val);
+        const err = validateFullName(sanitized.fullName, { required: Boolean(f.required) });
+        if (err) customErrors.fullName = err;
+      }
+      if (f.key === 'dob' && val !== undefined) {
+        const err = validateDob(val, { required: Boolean(f.required) });
+        if (err) customErrors.dob = err;
+      }
+      if (f.key === 'phone' && val !== undefined) {
+        const err = validatePhone(val, { required: Boolean(f.required) });
+        if (err) customErrors.phone = err;
+        else if (String(val).trim()) sanitized.phone = normalizePhone(val);
+      }
+      if (f.key === 'email' && val !== undefined) {
+        const err = validateEmail(val, { required: Boolean(f.required) });
+        if (err) customErrors.email = err;
+      }
+    }
+    if (Object.keys(customErrors).length) {
+      setFieldErrors(customErrors);
+      setError({ message: Object.values(customErrors)[0] });
+      const firstKey = Object.keys(customErrors)[0];
+      formRef.current?.querySelector(`[name="${firstKey}"]`)?.focus?.();
+      return;
+    }
+    if (busy) return;
     setBusy(true);
     setError(null);
     try {
-      if (record) await service.update(record.id, values);
-      else await service.create(values);
+      if (record) await service.update(record.id, sanitized);
+      else await service.create(sanitized);
       toast(
         record
           ? 'Đã cập nhật thông tin.'
           : config.id === 'discounts'
-            ? 'Đã gửi đề xuất đến Admin và Võ sư.'
+            ? user.role === 'ADMIN'
+              ? 'Đã tạo đề xuất miễn giảm học phí.'
+              : 'Đã gửi đề xuất miễn giảm lên cấp quản lý cao hơn để xét duyệt.'
             : config.id === 'leaves'
               ? 'Đã gửi đơn xin nghỉ.'
-              : 'Đã tạo bản ghi mới.',
+              : config.id === 'students'
+                ? 'Đã tạo hồ sơ võ sinh. Bước tiếp theo: kiểm tra lớp học hoặc lập khoản thu học phí.'
+                : 'Đã tạo bản ghi mới.',
       );
+      baseline.current = JSON.stringify(values);
       onSaved();
       onClose();
     } catch (e) {
       setError(e);
+      const serverErrors = e.detail?.errors;
+      const mapped = Array.isArray(serverErrors)
+        ? Object.fromEntries(
+            serverErrors
+              .filter((x) => x.field && x.message)
+              .map((x) => [x.field, x.message]),
+          )
+        : serverErrors && typeof serverErrors === 'object'
+          ? serverErrors
+          : {};
+      const relevant = Object.fromEntries(
+        Object.entries(mapped)
+          .filter(
+            ([key]) =>
+              fields.some((f) => f.key === key) ||
+              key === 'priceOverrideReason',
+          )
+          .map(([key, value]) => [
+            key,
+            Array.isArray(value) ? value.join('; ') : String(value),
+          ]),
+      );
+      const field = fields.find((f) =>
+        e.message.toLowerCase().includes(f.label.toLowerCase()),
+      );
+      if (Object.keys(relevant).length) {
+        setFieldErrors(relevant);
+        formRef.current?.elements.namedItem(Object.keys(relevant)[0])?.focus();
+      } else if (field) {
+        setFieldErrors({ [field.key]: e.message });
+        formRef.current?.elements.namedItem(field.key)?.focus();
+      }
     } finally {
       setBusy(false);
     }
@@ -224,9 +378,11 @@ export default function RecordForm({
       }
       subtitle="Điền thông tin bên dưới. Các trường có dấu * là bắt buộc."
       onClose={onClose}
+      dirty={dirty}
+      busy={busy}
       wide={fields.length > 5}
     >
-      <form onSubmit={submit}>
+      <form ref={formRef} onSubmit={submit} noValidate>
         <div className="form-grid">
           {fields
             .filter(
@@ -249,7 +405,7 @@ export default function RecordForm({
                   )
                 ),
             )
-            .map((f) => {
+            .map((f, index) => {
               const choices = options(
                   f,
                   f.type === 'club'
@@ -259,21 +415,36 @@ export default function RecordForm({
                           (c) => !values.wardId || c.wardId === values.wardId,
                         ),
                       }
-                    : config.id === 'discounts' && f.key === 'studentId'
+                    : [
+                          'discounts',
+                          'invoices',
+                          'evaluations',
+                          'leaves',
+                          'exam-results',
+                        ].includes(config.id) && f.key === 'studentId'
                       ? {
                           ...lookups,
                           students: lookups.students?.filter(
                             (s) =>
-                              s.classId === values.classId &&
-                              s.status === 'ACTIVE',
+                              (!fields.some((f) => f.key === 'classId') ||
+                                s.classId === values.classId) &&
+                              (s.status === 'ACTIVE' ||
+                                s.id === record?.studentId),
                           ),
                         }
-                      : f.key === 'audience' &&
-                          config.id === 'announcements' &&
-                          user.role === 'MASTER' &&
-                          ['WARD', 'CLUB'].includes(user.masterLevel)
-                        ? { ...lookups }
-                        : lookups,
+                      : f.type === 'exam'
+                        ? {
+                            ...lookups,
+                            exams: lookups.exams?.filter(
+                              (e) => e.status === 'APPROVED',
+                            ),
+                          }
+                        : f.key === 'audience' &&
+                            config.id === 'announcements' &&
+                            user.role === 'MASTER' &&
+                            ['WARD', 'CLUB'].includes(user.masterLevel)
+                          ? { ...lookups }
+                          : lookups,
                 ),
                 filteredChoices =
                   f.key === 'audience' &&
@@ -289,171 +460,220 @@ export default function RecordForm({
                     f.key === 'classId' &&
                     values.audience === 'CLASS');
               return (
-                <label
-                  className={
-                    ['textarea', 'items'].includes(f.type)
-                      ? 'field full'
-                      : 'field'
-                  }
-                  key={f.key}
-                >
-                  <span>
-                    {f.label}
-                    {isRequired && !(record && f.type === 'password') && (
-                      <em> *</em>
+                <React.Fragment key={f.key}>
+                  {grouped &&
+                    (index === 0 ||
+                      sectionFor(fields[index - 1]) !== sectionFor(f)) && (
+                      <h3 className="form-section-title">{sectionFor(f)}</h3>
                     )}
-                  </span>
-                  {f.type === 'items' ? (
-                    <div className="invoice-lines">
-                      {(values[f.key] || []).map((item, index) => (
-                        <div className="invoice-line" key={index}>
-                          <input
-                            aria-label={'Khoản thu ' + (index + 1)}
-                            required
-                            placeholder="Nội dung khoản thu"
-                            value={item.description}
-                            onChange={(e) =>
-                              setValues((v) => ({
-                                ...v,
-                                [f.key]: v[f.key].map((x, i) =>
-                                  i === index
-                                    ? { ...x, description: e.target.value }
-                                    : x,
-                                ),
-                              }))
-                            }
-                          />
-                          <input
-                            aria-label={'Số lượng ' + (index + 1)}
-                            type="number"
-                            min="1"
-                            required
-                            value={item.quantity}
-                            onChange={(e) =>
-                              setValues((v) => ({
-                                ...v,
-                                [f.key]: v[f.key].map((x, i) =>
-                                  i === index
-                                    ? { ...x, quantity: Number(e.target.value) }
-                                    : x,
-                                ),
-                              }))
-                            }
-                          />
-                          <input
-                            aria-label={'Đơn giá ' + (index + 1)}
-                            type="number"
-                            min="0"
-                            required
-                            value={item.unitAmount}
-                            onChange={(e) =>
-                              setValues((v) => ({
-                                ...v,
-                                [f.key]: v[f.key].map((x, i) =>
-                                  i === index
-                                    ? {
-                                        ...x,
-                                        unitAmount: Number(e.target.value),
-                                      }
-                                    : x,
-                                ),
-                              }))
-                            }
-                          />
-                          <button
-                            type="button"
-                            className="text-btn"
-                            disabled={values[f.key].length === 1}
-                            onClick={() =>
-                              setValues((v) => ({
-                                ...v,
-                                [f.key]: v[f.key].filter((_, i) => i !== index),
-                              }))
-                            }
-                          >
-                            Bỏ
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        className="text-btn"
-                        onClick={() =>
-                          setValues((v) => ({
-                            ...v,
-                            [f.key]: [
-                              ...v[f.key],
-                              { description: '', quantity: 1, unitAmount: 0 },
-                            ],
-                          }))
+                  <label
+                    className={
+                      ['textarea', 'items'].includes(f.type)
+                        ? 'field full'
+                        : 'field'
+                    }
+                    key={f.key}
+                  >
+                    <span>
+                      {f.label}
+                      {isRequired && !(record && f.type === 'password') && (
+                        <em> *</em>
+                      )}
+                    </span>
+                    {f.type === 'items' ? (
+                      <div className="invoice-lines">
+                        {(values[f.key] || []).map((item, index) => (
+                          <div className="invoice-line" key={index}>
+                            <input
+                              name={'description.' + index}
+                              aria-label={'Khoản thu ' + (index + 1)}
+                              required
+                              placeholder="Nội dung khoản thu"
+                              value={item.description}
+                              onChange={(e) =>
+                                setValues((v) => ({
+                                  ...v,
+                                  [f.key]: v[f.key].map((x, i) =>
+                                    i === index
+                                      ? { ...x, description: e.target.value }
+                                      : x,
+                                  ),
+                                }))
+                              }
+                            />
+                            <input
+                              name={'quantity.' + index}
+                              aria-label={'Số lượng ' + (index + 1)}
+                              type="number"
+                              min="1"
+                              required
+                              value={item.quantity}
+                              onChange={(e) =>
+                                setValues((v) => ({
+                                  ...v,
+                                  [f.key]: v[f.key].map((x, i) =>
+                                    i === index
+                                      ? {
+                                          ...x,
+                                          quantity: Number(e.target.value),
+                                        }
+                                      : x,
+                                  ),
+                                }))
+                              }
+                            />
+                            <input
+                              name={'unitAmount.' + index}
+                              aria-label={'Đơn giá ' + (index + 1)}
+                              type="number"
+                              min="0"
+                              required
+                              value={item.unitAmount}
+                              onChange={(e) =>
+                                setValues((v) => ({
+                                  ...v,
+                                  [f.key]: v[f.key].map((x, i) =>
+                                    i === index
+                                      ? {
+                                          ...x,
+                                          unitAmount: Number(e.target.value),
+                                        }
+                                      : x,
+                                  ),
+                                }))
+                              }
+                            />
+                            <button
+                              type="button"
+                              className="text-btn"
+                              disabled={values[f.key].length === 1}
+                              onClick={() =>
+                                setValues((v) => ({
+                                  ...v,
+                                  [f.key]: v[f.key].filter(
+                                    (_, i) => i !== index,
+                                  ),
+                                }))
+                              }
+                            >
+                              Bỏ
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          className="text-btn"
+                          onClick={() =>
+                            setValues((v) => ({
+                              ...v,
+                              [f.key]: [
+                                ...v[f.key],
+                                { description: '', quantity: 1, unitAmount: 0 },
+                              ],
+                            }))
+                          }
+                        >
+                          + Thêm khoản thu
+                        </button>
+                      </div>
+                    ) : filteredChoices ? (
+                      <select
+                        name={f.key}
+                        aria-invalid={!!fieldErrors[f.key]}
+                        aria-describedby={
+                          fieldErrors[f.key] ? formId + f.key : undefined
                         }
+                        required={isRequired}
+                        value={values[f.key] || ''}
+                        disabled={isStudent}
+                        onChange={(e) => updateField(f.key, e.target.value)}
                       >
-                        + Thêm khoản thu
-                      </button>
-                    </div>
-                  ) : filteredChoices ? (
-                    <select
-                      required={isRequired}
-                      value={values[f.key] || ''}
-                      disabled={isStudent}
-                      onChange={(e) => updateField(f.key, e.target.value)}
-                    >
-                      <option value="">Chọn {f.label.toLowerCase()}</option>
-                      {filteredChoices.map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
-                  ) : f.type === 'textarea' ? (
-                    <textarea
-                      rows={3}
-                      required={isRequired}
-                      value={values[f.key] || ''}
-                      onChange={(e) => updateField(f.key, e.target.value)}
-                    />
-                  ) : (
-                    <input
-                      type={
-                        ['number', 'money', 'score', 'percent'].includes(f.type)
-                          ? 'number'
-                          : f.type
-                      }
-                      step={['money', 'number'].includes(f.type) ? 1 : 'any'}
-                      min={
-                        ['number', 'money', 'score', 'percent'].includes(f.type)
-                          ? 0
-                          : undefined
-                      }
-                      max={
-                        f.type === 'percent'
-                          ? 100
-                          : f.key === 'rating'
-                            ? 10
+                        <option value="">Chọn {f.label.toLowerCase()}</option>
+                        {filteredChoices.map(([value, label]) => (
+                          <option key={value} value={value}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : f.type === 'textarea' ? (
+                      <textarea
+                        name={f.key}
+                        aria-invalid={!!fieldErrors[f.key]}
+                        aria-describedby={
+                          fieldErrors[f.key] ? formId + f.key : undefined
+                        }
+                        rows={3}
+                        required={isRequired}
+                        value={values[f.key] || ''}
+                        onChange={(e) => updateField(f.key, e.target.value)}
+                      />
+                    ) : (
+                      <input
+                        name={f.key}
+                        aria-invalid={!!fieldErrors[f.key]}
+                        aria-describedby={
+                          fieldErrors[f.key] ? formId + f.key : undefined
+                        }
+                        type={
+                          ['number', 'money', 'score', 'percent'].includes(
+                            f.type,
+                          )
+                            ? 'number'
+                            : f.type
+                        }
+                        step={['money', 'number'].includes(f.type) ? 1 : 'any'}
+                        min={
+                          ['number', 'money', 'score', 'percent'].includes(
+                            f.type,
+                          )
+                            ? 0
                             : undefined
-                      }
-                      required={
-                        isRequired && !(record && f.type === 'password')
-                      }
-                      readOnly={
-                        config.id === 'discounts' &&
-                        f.key === 'percent' &&
-                        values.reliefType === 'EXEMPTION'
-                      }
-                      minLength={f.type === 'password' ? 8 : undefined}
-                      autoComplete={
-                        f.type === 'password' ? 'new-password' : undefined
-                      }
-                      value={values[f.key] ?? ''}
-                      placeholder={
-                        record && f.type === 'password'
-                          ? 'Để trống để giữ mật khẩu hiện tại'
-                          : `Nhập ${f.label.toLowerCase()}`
-                      }
-                      onChange={(e) => updateField(f.key, e.target.value)}
-                    />
-                  )}
-                </label>
+                        }
+                        max={
+                          f.type === 'percent'
+                            ? 100
+                            : f.key === 'rating'
+                              ? 10
+                              : undefined
+                        }
+                        required={
+                          isRequired && !(record && f.type === 'password')
+                        }
+                        readOnly={
+                          (config.id === 'invoices' &&
+                            f.key === 'amount' &&
+                            user.role !== 'ADMIN') ||
+                          (config.id === 'discounts' &&
+                            f.key === 'percent' &&
+                            values.reliefType === 'EXEMPTION')
+                        }
+                        minLength={f.type === 'password' ? 8 : undefined}
+                        autoComplete={
+                          f.type === 'password' ? 'new-password' : undefined
+                        }
+                        value={values[f.key] ?? ''}
+                        placeholder={
+                          record && f.type === 'password'
+                            ? 'Để trống để giữ mật khẩu hiện tại'
+                            : `Nhập ${f.label.toLowerCase()}`
+                        }
+                        onChange={(e) => updateField(f.key, e.target.value)}
+                      />
+                    )}
+                    {f.type === 'money' && (
+                      <small>{currency(values[f.key])}</small>
+                    )}
+                    {fieldErrors[f.key] && (
+                      <small
+                        id={formId + f.key}
+                        className="field-error"
+                        role="alert"
+                      >
+                        {fieldErrors[f.key]}
+                      </small>
+                    )}
+                  </label>
+                </React.Fragment>
               );
             })}
         </div>
@@ -473,12 +693,76 @@ export default function RecordForm({
             · Kết quả được ghi nhận theo quyền của tài khoản.
           </div>
         )}
+        {config.id === 'invoices' && (
+          <div className="form-info">
+            <p>
+              Biểu phí kỳ này:{' '}
+              <strong>
+                {currency(
+                  invoiceBaseAmount(
+                    lookups.tuition,
+                    lookups.classes,
+                    values.classId,
+                    values.period,
+                  ),
+                )}
+              </strong>
+              .
+            </p>
+            {pricing && (
+              <p>
+                Phí gốc: <strong>{currency(pricing.baseAmount)}</strong> · Miễn
+                giảm: <strong>{pricing.appliedPercent}%</strong> · Phải thu:{' '}
+                <strong>{currency(pricing.amount)}</strong>
+              </p>
+            )}
+            {user.role !== 'ADMIN' && (
+              <small>Chỉ Admin được điều chỉnh khác biểu phí.</small>
+            )}
+            <label className="field">
+              Lý do điều chỉnh khác biểu phí
+              <input
+                name="priceOverrideReason"
+                aria-invalid={!!fieldErrors.priceOverrideReason}
+                aria-describedby={
+                  fieldErrors.priceOverrideReason
+                    ? formId + 'priceOverrideReason'
+                    : undefined
+                }
+                value={values.priceOverrideReason || ''}
+                required={
+                  Number(values.amount) !==
+                  invoiceBaseAmount(
+                    lookups.tuition,
+                    lookups.classes,
+                    values.classId,
+                    values.period,
+                  )
+                }
+                onChange={(e) =>
+                  updateField('priceOverrideReason', e.target.value)
+                }
+              />
+            </label>
+            {fieldErrors.priceOverrideReason && (
+              <p role="alert" className="field-error">
+                {fieldErrors.priceOverrideReason}
+              </p>
+            )}
+          </div>
+        )}
         {error && <ErrorState error={error} />}
         <div className="modal-actions">
           <Button
             variant="secondary"
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              if (
+                !dirty ||
+                window.confirm('Bạn có thay đổi chưa lưu. Bỏ các thay đổi này?')
+              )
+                onClose();
+            }}
             disabled={busy}
           >
             Hủy bỏ

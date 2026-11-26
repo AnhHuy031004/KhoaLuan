@@ -1,10 +1,26 @@
 import React from 'react';
-import { ShieldCheck, MoveUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Moon, Sun, ShieldCheck } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext.jsx';
+
 export default function AuthLayout({ children }) {
+  const themeCtx = useTheme();
+  const theme = themeCtx?.theme || 'dark';
+  const toggleTheme = themeCtx?.toggle;
+
   return (
-    <main className="auth-layout">
-      <section className="auth-story">
-        <a className="brand" href="/auth/login">
+    <main className="auth-layout auth-centered">
+      {/* Clean ambient lighting inspired by Vovinam emblem colors */}
+      <div className="auth-bg-layer" aria-hidden="true">
+        <div className="auth-bg-grid" />
+        <div className="auth-bg-glow auth-bg-glow-blue" />
+        <div className="auth-bg-glow auth-bg-glow-gold" />
+        <div className="auth-bg-glow auth-bg-glow-red" />
+      </div>
+
+      {/* Top utility bar */}
+      <header className="auth-topbar">
+        <Link className="auth-topbar-brand" to="/auth/login">
           <img src="/assets/vovinam-logo.png" alt="Logo Vovinam" />
           <span>
             <strong>
@@ -12,49 +28,57 @@ export default function AuthLayout({ children }) {
             </strong>
             <small>VIỆT VÕ ĐẠO</small>
           </span>
-        </a>
-        <div className="auth-story-content">
-          <span className="auth-pretitle">
-            <span />
-            TINH HOA VÕ VIỆT
+        </Link>
+
+        {toggleTheme && (
+          <button
+            type="button"
+            className="auth-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={
+              theme === 'dark'
+                ? 'Chuyển sang giao diện sáng'
+                : 'Chuyển sang giao diện tối'
+            }
+            title={
+              theme === 'dark'
+                ? 'Chuyển sang giao diện sáng'
+                : 'Chuyển sang giao diện tối'
+            }
+          >
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            <span>{theme === 'dark' ? 'Giao diện sáng' : 'Giao diện tối'}</span>
+          </button>
+        )}
+      </header>
+
+      {/* Perfectly centered card stage */}
+      <section className="auth-center-stage">
+        <div className="auth-card-shell">{children}</div>
+      </section>
+
+      {/* Evenly anchored footer with Vovinam pillars */}
+      <footer className="auth-center-footer">
+        <div className="auth-pillars-bar" aria-label="Giá trị cốt lõi Vovinam">
+          <span>
+            <b>01</b> Kỷ luật
           </span>
-          <h1>
-            Rèn ý chí.
-            <br />
-            Vững <em>bản lĩnh.</em>
-          </h1>
-          <p>
-            Mỗi buổi tập là một bước tiến.
-            <br />
-            Cùng xây dựng một cộng đồng Vovinam
-            <br className="desktop-break" /> kỷ luật, kết nối và phát triển.
-          </p>
-          <div className="auth-pillars">
-            <span>
-              01 <strong>Kỷ luật</strong>
-            </span>
-            <span>
-              02 <strong>Bản lĩnh</strong>
-            </span>
-            <span>
-              03 <strong>Nhân ái</strong>
-            </span>
-          </div>
+          <i aria-hidden="true" />
+          <span>
+            <b>02</b> Bản lĩnh
+          </span>
+          <i aria-hidden="true" />
+          <span>
+            <b>03</b> Nhân ái
+          </span>
         </div>
-        <div className="auth-seal">
-          <img src="/assets/vovinam-logo.png" alt="" />
-          <span className="seal-orbit" />
-        </div>
-        <div className="auth-story-footer">
-          <ShieldCheck size={17} />
-          <span>Vovinam · Đồng hành trên hành trình rèn luyện</span>
-        </div>
-        <div className="auth-decoration" aria-hidden="true" />
-      </section>
-      <section className="auth-form-area">
-        {children}
-        <footer>Vovinam Management · {new Date().getFullYear()}</footer>
-      </section>
+        <p className="auth-copyright">
+          <ShieldCheck size={14} aria-hidden="true" />
+          <span>
+            Vovinam Management · Việt Võ Đạo · {new Date().getFullYear()}
+          </span>
+        </p>
+      </footer>
     </main>
   );
 }

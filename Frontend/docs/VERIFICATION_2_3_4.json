@@ -1,0 +1,36 @@
+{
+  "version": "2.3.4",
+  "date": "2026-11-26",
+  "input": "Frontend(20261126-073005).zip",
+  "checks": {
+    "lint": "passed",
+    "production_build": "passed",
+    "full_suite": {
+      "total": 342,
+      "passed": 340,
+      "failed": 2,
+      "skipped": 0
+    },
+    "pre_existing_failures": {
+      "file": "tests/upgrade-v24.test.js",
+      "baseline_failed": 2,
+      "reason": "Unimplemented v2.4 RBAC and UI feature requirements in the input archive; tests kept unchanged"
+    },
+    "page_interactions": {
+      "tests": 151,
+      "passed": 151,
+      "routes": 162,
+      "status_changes": 286,
+      "detail_dialogs": 78,
+      "create_dialogs": 26
+    },
+    "contract": {
+      "checked": true,
+      "modules": 31,
+      "paths": 103,
+      "operations": 166,
+      "schemas": 140
+    }
+  },
+  "runtime": "React DOM/JSDOM + fixture HTTP; no claim of real-browser layout or production-backend validation"
+}

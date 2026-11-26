@@ -5,7 +5,7 @@ export default {
   icon: 'Medal',
   permissions: {
     ADMIN: 'VCED',
-    MASTER: 'VCE',
+    MASTER: 'V',
     INSTRUCTOR: 'V',
     STUDENT: 'V',
   },

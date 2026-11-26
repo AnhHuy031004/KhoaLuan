@@ -1,3 +1,5 @@
+> Cập nhật 1.1.0: dùng README.md, FIX_STATUS.md và ATTENDANCE_AND_EXCEL.md cho luồng hiện hành. Hoàn tác/hiệu chỉnh có lý do, lịch sử phân lớp, chống hạ đai và nguồn biểu phí mới thay các mô tả cũ khác biệt bên dưới.
+
 # Hướng dẫn kiểm tra nghiệp vụ
 
 ## Hồ sơ và phân lớp

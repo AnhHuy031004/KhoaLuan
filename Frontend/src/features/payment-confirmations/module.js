@@ -1,6 +1,7 @@
 export default {
   id: 'payment-confirmations',
-  title: 'Xác nhận thanh toán',
+  title: 'Đối soát chuyển khoản',
+  navTitle: 'Đối soát chuyển khoản',
   group: 'TÀI CHÍNH',
   icon: 'BadgeCheck',
   permissions: {
@@ -11,8 +12,9 @@ export default {
   },
   fields: [],
   columns: ['code', 'studentId', 'invoiceId', 'amount', 'method', 'status'],
-  description: 'Kiểm tra và duyệt các khoản thanh toán chờ xác nhận.',
+  description: 'Kiểm tra, xác nhận hoặc từ chối các yêu cầu chuyển khoản học phí chờ đối soát.',
   endpoint: '/payment-confirmations',
   custom: 'payment-confirmations',
+  hiddenInNav: false,
   component: 'PaymentConfirmationsPage',
 };

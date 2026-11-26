@@ -1,4 +1,4 @@
-export const MOCK_PASSWORD = 'Vovinam123!';
+export const MOCK_PASSWORD = '123';
 export const additionalAccounts = [
   {id:'u-master-ward-2',fullName:'Võ sư Nguyễn Thành Sơn',email:'vosuphuong2@vovinam.test',role:'MASTER',masterLevel:'WARD',provinceId:'province-1',wardId:'ward-2',clubId:'',status:'ACTIVE'},
   {id:'u-master-club-2',fullName:'Võ sư Trần Quốc Hùng',email:'vosuclb2@vovinam.test',role:'MASTER',masterLevel:'CLUB',provinceId:'province-1',wardId:'ward-1',clubId:'club-2',status:'ACTIVE'},

@@ -4,10 +4,12 @@
 /* Compact, equal-sized icon actions in one row. */
 .promotion-table th:last-child{width:180px}
 .promotion-row-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;max-width:none}
-.promotion-row-actions :is(.promotion-review,.icon-btn){display:inline-flex;align-items:center;justify-content:center;flex:0 0 30px;width:30px;height:30px;min-height:30px;padding:0;border:1px solid;border-radius:7px;box-sizing:border-box}
+.promotion-row-actions :is(.promotion-review,.icon-btn){display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;height:34px;padding:6px 10px;border:1px solid;border-radius:7px;box-sizing:border-box;white-space:nowrap;font-size:12.5px;font-weight:600}
 .promotion-row-actions .icon-btn{background:#142e43;border-color:#345168;color:#a7c0d3}
 .promotion-row-actions .icon-btn:hover:enabled{background:#204159;color:#e0edf6;border-color:#55778f}
 .promotion-row-actions .icon-btn[aria-label^="Xóa"]:hover:enabled{background:#492b38;border-color:#95516a;color:#edb4c4}
 .promotion-row-actions button:disabled{opacity:.4;cursor:not-allowed}
 .promotion-row-actions svg{width:16px;height:16px;flex-shrink:0}
 @media(max-width:640px){.promotion-table th:last-child{width:196px}.promotion-row-actions :is(.promotion-review,.icon-btn){flex-basis:36px;width:36px;height:36px;min-height:36px}}
+
+.promotion-review{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;height:34px;padding:6px 10px;border:1px solid;border-radius:7px;font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer}

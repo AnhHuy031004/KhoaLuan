@@ -6,7 +6,7 @@ export default {
   permissions: {
     ADMIN: 'V',
     MASTER: 'V',
-    INSTRUCTOR: 'V',
+    INSTRUCTOR: '',
     STUDENT: '',
   },
   fields: [],

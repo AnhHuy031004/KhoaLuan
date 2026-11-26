@@ -1,3 +1,4 @@
+import { MOCK_PASSWORD } from '../mock/users.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMockFetch,DB_KEY} from '../mock/api.js';
@@ -6,7 +7,7 @@ const memory=()=>{const m=new Map();return {getItem:k=>m.get(k)||null,setItem:(k
 async function system(storage=memory()){
  const fetch=createMockFetch({storage});
  const raw=async(path,method='GET',body,token)=>{const r=await fetch('/backend'+path,{method,headers:token?{Authorization:'Bearer '+token}:{},...(body?{body:JSON.stringify(body)}:{})});return {status:r.status,...await r.json()};};
- const clients={};for(const [role,email] of [['ADMIN','admin'],['MASTER','vosu'],['INSTRUCTOR','hlv'],['STUDENT','vosinh']]){const login=await raw('/auth/login','POST',{email:email+'@vovinam.test',password:'Vovinam123!'});assert.equal(login.status,200);clients[role]=(p,m,b)=>raw(p,m,b,login.data.tokens.accessToken);}
+ const clients={};for(const [role,email] of [['ADMIN','admin'],['MASTER','vosu'],['INSTRUCTOR','hlv'],['STUDENT','vosinh']]){const login=await raw('/auth/login','POST',{email:email+'@vovinam.test',password:MOCK_PASSWORD});assert.equal(login.status,200);clients[role]=(p,m,b)=>raw(p,m,b,login.data.tokens.accessToken);}
  return {clients,storage,db:()=>JSON.parse(storage.getItem(DB_KEY)),write:db=>storage.setItem(DB_KEY,JSON.stringify(db))};
 }
 const payload={studentId:'s-1',classId:'c-1',sessionDate:'2030-01-01',reason:'Bận lịch học'};

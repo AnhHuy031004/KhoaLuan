@@ -13,7 +13,12 @@ export async function handleStudents(context, path, method, body, q, u, session)
   } = context;
   if (path === '/students/me') {
     const s = db.students.find(s => s.linkedUserId === u.id) || fail(404, 'Chưa liên kết hồ sơ.');
-    if (method === 'PATCH') Object.assign(s, body);
+    if (method === 'PATCH') {
+        const safeFields = ['fullName', 'phone', 'email', 'dob', 'gender', 'address'];
+        for (const k of safeFields) {
+          if (body && Object.prototype.hasOwnProperty.call(body, k)) s[k] = body[k];
+        }
+      }
     return s;
   }
   if (path === '/parents/me/children') return paged(scoped(db.students, u), q);

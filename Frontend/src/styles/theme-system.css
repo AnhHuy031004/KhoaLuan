@@ -122,11 +122,11 @@
 :root[data-theme] .welcome-kicker{color:#b7d3e7}
 :root[data-theme] .welcome-link{color:#f1ce77}
 
-/* Brand rail and photo keep an inverse palette. */
-:root[data-theme] .sidebar{background:linear-gradient(180deg,#0c1e34,#081626);border-color:#294359}
-:root[data-theme] .sidebar :is(.avatar,.workspace-symbol){background:#1b4260;color:#9ad5f2}
-:root[data-theme] .sidebar .nav-item.active{background:#113b58;color:#8bd5ff;border-color:#2a5a77}
-:root[data-theme] .sidebar :is(.nav-active-dot,.brand-dot){color:#f1ce77}
+/* Sidebar synchronizes with light & dark navy themes */
+:root[data-theme] .sidebar{background:var(--sidebar-bg);border-color:var(--sidebar-border);color:var(--sidebar-text)}
+:root[data-theme] .sidebar :is(.avatar,.workspace-symbol){background:var(--primary-soft);color:var(--primary)}
+:root[data-theme] .sidebar .nav-item.active{background:var(--sidebar-active-bg);color:var(--sidebar-active-text);border-color:transparent}
+:root[data-theme] .sidebar :is(.nav-active-dot,.brand-dot){color:var(--sidebar-active-accent)}
 :root[data-theme] .auth-form-area{background:var(--canvas);border-color:var(--border)}
 :root[data-theme] .auth-card{background:var(--surface);border-color:var(--border);box-shadow:var(--shadow)}
 :root[data-theme] :is(.auth-card h2,.auth-contact strong){color:var(--heading)}

@@ -1,3 +1,4 @@
+import useListFilters from '../../hooks/useListFilters.js';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { RefreshCw, BarChart3, CalendarDays, Filter } from 'lucide-react';
@@ -14,7 +15,18 @@ const fmt = (value, money = false) =>
     notation: money && value >= 1e9 ? 'compact' : 'standard',
   }).format(value) + (money ? ' đ' : '');
 function Chart({ chart }) {
-  const data = chart.data || [],
+  const colors = [
+    '#35a7df',
+    '#55bd9b',
+    '#e2bc62',
+    '#a694dc',
+    '#e88491',
+    '#6bcad2',
+  ];
+  const data = (chart.data || []).map((row, index) => ({
+      ...row,
+      color: row.color || colors[index % colors.length],
+    })),
     total = data.reduce((n, r) => n + r.value, 0),
     max = Math.max(1, ...data.map((r) => r.value));
   if (!total)
@@ -74,7 +86,8 @@ function Chart({ chart }) {
       bottom = 40,
       w = width - left - right,
       h = height - top - bottom,
-      x = (i) => left + (data.length === 1 ? w / 2 : (i * w) / (data.length - 1)),
+      x = (i) =>
+        left + (data.length === 1 ? w / 2 : (i * w) / (data.length - 1)),
       y = (value) => top + h - (value / max) * h,
       points = data.map((r, i) => `${x(i)},${y(r.value)}`).join(' ');
     return (
@@ -172,11 +185,10 @@ export default function ReportsPage({ config }) {
   const [url] = useSearchParams();
   const wardScope = url.get('wardId') || '',
     clubScope = url.get('clubId') || '';
-  const [classId, setClassId] = useState(''),
-    [month, setMonth] = useState('');
-  useEffect(() => {
-    setClassId('');
-  }, [wardScope, clubScope]);
+  const {
+    values: { classId, month },
+    setters: { classId: setClassId, month: setMonth },
+  } = useListFilters({ classId: '', month: '' });
   const remote = useRemote(
     (signal) =>
       api.request('/report-charts/' + config.id, {

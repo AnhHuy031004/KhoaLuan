@@ -1,0 +1,1539 @@
+[
+  {
+    "id": "wards",
+    "route": "/app/wards",
+    "title": "Quản lý phường",
+    "endpoint": "/wards",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCED",
+      "INSTRUCTOR": "",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "name",
+        "label": "Tên phường",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "provinceId",
+        "label": "Tỉnh",
+        "type": "province",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "clubs",
+    "route": "/app/clubs",
+    "title": "Quản lý câu lạc bộ",
+    "endpoint": "/clubs",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCED",
+      "INSTRUCTOR": "",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "name",
+        "label": "Tên câu lạc bộ",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "wardId",
+        "label": "Phường",
+        "type": "ward",
+        "required": true
+      },
+      {
+        "key": "address",
+        "label": "Địa chỉ",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "users",
+    "route": "/app/users",
+    "title": "Tài khoản người dùng",
+    "endpoint": "/users",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "",
+      "INSTRUCTOR": "",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "fullName",
+        "label": "Họ và tên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "email",
+        "label": "Email",
+        "type": "email",
+        "required": true
+      },
+      {
+        "key": "role",
+        "label": "Vai trò",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ADMIN",
+            "Quản trị viên"
+          ],
+          [
+            "MASTER",
+            "Võ sư"
+          ],
+          [
+            "INSTRUCTOR",
+            "Huấn luyện viên"
+          ],
+          [
+            "STUDENT",
+            "Võ sinh"
+          ]
+        ]
+      },
+      {
+        "key": "masterLevel",
+        "label": "Cấp quản lý Võ sư",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "PROVINCE",
+            "Võ sư cấp tỉnh"
+          ],
+          [
+            "WARD",
+            "Võ sư cấp phường"
+          ],
+          [
+            "CLUB",
+            "Võ sư phụ trách câu lạc bộ"
+          ]
+        ]
+      },
+      {
+        "key": "wardId",
+        "label": "Phường phụ trách",
+        "type": "ward",
+        "required": true
+      },
+      {
+        "key": "clubId",
+        "label": "Câu lạc bộ phụ trách",
+        "type": "club",
+        "required": true
+      },
+      {
+        "key": "password",
+        "label": "Mật khẩu",
+        "type": "password",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "roles",
+    "route": "/app/roles",
+    "title": "Vai trò & phân quyền",
+    "endpoint": "/roles",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "",
+      "INSTRUCTOR": "",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "name",
+        "label": "Tên vai trò",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "description",
+        "label": "Mô tả",
+        "type": "textarea",
+        "required": false
+      }
+    ],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "students",
+    "route": "/app/students",
+    "title": "Hồ sơ võ sinh",
+    "endpoint": "/students",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "V",
+      "STUDENT": "VE"
+    },
+    "fields": [
+      {
+        "key": "fullName",
+        "label": "Họ và tên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "dob",
+        "label": "Ngày sinh",
+        "type": "date",
+        "required": true
+      },
+      {
+        "key": "gender",
+        "label": "Giới tính",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "MALE",
+            "Nam"
+          ],
+          [
+            "FEMALE",
+            "Nữ"
+          ]
+        ]
+      },
+      {
+        "key": "phone",
+        "label": "Số điện thoại",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "email",
+        "label": "Email",
+        "type": "email",
+        "required": false
+      },
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "rankId",
+        "label": "Cấp đai",
+        "type": "rank",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "masters",
+    "route": "/app/masters",
+    "title": "Đội ngũ võ sư",
+    "endpoint": "/masters",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "V",
+      "INSTRUCTOR": "",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "fullName",
+        "label": "Họ và tên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "email",
+        "label": "Email",
+        "type": "email",
+        "required": true
+      },
+      {
+        "key": "phone",
+        "label": "Số điện thoại",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "qualification",
+        "label": "Trình độ / cấp đai",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "instructors",
+    "route": "/app/instructors",
+    "title": "Huấn luyện viên",
+    "endpoint": "/instructors",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "clubId",
+        "label": "CLB quản lý hồ sơ",
+        "type": "club",
+        "required": true
+      },
+      {
+        "key": "fullName",
+        "label": "Họ và tên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "email",
+        "label": "Email",
+        "type": "email",
+        "required": true
+      },
+      {
+        "key": "phone",
+        "label": "Số điện thoại",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "qualification",
+        "label": "Trình độ / cấp đai",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "classes",
+    "route": "/app/classes",
+    "title": "Quản lý lớp học",
+    "endpoint": "/classes",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "V",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "clubId",
+        "label": "Câu lạc bộ",
+        "type": "club",
+        "required": true
+      },
+      {
+        "key": "name",
+        "label": "Tên lớp",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "instructorId",
+        "label": "Huấn luyện viên",
+        "type": "instructor",
+        "required": true
+      },
+      {
+        "key": "location",
+        "label": "Địa điểm",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "capacity",
+        "label": "Sĩ số tối đa",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "tuition",
+        "label": "Học phí / tháng",
+        "type": "money",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "enrollments",
+    "route": "/app/enrollments",
+    "title": "Phân lớp võ sinh",
+    "endpoint": "/enrollments",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "V",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "joinedAt",
+        "label": "Ngày vào lớp",
+        "type": "date",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang hoạt động"
+          ],
+          [
+            "PAUSED",
+            "Tạm dừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "schedules",
+    "route": "/app/schedules",
+    "title": "Lịch tập",
+    "endpoint": "/schedules",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "VCE",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "sessionDate",
+        "label": "Ngày tập",
+        "type": "date",
+        "required": true
+      },
+      {
+        "key": "startTime",
+        "label": "Giờ bắt đầu",
+        "type": "time",
+        "required": true
+      },
+      {
+        "key": "endTime",
+        "label": "Giờ kết thúc",
+        "type": "time",
+        "required": true
+      },
+      {
+        "key": "location",
+        "label": "Địa điểm",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "SCHEDULED",
+            "Sắp diễn ra"
+          ],
+          [
+            "COMPLETED",
+            "Đã hoàn thành"
+          ],
+          [
+            "CANCELLED",
+            "Đã hủy"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "SCHEDULED",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "attendance",
+    "route": "/app/attendance",
+    "title": "Điểm danh",
+    "endpoint": "/attendance",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "VCE",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "sessionDate",
+        "label": "Ngày tập",
+        "type": "date",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "PRESENT",
+            "Có mặt"
+          ],
+          [
+            "LATE",
+            "Đi muộn"
+          ],
+          [
+            "ABSENT",
+            "Vắng mặt"
+          ],
+          [
+            "EXCUSED",
+            "Có phép"
+          ]
+        ]
+      },
+      {
+        "key": "note",
+        "label": "Ghi chú",
+        "type": "textarea",
+        "required": false
+      }
+    ],
+    "statuses": [
+      "PRESENT",
+      "LATE",
+      "ABSENT",
+      "EXCUSED",
+      "UNMARKED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "leaves",
+    "route": "/app/leaves",
+    "title": "Đơn xin nghỉ",
+    "endpoint": "/leaves",
+    "permissions": {
+      "ADMIN": "VCEDA",
+      "MASTER": "VEDA",
+      "INSTRUCTOR": "VA",
+      "STUDENT": "VC"
+    },
+    "fields": [
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "sessionDate",
+        "label": "Ngày xin nghỉ",
+        "type": "date",
+        "required": true
+      },
+      {
+        "key": "reason",
+        "label": "Lý do",
+        "type": "textarea",
+        "required": true
+      }
+    ],
+    "statuses": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "workflow": {
+      "title": "Đơn xin nghỉ",
+      "initial": "PENDING",
+      "actions": {
+        "approve": {
+          "from": "PENDING",
+          "to": "APPROVED"
+        },
+        "reject": {
+          "from": "PENDING",
+          "to": "REJECTED"
+        }
+      }
+    }
+  },
+  {
+    "id": "evaluations",
+    "route": "/app/evaluations",
+    "title": "Đánh giá võ sinh",
+    "endpoint": "/evaluations",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "VCE",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "period",
+        "label": "Tháng đánh giá",
+        "type": "month",
+        "required": true
+      },
+      {
+        "key": "rating",
+        "label": "Điểm đánh giá (0–10)",
+        "type": "score",
+        "required": true
+      },
+      {
+        "key": "comment",
+        "label": "Nhận xét",
+        "type": "textarea",
+        "required": true
+      }
+    ],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "ranks",
+    "route": "/app/ranks",
+    "title": "Danh mục cấp đai",
+    "endpoint": "/belt-ranks",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "name",
+        "label": "Tên cấp đai",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "level",
+        "label": "Thứ tự",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "color",
+        "label": "Màu đại diện",
+        "type": "color",
+        "required": true
+      },
+      {
+        "key": "description",
+        "label": "Yêu cầu",
+        "type": "textarea",
+        "required": false
+      }
+    ],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "promotions",
+    "route": "/app/promotions",
+    "title": "Đề xuất thi lên đai",
+    "endpoint": "/promotions",
+    "permissions": {
+      "ADMIN": "VCEDA",
+      "MASTER": "VCEA",
+      "INSTRUCTOR": "VC",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "classId",
+        "label": "Lớp đề xuất",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "rankId",
+        "label": "Cấp đai dự thi",
+        "type": "rank",
+        "required": true
+      },
+      {
+        "key": "reason",
+        "label": "Lý do đề xuất",
+        "type": "textarea",
+        "required": true
+      }
+    ],
+    "statuses": [],
+    "workflow": {
+      "title": "Đề xuất thi lên đai",
+      "initial": "PENDING",
+      "actions": {
+        "approve": {
+          "from": "PENDING",
+          "to": "APPROVED"
+        },
+        "reject": {
+          "from": "PENDING",
+          "to": "REJECTED"
+        }
+      }
+    }
+  },
+  {
+    "id": "exams",
+    "route": "/app/exams",
+    "title": "Kỳ thi thăng đai",
+    "endpoint": "/belt-exams",
+    "permissions": {
+      "ADMIN": "VCEDA",
+      "MASTER": "VCEA",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "title",
+        "label": "Tên kỳ thi",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "examDate",
+        "label": "Ngày thi",
+        "type": "date",
+        "required": true
+      },
+      {
+        "key": "rankId",
+        "label": "Cấp đai dự thi",
+        "type": "rank",
+        "required": true
+      },
+      {
+        "key": "location",
+        "label": "Địa điểm",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "fee",
+        "label": "Lệ phí",
+        "type": "money",
+        "required": true
+      }
+    ],
+    "statuses": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "workflow": {
+      "title": "Kỳ thi thăng đai",
+      "initial": "PENDING",
+      "actions": {
+        "approve": {
+          "from": "PENDING",
+          "to": "APPROVED"
+        },
+        "reject": {
+          "from": "PENDING",
+          "to": "REJECTED"
+        }
+      }
+    }
+  },
+  {
+    "id": "exam-results",
+    "route": "/app/exam-results",
+    "title": "Kết quả thi",
+    "endpoint": "/exam-results",
+    "permissions": {
+      "ADMIN": "VCEDA",
+      "MASTER": "VCE",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "examId",
+        "label": "Kỳ thi",
+        "type": "exam",
+        "required": true
+      },
+      {
+        "key": "quyenScore",
+        "label": "Điểm quyền",
+        "type": "score",
+        "required": true
+      },
+      {
+        "key": "theoryFitnessScore",
+        "label": "Lý thuyết / thể lực",
+        "type": "score",
+        "required": true
+      },
+      {
+        "key": "basicScore",
+        "label": "Điểm căn bản",
+        "type": "score",
+        "required": true
+      },
+      {
+        "key": "sparringScore",
+        "label": "Điểm đối kháng",
+        "type": "score",
+        "required": true
+      },
+      {
+        "key": "note",
+        "label": "Ghi chú",
+        "type": "textarea",
+        "required": false
+      }
+    ],
+    "statuses": [
+      "PENDING",
+      "PASS",
+      "FAIL",
+      "REJECTED"
+    ],
+    "workflow": {
+      "title": "Kết quả thi",
+      "initial": "PENDING",
+      "actions": {
+        "approve": {
+          "from": "PENDING",
+          "to": [
+            "PASS",
+            "FAIL"
+          ],
+          "roles": [
+            "ADMIN"
+          ]
+        },
+        "reject": {
+          "from": "PENDING",
+          "to": "REJECTED",
+          "roles": [
+            "ADMIN"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "belt-history",
+    "route": "/app/belt-history",
+    "title": "Lịch sử cấp đai",
+    "endpoint": "/belt-history",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "tuition",
+    "route": "/app/tuition",
+    "title": "Quản lý học phí",
+    "endpoint": "/tuition",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "name",
+        "label": "Khoản học phí",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "amount",
+        "label": "Mức thu",
+        "type": "money",
+        "required": true
+      },
+      {
+        "key": "period",
+        "label": "Kỳ học phí",
+        "type": "month",
+        "required": true
+      },
+      {
+        "key": "status",
+        "label": "Trạng thái",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ACTIVE",
+            "Đang áp dụng"
+          ],
+          [
+            "PAUSED",
+            "Tạm ngừng"
+          ]
+        ]
+      }
+    ],
+    "statuses": [
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "invoices",
+    "route": "/app/invoices",
+    "title": "Thu phí khóa học",
+    "endpoint": "/invoices",
+    "permissions": {
+      "ADMIN": "VCEDP",
+      "MASTER": "VCEP",
+      "INSTRUCTOR": "VEP",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "period",
+        "label": "Tháng thu",
+        "type": "month",
+        "required": true
+      },
+      {
+        "key": "amount",
+        "label": "Học phí gốc",
+        "type": "money",
+        "required": true
+      },
+      {
+        "key": "dueDate",
+        "label": "Hạn thanh toán",
+        "type": "date",
+        "required": true
+      },
+      {
+        "key": "discountId",
+        "label": "Khuyến mãi",
+        "type": "discount",
+        "required": false
+      }
+    ],
+    "statuses": [
+      "UNPAID",
+      "PAID"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "online-payments",
+    "route": "/app/online-payments",
+    "title": "Hóa đơn",
+    "endpoint": "/online-payments",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": "VCP"
+    },
+    "fields": [
+      {
+        "key": "invoiceId",
+        "label": "Hóa đơn cần thanh toán",
+        "type": "invoice",
+        "required": true
+      }
+    ],
+    "statuses": [
+      "DRAFT",
+      "PENDING",
+      "SUCCESS",
+      "REJECTED"
+    ],
+    "workflow": {
+      "title": "Thanh toán & xác nhận chuyển khoản",
+      "initial": "DRAFT",
+      "actions": {
+        "process": {
+          "from": "DRAFT",
+          "to": "PENDING"
+        },
+        "approve": {
+          "from": "PENDING",
+          "to": "SUCCESS"
+        },
+        "reject": {
+          "from": "PENDING",
+          "to": "REJECTED"
+        }
+      }
+    }
+  },
+  {
+    "id": "transactions",
+    "route": "/app/transactions",
+    "title": "Lịch sử giao dịch",
+    "endpoint": "/transactions",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "",
+      "STUDENT": "V"
+    },
+    "fields": [],
+    "statuses": [
+      "SUCCESS",
+      "REJECTED"
+    ],
+    "workflow": null
+  },
+  {
+    "id": "payment-confirmations",
+    "route": "/app/payment-confirmations",
+    "title": "Đối soát chuyển khoản",
+    "endpoint": "/payment-confirmations",
+    "permissions": {
+      "ADMIN": "VA",
+      "MASTER": "VA",
+      "INSTRUCTOR": "VA",
+      "STUDENT": ""
+    },
+    "fields": [],
+    "statuses": [
+      "PENDING",
+      "SUCCESS",
+      "REJECTED"
+    ],
+    "workflow": {
+      "title": "Xác nhận thanh toán",
+      "initial": "PENDING",
+      "actions": {
+        "approve": {
+          "from": "PENDING",
+          "to": "SUCCESS"
+        },
+        "reject": {
+          "from": "PENDING",
+          "to": "REJECTED"
+        }
+      }
+    }
+  },
+  {
+    "id": "discounts",
+    "route": "/app/discounts",
+    "title": "Xem xét miễn giảm học phí",
+    "endpoint": "/tuition-relief",
+    "permissions": {
+      "ADMIN": "VCA",
+      "MASTER": "VCA",
+      "INSTRUCTOR": "VC",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "classId",
+        "label": "Lớp học",
+        "type": "class",
+        "required": true
+      },
+      {
+        "key": "studentId",
+        "label": "Võ sinh",
+        "type": "student",
+        "required": true
+      },
+      {
+        "key": "reliefType",
+        "label": "Hình thức đề xuất",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "REDUCTION",
+            "Giảm học phí"
+          ],
+          [
+            "EXEMPTION",
+            "Miễn toàn bộ học phí"
+          ]
+        ]
+      },
+      {
+        "key": "percent",
+        "label": "Mức miễn giảm (%)",
+        "type": "percent",
+        "required": true
+      },
+      {
+        "key": "period",
+        "label": "Tháng áp dụng",
+        "type": "month",
+        "required": true
+      },
+      {
+        "key": "reason",
+        "label": "Lý do đề xuất",
+        "type": "textarea",
+        "required": true
+      }
+    ],
+    "statuses": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "workflow": {
+      "title": "Miễn giảm học phí",
+      "initial": "PENDING",
+      "actions": {
+        "approve": {
+          "from": "PENDING",
+          "to": "APPROVED",
+          "roles": [
+            "ADMIN",
+            "MASTER"
+          ]
+        },
+        "reject": {
+          "from": "PENDING",
+          "to": "REJECTED",
+          "roles": [
+            "ADMIN",
+            "MASTER"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "announcements",
+    "route": "/app/announcements",
+    "title": "Thông báo",
+    "endpoint": "/announcements",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "VCP",
+      "INSTRUCTOR": "VCP",
+      "STUDENT": "V"
+    },
+    "fields": [
+      {
+        "key": "title",
+        "label": "Tiêu đề",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "body",
+        "label": "Nội dung",
+        "type": "textarea",
+        "required": true
+      },
+      {
+        "key": "audience",
+        "label": "Đối tượng",
+        "type": "select",
+        "required": true,
+        "options": [
+          [
+            "ALL",
+            "Tất cả"
+          ],
+          [
+            "CLASS",
+            "Theo lớp"
+          ]
+        ]
+      },
+      {
+        "key": "classId",
+        "label": "Lớp nhận thông báo",
+        "type": "class",
+        "required": false
+      }
+    ],
+    "statuses": [
+      "DRAFT",
+      "PUBLISHED"
+    ],
+    "workflow": {
+      "title": "Thông báo",
+      "initial": "DRAFT",
+      "actions": {
+        "process": {
+          "from": "DRAFT",
+          "to": "PUBLISHED"
+        }
+      }
+    }
+  },
+  {
+    "id": "student-report",
+    "route": "/app/student-report",
+    "title": "Báo cáo võ sinh",
+    "endpoint": "/student-report",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "attendance-report",
+    "route": "/app/attendance-report",
+    "title": "Báo cáo điểm danh",
+    "endpoint": "/attendance-report",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "tuition-report",
+    "route": "/app/tuition-report",
+    "title": "Báo cáo học phí",
+    "endpoint": "/tuition-report",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "promotion-report",
+    "route": "/app/promotion-report",
+    "title": "Báo cáo thăng đai",
+    "endpoint": "/promotion-report",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": "V"
+    },
+    "fields": [],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "settings",
+    "route": "/app/settings",
+    "title": "Cài đặt hệ thống",
+    "endpoint": "/settings",
+    "permissions": {
+      "ADMIN": "VCED",
+      "MASTER": "",
+      "INSTRUCTOR": "",
+      "STUDENT": ""
+    },
+    "fields": [
+      {
+        "key": "name",
+        "label": "Tên cấu hình",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "value",
+        "label": "Giá trị",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "description",
+        "label": "Mô tả",
+        "type": "textarea",
+        "required": false
+      }
+    ],
+    "statuses": [],
+    "workflow": null
+  },
+  {
+    "id": "audit",
+    "route": "/app/audit",
+    "title": "Nhật ký hệ thống",
+    "endpoint": "/audit",
+    "permissions": {
+      "ADMIN": "V",
+      "MASTER": "V",
+      "INSTRUCTOR": "V",
+      "STUDENT": ""
+    },
+    "fields": [],
+    "statuses": [],
+    "workflow": null
+  }
+]

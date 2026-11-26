@@ -4,7 +4,7 @@ export default {
   group: 'ĐIỀU HÀNH',
   icon: 'Bell',
   permissions: {
-    ADMIN: 'VCED',
+    ADMIN: 'VCEDP',
     MASTER: 'VCP',
     INSTRUCTOR: 'VCP',
     STUDENT: 'V',

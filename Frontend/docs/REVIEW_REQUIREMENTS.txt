@@ -1,0 +1,284 @@
+BÁO CÁO TỔNG HỢP
+ĐÁNH GIÁ HỆ THỐNG VÀ GIAO DIỆN VOVINAM
+Nguồn đánh giá Frontend(2).zip và Frontend(3).zip  |  Ngày 18/11/2026
+Tài liệu tổng hợp đánh giá hệ thống, luồng xử lý và giao diện để xác định những việc cần sửa trước khi đưa dự án lên sử dụng thực tế. Nội dung gồm lỗi dữ liệu và nghiệp vụ, các điểm gây rối trong FE, bảo mật, hiệu năng và thứ tự nghiệm thu.
+Kết luận chính
+Đây là bản mô phỏng nghiệp vụ khá đầy đủ, có nhiều ràng buộc và kiểm thử hữu ích. Tuy nhiên, bản hiện tại chưa sẵn sàng để nhiều đơn vị vận hành chung với dữ liệu thật. Cần xử lý trước các lỗi về cấp đai, danh sách điểm danh, chuyển lớp và dữ liệu lưu trong trình duyệt.
+Những gì đã được kiểm tra
+Đọc đường chạy thực tế từ src/main.jsx → src/App.jsx; đối chiếu router, 31 module, service, bộ xử lý mock, tài liệu và kiểm thử.
+Chạy bộ kiểm thử gốc, build lại trong bản sao cài phụ thuộc sạch, kiểm tra gói phụ thuộc và tái hiện lỗi bằng lời gọi nghiệp vụ với dữ liệu cô lập.
+Không sửa mã nguồn gốc trong ZIP. Bản sao dùng cho chẩn đoán có thay duy nhất mật khẩu seed để phân biệt lỗi tài khoản mẫu với lỗi nghiệp vụ.
+Phạm vi kiểm chứng: chưa có kiểm chứng trực quan màn hình và thao tác trên điện thoại. Chromium bị môi trường chặn khi khởi chạy; các nhận xét giao diện bên dưới dựa trên thành phần JSX/CSS. Backend thật, ngân hàng, hạ tầng triển khai và tải nhiều người dùng chưa được kiểm chứng.
+1 Hệ thống hiện có và cách hoạt động
+Các nhóm chức năng đang được nối vào router
+Ngoài 31 module trên có Tổng quan, Trung tâm điều hành đơn vị và Hồ sơ cá nhân. Một số file về phụ huynh, bảo mật MFA, thanh toán hoặc router cũ vẫn nằm trong nguồn nhưng không thuộc registry hiện hành; sự tồn tại của file không đồng nghĩa tính năng đang dùng được.
+Đường đi của một thao tác
+Người dùng đăng nhập → AuthContext giữ tài khoản và ma trận quyền → router kiểm tra quyền mở trang → trang/biểu mẫu gọi service → api.js chọn provider → mockProvider đưa yêu cầu vào mock/api.js → kiểm tra phạm vi và nghiệp vụ → đọc/ghi localStorage → trả kết quả → trang tải lại và hiển thị thông báo.
+Vai trò và ranh giới quản lý
+Bốn nhóm chính: Admin, Võ sư, HLV, Võ sinh. Võ sư có cấp tỉnh/phường/CLB. Quyền xem/tạo/sửa/xóa/duyệt/xử lý được kiểm tra riêng với phạm vi tổ chức. Cấu trúc nghiệp vụ là Tỉnh → Phường → CLB → Lớp → Võ sinh.
+Điểm cần hiểu khi sử dụng: tài khoản Admin trên máy A và HLV trên máy B hiện không làm việc trên cùng một cơ sở dữ liệu. Đơn tạo ở máy B chưa xuất hiện ở máy A chỉ nhờ đăng nhập cùng website.
+2 Phân tích các luồng sử dụng chính
+Những điểm tốt nên giữ
+Có kiểm tra quyền trong bộ xử lý nghiệp vụ, không chỉ ẩn nút. Phạm vi lớp/phường/CLB còn được áp dụng khi giả định người dùng biết ID bản ghi khác.
+Các đơn và kết quả đã xử lý được khóa; lưu tên, vai trò và thời gian người duyệt; nhiều thao tác duyệt có bảo vệ xử lý lặp.
+Điểm thi có xử lý số 0, số thập phân và trạng thái thiếu điểm; đề xuất thăng đai phải cao hơn đai hiện tại.
+Xuất XLSX có bộ lọc trường bí mật. Phép kiểm tra cấu trúc dữ liệu xuất trong đợt review không tìm thấy khóa mật khẩu/token/phiên nằm trong snapshot trả về.
+Lưu ý: bảo vệ nghiệp vụ kể trên diễn ra trong mã JavaScript của trình duyệt. Đây là điểm tốt về thiết kế luồng, chưa phải ranh giới bảo mật độc lập để dùng với dữ liệu thật.
+3 Lỗi ưu tiên cao về cấp đai và điểm danh
+F01 Duyệt kết quả cũ có thể hạ cấp đai hiện tại
+Ưu tiên P1 – đã tái hiện. Tình huống: Một võ sinh đang có Hoàng đai (r-4) còn kết quả PENDING của kỳ thi Lam đai I (r-2); Admin duyệt Đạt.
+Kết quả kiểm tra: Yêu cầu trả 200 và cấp đai bị đổi từ r-4 xuống r-2. Kiểm tra dùng kết quả PENDING đã tồn tại, không bỏ qua chống trùng kết quả.
+Ảnh hưởng: Hồ sơ hiện tại, lịch sử và báo cáo có thể mâu thuẫn. Người duyệt thao tác đúng nút nhưng tạo ra kết quả ngược với ý nghĩa thăng đai.
+Hướng sửa: Tách việc xác nhận kết quả thi khỏi cập nhật cấp đai hiện tại; kiểm tra thứ tự đai và ngày hiệu lực. Kết quả lịch sử vẫn được lưu, đai hiện tại chỉ đổi theo chính sách đã xác định.
+Bằng chứng: mock/api.js:1005; nhánh duyệt PASS gán trực tiếp student.rankId = exam.rankId.
+F02 Chuyển lớp làm thiếu học viên ở buổi cũ chưa mở
+Ưu tiên P1 – đã tái hiện. Tình huống: Võ sinh thuộc lớp A từ tháng 1; có lịch buổi tháng 10 chưa mở điểm danh; chuyển sang lớp B từ tháng 11; mở điểm danh buổi cũ của A.
+Kết quả kiểm tra: Chuyển lớp trả 200 nhưng học viên không còn trong roster cũ. Đăng ký cũ chỉ có status PAUSED, không có leftAt; thuật toán roster loại đăng ký PAUSED không có mốc rời lớp.
+Ảnh hưởng: HLV không điểm danh bổ sung hoặc kiểm tra lại đúng thành viên của buổi cũ; danh sách lịch sử phụ thuộc việc buổi học đã được ai mở trước đó hay chưa.
+Hướng sửa: Lưu khoảng hiệu lực joinedAt/leftAt khi chuyển hoặc tạm nghỉ. Tính thành viên theo ngày buổi học và giữ snapshot phù hợp cho buổi đã chính thức bắt đầu.
+Bằng chứng: mock/api.js:1497 và 1678; mock/attendance-workflow.js:26–42.
+F03 Chỉ mở xem đã khóa lịch và đóng băng học viên
+Ưu tiên P1 – đã tái hiện. Tình huống: Mở xem điểm danh một buổi chưa ghi nhận ai; quay lại sửa lịch. Sau đó thử thêm học viên hợp lệ vào lớp và mở lại roster.
+Kết quả kiểm tra: GET roster tạo attendanceSessions và lưu roster ngay. Sửa lịch sau đó trả 409. Học viên được thêm hợp lệ sau lần xem đầu vẫn không xuất hiện trong roster.
+Ảnh hưởng: Người dùng chỉ xem thử cũng vô tình khóa thao tác quản lý. HLV thiếu người mới vào lớp, dù buổi chưa chốt và chưa có điểm danh.
+Hướng sửa: Để thao tác xem không tạo trạng thái khóa. Có bước Bắt đầu điểm danh rõ ràng; cho cập nhật thành viên trước chốt với nhật ký và quy tắc bảo toàn bản ghi đã đánh dấu.
+Bằng chứng: mock/attendance-workflow.js:80–139; mock/api.js:1110–1122.
+4 Lỗi dữ liệu và đóng gói phát hành
+F04 Chưa có đường sửa nhầm điểm danh
+Ưu tiên P1 về vận hành – xác nhận từ mã. Tình huống: HLV bấm Có mặt nhầm học viên bằng nút một chạm; cần đưa học viên về Chưa điểm danh hoặc Vắng trước khi chốt.
+Kết quả kiểm tra: Luồng hiện hành chỉ cung cấp present và close; học viên đã có mặt bị khóa chọn. Đường CRUD điểm danh thông thường bị chặn để buộc đi qua luồng buổi tập.
+Ảnh hưởng: Không có cách khắc phục hợp lệ ngay trong luồng hiện tại. Nếu chốt nhầm hoặc có đơn nghỉ được duyệt sau đó, dữ liệu khó điều chỉnh theo thực tế.
+Hướng sửa: Bổ sung hoàn tác trước chốt; hiệu chỉnh sau chốt cần quyền riêng, lý do và lịch sử trước/sau. Giữ bảo vệ chống sửa âm thầm, đồng thời cung cấp thao tác sửa sai có kiểm soát.
+Bằng chứng: mock/attendance-workflow.js:73–207; src/features/attendance/pages/SessionAttendancePage.jsx:177 và 728.
+F05 Dữ liệu không đọc được bị thay bằng mẫu mới
+Ưu tiên P1 – đã tái hiện. Tình huống: Đã thay tên một võ sinh và lưu thành công; khóa DB trong môi trường thử được làm thành JSON lỗi; người dùng đăng nhập lại.
+Kết quả kiểm tra: Hệ thống tạo và lưu lại dữ liệu mẫu; tên đã sửa bị thay bằng tên mẫu. Không có bước giữ bản dữ liệu lỗi hay thông báo phục hồi.
+Ảnh hưởng: Khi dữ liệu hỏng hoặc migration phát sinh lỗi, người dùng có thể tưởng hồ sơ tự biến mất. Việc xóa dữ liệu duyệt web cũng mất cơ sở dữ liệu hiện tại.
+Hướng sửa: Phân biệt DB chưa tồn tại với DB hỏng. Không ghi đè khi parse/migration thất bại; giữ bản lỗi, báo cách phục hồi, bổ sung sao lưu/khôi phục và chuyển dữ liệu thật sang nơi lưu bền vững.
+Bằng chứng: mock/api.js:42–165; catch rỗng rồi createSeed().
+F06 ZIP chứa các phiên bản chạy khác nhau
+Ưu tiên P1 khi bàn giao – đã đối chiếu tệp. Tình huống: Người nhận mở thư mục Frontend ngoài cùng, hoặc thư mục Frontend lồng trong; chạy dev từ nguồn hoặc chạy npm start dùng dist đóng gói sẵn.
+Kết quả kiểm tra: Hai thư mục có nhiều file nguồn khác nhau. dist đang được index.html tham chiếu vẫn có mật khẩu seed Vovinam123!, trong khi nguồn ngoài cùng dùng 123. dist còn chứa nhiều chunk cũ.
+Ảnh hưởng: Hai người cùng dùng một ZIP có thể thấy hành vi khác nhau. Sửa mã nguồn chưa có nghĩa npm start đang chạy đúng bản đó; khó xác định lỗi đã được sửa ở phiên bản nào.
+Hướng sửa: Chỉ bàn giao một thư mục chuẩn. Tạo dist từ đúng nguồn và lockfile trong quy trình sạch; ghi version/build ID trên giao diện; loại node_modules và bản nguồn lồng khỏi gói phát hành.
+Bằng chứng: Frontend/src và Frontend/Frontend/src; dist/index.html → assets/mockProvider-BaVZ_CVY.js; mock/users.js:1.
+Chú giải ưu tiên: P1 = ảnh hưởng dữ liệu hoặc cản trở nghiệp vụ quan trọng; P2 = gây lỗi thao tác, nhầm lẫn hoặc tăng công hỗ trợ. Các điều kiện bắt buộc trước vận hành thật được trình bày riêng ở phần bảo mật và lộ trình.
+5 Bốn lỗi gây bất tiện trực tiếp
+F07 Hướng dẫn đăng nhập không khớp bản nguồn mới
+Ưu tiên P2 – đã tái hiện. Tình huống: Người mới giải nén, chạy nguồn ngoài cùng bằng trình duyệt chưa có DB và đăng nhập theo README.
+Kết quả kiểm tra: Mật khẩu hướng dẫn Vovinam123! trả 401; mật khẩu seed hiện tại 123 đăng nhập được. Tài khoản mới lại bị yêu cầu mật khẩu ít nhất 8 ký tự.
+Ảnh hưởng: Người dùng nghĩ tài khoản hoặc hệ thống hỏng. DB cũ giữ mật khẩu trước đây nên lỗi có thể chỉ xuất hiện trên máy mới, rất khó hướng dẫn từ xa.
+Hướng sửa: Dùng một nguồn cấu hình tài khoản thử; cập nhật hướng dẫn và fixture kiểm thử cùng lúc. Phân biệt quy tắc tài khoản demo với quy tắc cấp tài khoản thực tế.
+Bằng chứng: README.md, nhiều test cố định mật khẩu; mock/users.js:1.
+F08 Cho tạo lịch tập trùng hoàn toàn
+Ưu tiên P2 – đã tái hiện. Tình huống: Tạo lịch cùng lớp, ngày, giờ bắt đầu, giờ kết thúc và địa điểm với một lịch đã có.
+Kết quả kiểm tra: Yêu cầu trả 200, tạo thêm lịch. Bộ xử lý chỉ kiểm tra giờ kết thúc sau giờ bắt đầu, chưa chặn trùng/đè giờ.
+Ảnh hưởng: Người dùng thấy hai buổi giống nhau; điểm danh có thể bị tách thành hai danh sách. Chưa có kiểm soát xung đột cùng HLV hoặc địa điểm.
+Hướng sửa: Chặn lịch trùng; kiểm tra khoảng thời gian giao nhau theo lớp/HLV/địa điểm. Nếu có ngoại lệ, hiển thị xung đột và yêu cầu người có quyền xác nhận.
+Bằng chứng: mock/api.js:1465; src/features/schedules/module.js.
+F09 Sửa hồ sơ cá nhân chưa đồng bộ hồ sơ võ sinh
+Ưu tiên P2 – đã tái hiện. Tình huống: Võ sinh sửa họ tên và số điện thoại trong Hồ sơ cá nhân rồi quay lại Hồ sơ võ sinh.
+Kết quả kiểm tra: Tài khoản trả về tên/số điện thoại mới, nhưng hồ sơ võ sinh vẫn giữ tên và điện thoại cũ.
+Ảnh hưởng: Người dùng không biết thông tin nào mới là đúng; quản lý có thể liên hệ sai số; tên ở tài khoản, điểm danh và hồ sơ không thống nhất.
+Hướng sửa: Xác định trường nào thuộc tài khoản, trường nào thuộc hồ sơ. Dùng liên kết userId/studentId và một luồng cập nhật chung; nếu không được đổi tên hồ sơ thì giao diện phải nói rõ phạm vi thay đổi.
+Bằng chứng: mock/api.js:543–547; src/features/profile/pages/ProfilePage.jsx.
+F10 Biểu phí và mức tiền lập hóa đơn tách rời
+Ưu tiên P2 – đã tái hiện và đối chiếu form. Tình huống: Đổi biểu phí của lớp từ 350.000 thành 473.456; sau đó lập hóa đơn mới cho lớp.
+Kết quả kiểm tra: Biểu phí cập nhật thành công nhưng classes.tuition vẫn 350.000; form hóa đơn lấy mức gợi ý từ classes.tuition, không tra biểu phí theo tháng.
+Ảnh hưởng: Quản lý đã cập nhật học phí nhưng vẫn có thể phát hành hóa đơn theo mức cũ. Người dùng phải nhớ nhập lại số tiền và dễ thu sai.
+Hướng sửa: Có một nguồn tính phí theo lớp/kỳ/hiệu lực. Khi lập hóa đơn hiển thị phí gốc, miễn giảm và tổng phải thu; cho nhập khác chỉ với lý do và quyền phù hợp.
+Bằng chứng: mock/tuition.js; src/components/common/RecordForm.jsx:179–192; mock/invoice-pricing.js.
+6 Lỗi giao diện về trạng thái và bộ lọc
+Các lỗi FE01 đến FE06 bổ sung góc nhìn giao diện cho các lỗi nghiệp vụ F01 đến F10. Lỗi có kết quả kiểm tra logic được ghi riêng với nhận xét cần thử trực quan trên thiết bị.
+FE01 Lọc giao dịch đã xác nhận dùng sai trạng thái
+Ưu tiên P1 về tính đúng thông tin. Tình huống: Người quản lý bấm bộ lọc nhanh Đã xác nhận trong màn Xác nhận thanh toán.
+Kết quả kiểm tra: Nút lọc gửi APPROVED, trong khi giao dịch xác nhận xong lưu SUCCESS. Phép kiểm tra với một giao dịch SUCCESS cho kết quả APPROVED trả 0 bản ghi, SUCCESS trả 1 bản ghi.
+Ảnh hưởng: Người dùng tưởng giao dịch đã xử lý bị mất hoặc chưa được xác nhận, phải tìm lại bằng bộ lọc khác.
+Hướng sửa: Dùng SUCCESS cho Đã xác nhận. Tạo cấu hình trạng thái duy nhất theo module để tab, dropdown, badge và truy vấn dùng cùng mã.
+Bằng chứng: src/components/common/FeaturePage.jsx:605–634; mock/api.js:367–371 và nhánh xác nhận thanh toán.
+FE02 Dropdown trạng thái chứa lựa chọn ngoài nghiệp vụ
+Ưu tiên P2 về khả năng sử dụng. Tình huống: Mở bộ lọc trạng thái tại đơn nghỉ, kết quả thi, hóa đơn hoặc xác nhận thanh toán.
+Kết quả kiểm tra: Các module này không khai báo trường status trong form nên dropdown rơi về toàn bộ 29 trạng thái chung, gồm Có mặt, Đạt, Bản nháp và nhiều trạng thái không phù hợp.
+Ảnh hưởng: Danh sách lựa chọn dài, khó hiểu; chọn một trạng thái không hợp lệ thường tạo màn hình rỗng và làm người dùng nghĩ hệ thống thiếu dữ liệu.
+Hướng sửa: Khai báo filterStatuses riêng cho mỗi module. Đơn nghỉ chỉ có Chờ duyệt, Đã duyệt, Từ chối; hóa đơn dùng các trạng thái tài chính phù hợp.
+Bằng chứng: src/components/common/FeaturePage.jsx:693–713; src/utils/format.js:statusLabels.
+FE03 Giao dịch thành công có thể hiện thành đã từ chối
+Ưu tiên P1 có điều kiện dữ liệu thiếu người xử lý. Tình huống: Hiển thị bản ghi status SUCCESS nhưng không có reviewedRole, chẳng hạn dữ liệu cũ thiếu thông tin người xử lý.
+Kết quả kiểm tra: Hàm leaveReviewStatus trả nhãn Đã từ chối. Khi thêm reviewedRole ADMIN, cùng status lại hiện Admin cấp tỉnh đã xác nhận.
+Ảnh hưởng: Nhãn giao diện có thể trái ngược trạng thái nghiệp vụ thực tế, gây nhầm lẫn nghiêm trọng khi đối chiếu học phí.
+Hướng sửa: Xác định nhãn kết quả chỉ từ status. Người xử lý, vai trò và thời gian hiển thị ở dòng bổ sung; thiếu người xử lý không được đổi nghĩa kết quả.
+Bằng chứng: src/features/leaves/reviewStatus.js:27–35; Table và màn chi tiết dùng LeaveStatus cho xác nhận thanh toán.
+7 Lỗi giao diện trong màn điểm danh
+FE04 Tab vắng mặt tính cả học viên nghỉ có phép
+Ưu tiên P1 về tính đúng số liệu hiển thị. Tình huống: Buổi đã chốt có một học viên PRESENT, một ABSENT và một EXCUSED.
+Kết quả kiểm tra: Tab đổi tên thành Vắng mặt nhưng vẫn đếm mọi người không PRESENT/LATE. Phép kiểm tra điều kiện cho số đếm 2 trong khi số ABSENT thực tế là 1.
+Ảnh hưởng: HLV có thể hiểu nhầm số người nghỉ không phép; tab Vắng mặt và tab Có phép bị giao nhau.
+Hướng sửa: Tách trạng thái Có mặt, Đi muộn, Vắng, Có phép. Khi buổi chưa chốt dùng Chưa điểm danh; khi đã chốt dùng ABSENT cho tab Vắng. Số đếm và danh sách phải dùng chung điều kiện.
+Bằng chứng: src/features/attendance/pages/SessionAttendancePage.jsx:136–155 và 463–470.
+FE05 Hướng dẫn bấm dòng không khớp hành vi thực tế
+Ưu tiên P2 về thao tác. Tình huống: Người dùng đọc hướng dẫn Bấm trực tiếp vào dòng học viên hoặc nút Có mặt ngay để điểm danh nhanh rồi bấm vào tên.
+Kết quả kiểm tra: Bấm dòng chỉ chọn hoặc bỏ chọn học viên; nút Có mặt ngay mới ghi dữ liệu. Ngoài ra nút Có mặt mở xác nhận, còn nút Xác nhận Có mặt ngay ghi trực tiếp.
+Ảnh hưởng: Người dùng có thể tưởng đã điểm danh nhưng mới chỉ chọn dòng; các nút gần nghĩa lại có mức cam kết khác nhau.
+Hướng sửa: Thống nhất một cách chính: chọn dòng/checkbox rồi bấm Xác nhận có mặt N học viên. Nếu giữ thao tác nhanh từng người, cần nhãn rõ và hoàn tác như F04.
+Bằng chứng: src/features/attendance/pages/SessionAttendancePage.jsx:552, 671–672 và 728.
+FE06 Tìm kiếm không khớp có thể bị báo là đã điểm danh hết
+Ưu tiên P2 về phản hồi giao diện. Tình huống: Tại tab Chưa điểm danh, người dùng nhập tên không tồn tại hoặc không khớp với các học viên còn lại.
+Kết quả kiểm tra: Nhánh filteredRows rỗng có thể hiện Tất cả học viên trong lớp đã được điểm danh có mặt, dù nguyên nhân là từ khóa tìm kiếm.
+Ảnh hưởng: Phản hồi tạo cảm giác buổi học đã hoàn tất và che mất việc còn học viên chưa ghi nhận.
+Hướng sửa: Khi có từ khóa, ưu tiên Không tìm thấy học viên với từ khóa này và nút Xóa tìm kiếm. Chỉ báo hoàn tất khi dữ liệu toàn buổi xác nhận không còn người chưa điểm danh.
+Bằng chứng: src/features/attendance/pages/SessionAttendancePage.jsx:590–600.
+Thao tác chốt và sửa sai
+Chốt buổi nên là hành động riêng, kèm tổng Có mặt, Đi muộn, Vắng và Có phép. Các đề xuất sửa sai trước/sau chốt đã được nêu ở F04; giao diện cần hiển thị ai được hiệu chỉnh, lý do bắt buộc và lịch sử thay đổi.
+8 Tổ chức điều hướng và dashboard theo vai trò
+Chỉ giữ một bộ chọn phạm vi làm việc
+Bộ chọn ở header, bảng chọn lớn trong trang, khối đơn vị trên sidebar và trang điều hành hiện cùng tham gia chọn hoặc mở đơn vị. Người dùng phải phân biệt nhiều điểm vào trước khi đến công việc chính.
+Khối đơn vị trên sidebar đang là liên kết cho mọi vai trò, nhưng ManagementEntry chuyển HLV/võ sinh về dashboard. Nên bỏ hành vi bấm đối với người không dùng được trang đó. Nguồn: Sidebar.jsx, HeaderScopeSelector.jsx, OrganizationScope.jsx, OrganizationNavigator.jsx và AppRoutes.jsx.
+Menu và công việc đầu ngày
+Sidebar nên thu gọn các nhóm quản trị ít dùng; mục Chờ xử lý có số lượng theo nghiệp vụ và vẫn kiểm tra quyền khi mở. Dashboard cần thu nhỏ banner chào mừng, đưa lịch và việc cần hành động lên trước biểu đồ. Các thẻ và shortcut cũng phải kiểm tra quyền như sidebar để tránh điểm vào bị từ chối. Nguồn: Sidebar.jsx:77–167; DashboardPage.jsx:50–294.
+Tên gọi thống nhất
+Chọn một thuật ngữ chính như Võ sinh và dùng nhất quán thay vì luân phiên Võ sinh, Học viên, Môn sinh trong cùng một luồng. Tên trang, breadcrumb, nút và trạng thái nên phản ánh cùng một đối tượng và cùng một hành động.
+9 Chuẩn hóa biểu mẫu bảng và thao tác
+Hành động chính phải có tên cụ thể
+Trong bảng nên giữ Xem chi tiết và hành động chính có chữ. Đưa thao tác ít dùng vào menu Thao tác khác; tách xóa/từ chối khỏi các thao tác thường dùng. Các nút dùng chỉ biểu tượng vẫn cần tên truy cập và tooltip phù hợp.
+Bảo vệ dữ liệu đang nhập và hướng dẫn sửa lỗi
+Đóng bằng X, Escape hoặc bấm ra ngoài cần kiểm tra thay đổi chưa lưu. Khi đang lưu, quản lý rõ việc đóng form để tránh người dùng tưởng chưa lưu hoặc gửi lại.
+Hiển thị lỗi ngay dưới ô liên quan; giữ một thông báo tổng quát khi cần. Đưa focus về trường lỗi đầu tiên và liên kết thông báo với trường nhập.
+Chọn lớp trước rồi lọc võ sinh; chọn kỳ thi hợp lệ; đổi lựa chọn cha phải kiểm tra lại lựa chọn con. Không đợi đến lúc lưu mới báo sai lớp.
+Ô tiền cần phân cách hàng nghìn, đơn vị đồng và phần phí gốc, miễn giảm, phải thu rõ ràng. Nguồn tính phí và giá trị gợi ý cần thống nhất theo F10.
+Form dài nên chia Thông tin cá nhân, Thông tin học tập, Liên hệ. Hồ sơ phức tạp có thể dùng trang riêng thay cho modal dài.
+Màn chi tiết hiện duyệt các thuộc tính của bản ghi và loại một số trường bằng danh sách cấm. Nên khai báo trường và thứ tự hiển thị riêng theo nghiệp vụ, để thông tin nội bộ không vô tình biến thành nhãn khó hiểu. Nguồn: FeaturePage.jsx:859–905; RecordForm.jsx:223–506; Modal.jsx:11–50.
+Bộ lọc và trạng thái màn hình
+Chỉ dùng tab hoặc dropdown trạng thái theo độ dài danh sách, tránh hai bộ điều khiển trùng nhau. Hiện rõ bộ lọc đang áp dụng; lưu lớp, trạng thái, tháng và trang vào URL để Back/Forward hoặc chia sẻ liên kết giữ ngữ cảnh. Trạng thái rỗng cần phân biệt chưa có dữ liệu, không khớp bộ lọc, chưa được phân công và lỗi tải; mỗi loại có hướng tiếp theo phù hợp.
+10 Hoàn thiện giao diện để đưa vào sử dụng thực tế
+Khu vực công khai và khu vực có đăng nhập
+Nếu dự án có website giới thiệu cho khách chưa đăng nhập, nên tách Giới thiệu, CLB, Lịch tuyển sinh và Liên hệ khỏi ứng dụng /app. Việc đưa website lên Internet không đồng nghĩa mở dữ liệu quản lý cho mọi người. Quyền tự đăng ký tài khoản cần phù hợp chính sách cấp tài khoản của dự án.
+Những điểm nên giữ
+Giữ bộ nhận diện Vovinam, cấu trúc component dùng chung, trạng thái loading/lỗi, nhãn truy cập, hỗ trợ giảm chuyển động và cảnh báo thanh toán mô phỏng. Chỉnh cấu trúc thông tin và tính nhất quán thao tác trước khi bổ sung trang trí.
+Nguồn FE chính: Header.jsx; Sidebar.jsx; DashboardPage.jsx; FeaturePage.jsx; RecordForm.jsx; Modal.jsx; SessionAttendancePage.jsx; PromotionsPage.jsx; ScheduleGrid.jsx; ThemeContext.jsx; AppRoutes.jsx; styles/attendance.css và styles/global.css. Các nhận xét responsive, tương phản và bố cục cần được xác nhận bằng kiểm tra trực quan.
+11 Bảo mật dữ liệu cá nhân và tích hợp
+Điều kiện bắt buộc trước khi dùng dữ liệu thật
+Cơ chế hiện tại được thiết kế cho mock: tài khoản, mật khẩu dạng rõ, phiên, token khôi phục và dữ liệu nghiệp vụ cùng nằm trong DB trình duyệt. Người có quyền truy cập trình duyệt có thể đọc hoặc sửa dữ liệu đó. Không thể dùng ma trận quyền cục bộ làm bằng chứng chống truy cập trái phép trong hệ thống thật.
+Kết quả kiểm tra thư viện phụ thuộc
+npm audit trên bộ cài theo lockfile báo 5 package ở mức high, 0 critical: xlsx; picomatch và các package bị ảnh hưởng gián tiếp fdir, tinyglobby, vite. Đây không phải 5 lỗ hổng độc lập đã khai thác được trên website.
+xlsx đang được dùng cho xuất Excel. Cảnh báo Prototype Pollution công bố rõ luồng chỉ xuất dữ liệu không bị ảnh hưởng bởi lỗ hổng đọc file này. Với ReDoS, chưa tái hiện đường khai thác trong ứng dụng; không nên gán kết luận đã bị tấn công. Chuỗi picomatch thuộc công cụ build/dev, cần đánh giá đầu vào pattern và môi trường chạy.
+Đề xuất: theo dõi và nâng/thay thư viện có kiểm chứng; không chạy audit fix --force mù quáng. Đặc biệt cần đánh giá lại trước khi thêm nhập Excel từ file người dùng.
+Nguồn đối chiếu: GitHub Advisory Database, GHSA-4r6h-8v6p-xvw6; GHSA-5pgg-2g8v-p4x9; GHSA-fc5q-39xc-vjpf. Kiểm tra ngày 18/11/2026.
+12 Hiệu năng kiến trúc và khả năng bảo trì
+Số liệu build đo được
+Các điểm cần đo khi dữ liệu tăng
+Mỗi request mock đọc và parse toàn bộ DB; cuối request stringify và so sánh toàn bộ DB, kể cả GET. Dữ liệu tăng có thể làm giao diện chậm trên máy yếu và chạm hạn mức lưu trữ.
+Nhiều subscription cùng nghe storage/focus/visibilitychange; một thay đổi có thể khiến trang tải lại danh sách, lookup, thông báo và roster cùng lúc. Cần gom sự kiện và dùng cache theo phạm vi.
+Xuất toàn hệ thống tạo nhiều dòng và workbook trên luồng giao diện. Các phép find lồng theo dòng xuất có thể tăng chi phí đáng kể. Cần đo file 10.000–100.000 dòng, dùng map tra cứu và worker hoặc xuất trên server.
+Chưa có số đo LCP/INP/CLS, thời gian phản hồi backend, p95, số người dùng đồng thời hoặc bộ nhớ trên điện thoại. Không có cơ sở khẳng định hệ thống sẽ chậm ở một số người dùng cụ thể.
+Chất lượng kiến trúc
+Nên giữ: phân chia features, cấu hình module, provider độc lập, router tải lười và mô hình chuyển trạng thái rõ. Cần cải thiện: mock/api.js gần 1.900 dòng xử lý cả auth, scope, CRUD và nhiều nghiệp vụ; FeaturePage gần 1.000 dòng chứa nhiều nhánh theo module; có các bản App/Auth/registry/service cũ và lặp.
+Hướng tách phù hợp: giữ kiểm tra quyền/phạm vi dùng chung; chuyển xử lý điểm danh, kết quả thi, tài khoản và hóa đơn thành các bộ xử lý riêng. Tách UI duyệt khỏi bảng CRUD chung, dùng chính sách hành động/kiểu bản ghi rõ ràng. Chỉ xóa mã cũ sau khi xác định đồ thị import và đường chạy hiện hành.
+Vận hành và triển khai
+server.mjs có xử lý đường dẫn, MIME, CSP, nosniff và mặc định tắt proxy API; đây là nền tảng tốt. Gói node_modules trong ZIP dành cho Windows gây lỗi khi dùng trực tiếp trên Linux. Cài npm ci --ignore-scripts trong bản sao đã cho build thành công; lỗi đóng gói phụ thuộc không chứng minh mã React không build được.
+13 Kết quả kiểm chứng và mức độ tin cậy
+Kiểm chứng bổ sung từ review giao diện
+FE01 đã kiểm tra bằng truy vấn mock với bản ghi SUCCESS; FE02 xác định 29 lựa chọn từ cấu hình dropdown; FE03 kiểm tra trực tiếp hàm nhãn trạng thái; FE04 kiểm tra điều kiện đếm với PRESENT, ABSENT và EXCUSED. FE05 và FE06 được xác nhận từ nhánh sự kiện và điều kiện hiển thị trong nguồn. Đây là kiểm tra logic giao diện, không phải kết quả thử trực quan đầy đủ trên trình duyệt.
+Ý nghĩa của kết quả kiểm thử chẩn đoán
+Các luồng duyệt, phân quyền đơn vị, báo cáo, miễn giảm và thanh toán mô phỏng có nhiều kiểm thử đã đi qua nghiệp vụ sau khi loại được nút thắt fixture. Tuy vậy, các tình huống F01–F03 và F05 vẫn tái hiện độc lập: bộ test đạt cao không thay thế kiểm tra ca biên và trải nghiệm sử dụng.
+Phạm vi backend thật cần nghiệm thu riêng
+Hợp đồng request/response, mã lỗi, phân trang và quyền cho từng vai trò/cấp quản lý.
+Tính nguyên tử khi hai người duyệt đồng thời; thu hồi quyền/phiên; kiểm tra truy cập chéo đơn vị bằng ID và bộ lọc.
+Sao lưu và khôi phục thực tế; xử lý mất mạng, timeout sau khi server đã ghi thành công, retry và chống tạo trùng.
+Bằng chứng thanh toán, đối soát số tiền, sai hóa đơn, giao dịch thất bại và luồng điều chỉnh sai sót.
+Tài liệu đối chiếu chính trong hai bản review: README.md; docs/ARCHITECTURE.md; docs/WORKFLOWS.md; docs/API_LATER.md; docs/ATTENDANCE_AND_EXCEL.md. Mã FE chính trong Frontend(3).zip đã được đối chiếu trùng với bản Frontend(2).zip trong lần review thứ hai. Các nhận xét mới bổ sung độ sâu về giao diện, không chứng minh lỗi cũ đã được sửa. Mốc review là các snapshot ZIP đã cung cấp, không phải diff theo một commit hoặc chứng nhận mọi API trong tài liệu đều đang hoạt động.
+14 Thứ tự sửa và điều kiện nghiệm thu
+Các ca nghiệm thu ưu tiên cho người dùng thường
+Võ sinh: đăng nhập trên máy mới theo đúng hướng dẫn; xem đúng lớp; gửi đơn xin nghỉ; nhìn thấy người và thời gian duyệt; không xem được hồ sơ người khác.
+HLV: xem thử buổi mà không khóa lịch; chuyển/thêm học viên đúng ngày; đánh dấu nhầm rồi hoàn tác; chốt và hiệu chỉnh có lý do; người ở lớp khác không lọt vào roster.
+Quản lý: chuyển lớp rồi xem buổi cũ; lập hai lịch trùng; đổi biểu phí rồi lập hóa đơn tháng mới; xác nhận một giao dịch hai lần; sửa thông tin liên hệ rồi đối chiếu các màn hình.
+Admin: duyệt kết quả cũ có cấp đai thấp hơn hiện tại; đổi quyền khi người dùng đang mở màn hình; kiểm tra khôi phục dữ liệu và truy vết hành động.
+Đề xuất quyết định hiện tại
+Có thể tiếp tục dùng bản này để trình diễn quy trình và lấy ý kiến nghiệp vụ với dữ liệu mẫu. Chỉ đưa vào quản lý thật sau khi sửa nhóm lỗi dữ liệu ưu tiên, thống nhất gói phát hành và nghiệm thu backend đa người dùng. Việc làm giao diện đẹp hơn nên đi cùng khả năng sửa sai và tính nhất quán dữ liệu, vì đây là hai yếu tố ảnh hưởng trực tiếp đến sự tin tưởng của người dùng.
+Nguồn tham khảo cho cảnh báo phụ thuộc
+https://github.com/advisories/GHSA-4r6h-8v6p-xvw6
+https://github.com/advisories/GHSA-5pgg-2g8v-p4x9
+https://github.com/advisories/GHSA-fc5q-39xc-vjpf
+Khía cạnh | Đánh giá hiện tại
+Độ phủ chức năng | 31 module đang được đăng ký, cộng trang tổng quan, điều hành đơn vị và hồ sơ cá nhân.
+Luồng duyệt và phân quyền | Có kiểm tra vai trò, cấp quản lý, phạm vi đơn vị, trạng thái và xử lý trùng trong bộ mô phỏng.
+Dữ liệu dùng chung | Chưa có: dữ liệu nghiệp vụ nằm ở localStorage của từng trình duyệt; các tab cùng nguồn có thể đồng bộ.
+Độ tin cậy nghiệp vụ | Có lỗi đã tái hiện làm sai cấp đai, thiếu học viên trong danh sách và lệch thông tin hồ sơ.
+Trải nghiệm hằng ngày | Cần bổ sung sửa sai điểm danh, bảo vệ dữ liệu đang nhập, hỗ trợ bảng trên điện thoại và hướng dẫn rõ hơn.
+Mức sẵn sàng | Phù hợp trình diễn và hoàn thiện nghiệp vụ; chưa nghiệm thu cho vận hành thật.
+Nhóm | Các module
+Tổ chức và nhân sự | Phường, Câu lạc bộ, Tài khoản người dùng, Vai trò & phân quyền, Võ sư, Huấn luyện viên.
+Đào tạo | Hồ sơ võ sinh, Lớp học, Phân lớp võ sinh, Lịch tập, Điểm danh, Đơn xin nghỉ, Đánh giá.
+Thi và thăng đai | Danh mục cấp đai, Đề xuất thăng đai, Kỳ thi, Kết quả thi, Lịch sử cấp đai.
+Tài chính | Biểu học phí, Hóa đơn, Thanh toán online, Lịch sử giao dịch, Xác nhận thanh toán, Miễn giảm học phí.
+Điều hành và báo cáo | Thông báo; 4 báo cáo võ sinh, điểm danh, học phí, thăng đai.
+Hệ thống | Cài đặt hệ thống, Nhật ký hoạt động.
+Tầng | Vai trò và nhận xét
+Giao diện | React 19, React Router 7; các trang được tải lười. Nhiều màn hình CRUD dùng FeaturePage/RecordForm chung.
+Phiên đăng nhập | Thông tin phiên phía giao diện lưu ở sessionStorage, tách prefix giữa mock và API.
+Nguồn dữ liệu hiện hành | VITE_USE_MOCK mặc định bật; toàn bộ cơ sở dữ liệu mẫu gồm tài khoản, phiên và nghiệp vụ lưu chung một khóa localStorage.
+Đồng bộ | Sự kiện storage giữa tab, sự kiện nội bộ, focus và visibilitychange. Web Locks hỗ trợ tuần tự hóa nếu trình duyệt cung cấp API này.
+Kết nối thật | Có live adapter và reverse proxy dành cho tích hợp sau. Không được xem kết quả mock là bằng chứng backend thật đã an toàn hoặc tương thích.
+Luồng | Cách xử lý hiện tại | Đánh giá
+Tài khoản và hồ sơ | Admin tạo hồ sơ/tài khoản; tài khoản võ sinh cần hồ sơ có email tương ứng; HLV được liên kết với hồ sơ nhân sự. | Có ràng buộc liên kết; cần hướng dẫn thứ tự và đồng bộ thay đổi hồ sơ.
+Phân lớp | Chọn võ sinh, lớp, ngày vào và trạng thái; lớp đủ sĩ số bị chặn; chuyển lớp tạm dừng đăng ký cũ. | Đúng hướng nhưng chưa lưu mốc rời lớp ở đường chuyển đang kiểm tra.
+Điểm danh | Chọn ngày/buổi; mở roster; đánh dấu có mặt; chốt buổi; người còn lại thành vắng/có phép. | Có bảo vệ chốt trùng, nhưng thao tác xem đã làm đóng băng danh sách và khóa sửa lịch.
+Xin nghỉ | Võ sinh gửi PENDING; người có quyền trong phạm vi duyệt/từ chối; lưu người xử lý; khóa đơn đã xử lý. | Luồng tương đối rõ; cần giải quyết trường hợp đơn được duyệt sau khi điểm danh đã chốt.
+Thăng đai | HLV đề xuất → duyệt đề xuất → kỳ thi được duyệt → nhập điểm → chỉ Admin duyệt kết quả → cập nhật đai/lịch sử. | Có phân tách các bước; thiếu ràng buộc chống cập nhật đai thấp hơn hiện tại.
+Miễn giảm | HLV/Võ sư/Admin gửi đề xuất; cấp có thẩm quyền xét; tạo thông báo; áp dụng khi lập/sửa hóa đơn. | Có xét thứ bậc; hóa đơn đã phát hành không tự đổi khi đơn miễn giảm được duyệt.
+Thanh toán | Hóa đơn → giao dịch DRAFT → gửi xác nhận PENDING → người có quyền duyệt → SUCCESS và hóa đơn PAID. | Có chống yêu cầu trùng, khóa hóa đơn có giao dịch và ghi nhận một lần. Đây là thanh toán mô phỏng.
+Thông báo, báo cáo, Excel | Thông báo có người nhận và trạng thái đọc riêng; báo cáo tổng hợp theo phạm vi; XLSX xuất toàn bộ dữ liệu được cấp quyền. | Có bảo vệ dữ liệu và tổng hợp đầy đủ; cần liên kết nhanh đến bản ghi và lựa chọn xuất dữ liệu đang lọc.
+Khu vực | Cách tổ chức đề xuất
+Header | Một bộ chọn duy nhất theo Tỉnh, Phường, CLB. Hiển thị rõ đơn vị đang xem và chỉ cho chọn trong quyền.
+Trang nghiệp vụ | Dòng phạm vi ngắn như Đang xem CLB A tại Phường B; không lặp bảng chọn đơn vị lớn.
+Trang Tổ chức | Dành cho duyệt cây tổ chức, thêm/sửa phường, CLB và xem số liệu của đơn vị.
+HLV và võ sinh | Hiện đơn vị được phân công. Chỉ cho chuyển khi thực sự có nhiều đơn vị hợp lệ.
+Vai trò | Menu ưu tiên | Nội dung đầu dashboard
+Võ sinh | Trang của tôi, Lịch tập, Điểm danh của tôi, Xin nghỉ, Học phí, Kết quả, Thông báo. | Buổi tập tiếp theo, học phí cần đóng, trạng thái đơn nghỉ và kết quả mới.
+HLV | Hôm nay, Lớp phụ trách, Điểm danh, Đơn nghỉ, Đánh giá, Đề xuất. | Buổi dạy hôm nay, buổi chưa chốt, đơn nghỉ cần xem.
+Võ sư | Tổng quan đơn vị, Lớp và võ sinh, Chờ xử lý, Thi và thăng đai, Báo cáo. | Việc chờ xử lý trong đơn vị, cảnh báo dữ liệu và số liệu theo thời gian.
+Admin | Tổng quan, Tổ chức, Đào tạo, Thi và thăng đai, Tài chính, Báo cáo, Hệ thống. | Hộp chờ duyệt, vấn đề vận hành, số liệu toàn phạm vi và liên kết xử lý.
+Đang dùng | Đề xuất | Mục đích
+Thêm mới tại hồ sơ | Thêm võ sinh | Nói rõ đối tượng được tạo.
+Thêm mới tại hóa đơn | Lập hóa đơn | Đúng thuật ngữ nghiệp vụ.
+Biểu tượng gửi giao dịch | Gửi yêu cầu xác nhận | Nói rõ đây là gửi yêu cầu, chưa phải khoản tiền đã được xác nhận.
+Dấu tích kết quả thi | Duyệt kết quả | Giảm phụ thuộc vào việc đoán icon.
+Duyệt tất cả | Duyệt 3 đề xuất đã chọn hoặc Duyệt 24 đề xuất theo bộ lọc | Nêu chính xác phạm vi tác động.
+Phần giao diện | Bất tiện hiện tại hoặc rủi ro | Hướng cải thiện
+Tìm kiếm | Header vừa tìm chức năng, vừa đổi đơn vị, vừa có thể lọc danh sách tùy kết quả khớp. | Header chỉ tìm chức năng/đơn vị theo nhóm. Tìm võ sinh hoặc hóa đơn nằm trong trang tương ứng.
+Xuất file | Nút Xuất toàn hệ thống xuất mọi dữ liệu theo quyền, bỏ bộ lọc màn hình theo thiết kế. | Đặt Xuất danh sách đang lọc ở trang; chuyển xuất toàn bộ sang Báo cáo hoặc Quản trị, có xác nhận phạm vi.
+Thông báo | Nhiều liên kết chỉ mở /app/announcements rồi người dùng phải tìm tiếp. | Mở đúng đơn, hóa đơn hoặc kết quả trong phạm vi quyền; trạng thái đọc theo việc đã xem, có phản hồi khi lỗi.
+Lịch tập | Chế độ được gọi dạng lịch hiện là lưới thẻ lịch tập. | Đổi tên Dạng thẻ hoặc xây lịch tuần/tháng có Hôm nay, Trước và Sau; giữ dạng danh sách để tra cứu.
+Điện thoại | CSS đặt bảng điểm danh min-width 850px khi màn hình dưới 760px; nút thao tác có nguy cơ nằm ngoài phần nhìn đầu. | Điểm danh bằng thẻ học viên, hóa đơn bằng thẻ số tiền/trạng thái; hoặc cố định tên và thao tác. Cần thử trên 360–430px.
+Đường dẫn lỗi | Route không hợp lệ tự chuyển về dashboard. | Trang 404 giải thích đường dẫn không tồn tại, có Quay lại và Về tổng quan.
+Giao diện và chuyển động | Dark/Galaxy dùng gradient, nền sao và nhiều animation. Màn vào có thời gian chờ tối thiểu theo mã. | Giữ nhận diện xanh Vovinam; tiết chế hiệu ứng trong vùng bảng/form, tránh trì hoãn thao tác. Cân nhắc Sáng/Tối/Hệ thống.
+Khả năng tiếp cận | Đã có nhiều aria-label và nhánh giảm chuyển động, nhưng dialog cần tên và tương tác bảng cần kiểm tra bàn phím. | Kiểm tra Tab/focus, zoom, tương phản, nút cảm ứng và trạng thái không chỉ nhận biết bằng màu.
+Vấn đề | Bằng chứng/đánh giá | Yêu cầu triển khai thật
+Khôi phục mật khẩu | /auth/forgot-password trả mockToken dùng được mà không kiểm soát hộp thư; đây là hành vi demo đã tái hiện. | Backend phát token một lần, có thời hạn; xác minh quyền sở hữu email; giới hạn yêu cầu và phản hồi không lộ tài khoản.
+Danh tính và phân quyền | Mọi kiểm tra đang chạy ở trình duyệt; đã có logic phạm vi để chuyển sang server. | Xác thực và kiểm tra quyền/tỉnh/phường/CLB trên từng API; lưu mật khẩu băm, quản lý phiên và thu hồi thật.
+Đồng thời nhiều người | Web Locks chỉ giúp dữ liệu cùng nguồn trên trình duyệt hỗ trợ; không giải quyết giao dịch nhiều máy. | Giao dịch DB, unique constraint, version hoặc khóa bản ghi; chống duyệt/cấp đai/thanh toán trùng trên server.
+Hồ sơ cá nhân và tài chính | Có tên, ngày sinh, điện thoại, lớp học, lý do xin nghỉ/miễn giảm và học phí. | Giới hạn thu thập/xuất theo vai trò; quy định lưu giữ, sửa/xóa, sao lưu và kiểm soát truy cập.
+Nhật ký | Có log hành động, người và thời gian nhưng log cũng sửa được ở localStorage. | Audit trên server, có đối tượng/thay đổi trước-sau/lý do; bảo vệ khỏi chỉnh sửa thông thường.
+Thanh toán | Đã có trạng thái và kiểm tra hóa đơn; chưa có tích hợp ngân hàng thật. | Xác minh webhook/chữ ký hoặc đối soát có bằng chứng; không dựa vào thông báo thành công từ frontend.
+Thành phần | Dung lượng gốc / gzip | Nhận xét
+Bundle index | 273,07 kB / 84,40 kB | Không phải toàn bộ JS tải lúc mở trang; còn các dependency và provider được nhập riêng.
+mockProvider | 85,78 kB / 25,49 kB | Mang nghiệp vụ và dữ liệu mẫu của chế độ hiện hành.
+FeaturePage | 37,04 kB / 11,98 kB | Dùng lại cho nhiều trang, có nhiều nhánh riêng từng module.
+ExportSystemButton chunk | 67,28 kB / 24,25 kB | Có cấu hình/dữ liệu phụ thuộc; cần đo request thực tế để đánh giá chi phí tải.
+excelExport | 286,39 kB / 96,84 kB | Được dynamic import khi xuất; đây là điểm tích cực.
+Build sạch | Thành công; Vite ghi nhận 4,80 giây | Đo trong môi trường review; không phải thời gian tải trên thiết bị người dùng.
+Phép kiểm tra | Kết quả | Diễn giải
+npm test nguyên bản | 116 test: 43 đạt, 73 không đạt | Phần lớn test dừng ở đăng nhập do cố định mật khẩu cũ; không tương đương 73 chức năng hỏng.
+Chẩn đoán fixture trong bản sao | 116 test: 115 đạt, 1 không đạt | Chỉ đổi MOCK_PASSWORD trong bản sao thành giá trị mà README/test đang dùng. Không coi đây là kết quả pass của gói nguyên bản.
+Test còn không đạt | Điểm danh: giá trị thực tế 4, kỳ vọng 1 | Seed đã có người có mặt; test kỳ vọng tổng bằng 1 sau đánh dấu. Cần thiết kế fixture sạch hoặc so sánh mức tăng, chưa đủ để kết luận tổng điểm danh sai.
+Tái hiện độc lập | F01, F02, F03, F05, F07, F08, F09, F10 | Gọi trực tiếp bộ xử lý mock với storage cô lập; ghi nhận status và trạng thái DB trước/sau.
+Đối chiếu mã/tệp | F04, F06 và cấu trúc giao diện trong phần 8 đến 10 | Xác nhận đường xử lý và cấu trúc nguồn; chưa diễn tập trực quan toàn bộ UI.
+Build sạch | Đạt | npm ci --ignore-scripts rồi npm run build ở bản sao trước khi đổi fixture.
+Xuất dữ liệu | Snapshot kiểm tra không chứa khóa bí mật bị cấm | Đây là kiểm tra cấu trúc snapshot, không phải chứng nhận bảo mật toàn hệ thống.
+Browser/điện thoại | Chưa hoàn thành | Chromium bị chặn ở bước khởi chạy; không đưa ảnh hay điểm UI giả định vào báo cáo.
+Thứ tự | Công việc | Điều kiện hoàn tất
+1 – Bảo toàn dữ liệu | Sửa F01–F05: không hạ đai do duyệt lịch sử; lịch sử phân lớp theo hiệu lực; xem không khóa buổi; có sửa sai; DB lỗi không tự reset. | Tái hiện lại đúng các tình huống báo cáo và xác nhận dữ liệu trước/sau đúng; bổ sung test hồi quy.
+2 – Một bản phát hành chuẩn | Sửa F06/F07; thống nhất thư mục, source/dist, tài khoản demo, hướng dẫn và bộ test. | Giải nén trên máy sạch, cài theo lockfile, build và chạy cùng một phiên bản; bộ test gốc không phải sửa tạm để chạy.
+3 – Đúng dữ liệu nghiệp vụ | Sửa F08–F10; chống trùng lịch; đồng bộ hồ sơ; một nguồn biểu phí. | Lịch trùng bị chặn; thông tin thống nhất; hóa đơn mới phản ánh đúng biểu phí theo kỳ và miễn giảm.
+4 – Giao diện và phục hồi | Sửa FE01–FE06; gọn bộ chọn đơn vị, menu/dashboard theo vai trò; nhãn hành động, bảo vệ form, liên kết thông báo và xuất dữ liệu đang lọc. | Người dùng thử hoàn thành nhiệm vụ thường gặp mà không cần người phát triển chỉ nút.
+5 – Vận hành thật | Nối backend/DB, xác thực và scope trên server; giao dịch; audit; backup/restore; thanh toán và giám sát. | Admin và HLV trên hai máy thấy cùng dữ liệu; người ngoài đơn vị không truy cập được; khôi phục và đối soát được diễn tập.
+6 – Hiệu năng và thiết bị | Kiểm tra mobile, bàn phím/zoom, dữ liệu lớn, mạng yếu và đồng thời. | Có số đo và tiêu chí được thống nhất; lỗi không làm mất dữ liệu hoặc tạo thao tác trùng.

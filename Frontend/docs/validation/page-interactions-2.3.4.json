@@ -1,0 +1,1467 @@
+[
+  {
+    "account": "admin",
+    "module": "wards",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "clubs",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "users",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "roles",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "students",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "masters",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "instructors",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "classes",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "enrollments",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "schedules",
+    "statuses": [
+      "",
+      "SCHEDULED",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "attendance",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "leaves",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "evaluations",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "ranks",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "promotions",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "exams",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "exam-results",
+    "statuses": [
+      "",
+      "PENDING",
+      "PASS",
+      "FAIL",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "belt-history",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "tuition",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "invoices",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "online-payments",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "transactions",
+    "statuses": [
+      "",
+      "SUCCESS",
+      "REJECTED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "payment-confirmations",
+    "statuses": [
+      "Đã xác nhận",
+      "Từ chối / Đã đóng",
+      "Tất cả",
+      "Chờ đối soát"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "discounts",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "admin",
+    "module": "announcements",
+    "statuses": [
+      "",
+      "DRAFT",
+      "PUBLISHED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "student-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "attendance-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "tuition-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "promotion-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "settings",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "audit",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "admin",
+    "module": "dashboard"
+  },
+  {
+    "account": "admin",
+    "module": "profile"
+  },
+  {
+    "account": "vosu",
+    "module": "wards",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "clubs",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "students",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "vosu",
+    "module": "masters",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "instructors",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "classes",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "vosu",
+    "module": "enrollments",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "schedules",
+    "statuses": [
+      "",
+      "SCHEDULED",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosu",
+    "module": "attendance",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "leaves",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "evaluations",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "ranks",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "promotions",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "exams",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosu",
+    "module": "exam-results",
+    "statuses": [
+      "",
+      "PENDING",
+      "PASS",
+      "FAIL",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosu",
+    "module": "belt-history",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "tuition",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "invoices",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "online-payments",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "transactions",
+    "statuses": [
+      "",
+      "SUCCESS",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "payment-confirmations",
+    "statuses": [
+      "Đã xác nhận",
+      "Từ chối / Đã đóng",
+      "Tất cả",
+      "Chờ đối soát"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "discounts",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosu",
+    "module": "announcements",
+    "statuses": [
+      "",
+      "DRAFT",
+      "PUBLISHED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "student-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "attendance-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "tuition-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "promotion-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "audit",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosu",
+    "module": "dashboard"
+  },
+  {
+    "account": "vosu",
+    "module": "profile"
+  },
+  {
+    "account": "vosuphuong",
+    "module": "wards",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "clubs",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "students",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "vosuphuong",
+    "module": "masters",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "instructors",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "classes",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "vosuphuong",
+    "module": "enrollments",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "schedules",
+    "statuses": [
+      "",
+      "SCHEDULED",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosuphuong",
+    "module": "attendance",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "leaves",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "evaluations",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "ranks",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "promotions",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "exams",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "exam-results",
+    "statuses": [
+      "",
+      "PENDING",
+      "PASS",
+      "FAIL",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosuphuong",
+    "module": "belt-history",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "tuition",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "invoices",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "online-payments",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "transactions",
+    "statuses": [
+      "",
+      "SUCCESS",
+      "REJECTED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "payment-confirmations",
+    "statuses": [
+      "Đã xác nhận",
+      "Từ chối / Đã đóng",
+      "Tất cả",
+      "Chờ đối soát"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "discounts",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosuphuong",
+    "module": "announcements",
+    "statuses": [
+      "",
+      "DRAFT",
+      "PUBLISHED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "student-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "attendance-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "tuition-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "promotion-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "audit",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuphuong",
+    "module": "dashboard"
+  },
+  {
+    "account": "vosuphuong",
+    "module": "profile"
+  },
+  {
+    "account": "vosuclb",
+    "module": "clubs",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "students",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "vosuclb",
+    "module": "instructors",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "classes",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "vosuclb",
+    "module": "enrollments",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "schedules",
+    "statuses": [
+      "",
+      "SCHEDULED",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosuclb",
+    "module": "attendance",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "leaves",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "evaluations",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "ranks",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "promotions",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "exams",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "exam-results",
+    "statuses": [
+      "",
+      "PENDING",
+      "PASS",
+      "FAIL",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "belt-history",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "discounts",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": true,
+    "form": true
+  },
+  {
+    "account": "vosuclb",
+    "module": "announcements",
+    "statuses": [
+      "",
+      "DRAFT",
+      "PUBLISHED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "student-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "attendance-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "promotion-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "audit",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosuclb",
+    "module": "dashboard"
+  },
+  {
+    "account": "vosuclb",
+    "module": "profile"
+  },
+  {
+    "account": "hlv",
+    "module": "students",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "classes",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "enrollments",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "schedules",
+    "statuses": [
+      "",
+      "SCHEDULED",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "hlv",
+    "module": "attendance",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "leaves",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "evaluations",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "ranks",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "promotions",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "exams",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "exam-results",
+    "statuses": [
+      "",
+      "PENDING",
+      "PASS",
+      "FAIL",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "belt-history",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "tuition",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "invoices",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "online-payments",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "payment-confirmations",
+    "statuses": [
+      "Đã xác nhận",
+      "Từ chối / Đã đóng",
+      "Tất cả",
+      "Chờ đối soát"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "discounts",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "hlv",
+    "module": "announcements",
+    "statuses": [
+      "",
+      "DRAFT",
+      "PUBLISHED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "student-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "attendance-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "tuition-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "promotion-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "audit",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "hlv",
+    "module": "dashboard"
+  },
+  {
+    "account": "hlv",
+    "module": "profile"
+  },
+  {
+    "account": "vosinh",
+    "module": "students",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "schedules",
+    "statuses": [
+      "",
+      "SCHEDULED",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "attendance",
+    "statuses": [
+      "",
+      "PRESENT",
+      "LATE",
+      "ABSENT",
+      "EXCUSED",
+      "UNMARKED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "leaves",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": true
+  },
+  {
+    "account": "vosinh",
+    "module": "evaluations",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "ranks",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "promotions",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "exams",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "exam-results",
+    "statuses": [
+      "",
+      "PENDING",
+      "PASS",
+      "FAIL",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "belt-history",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "tuition",
+    "statuses": [
+      "",
+      "ACTIVE",
+      "PAUSED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "invoices",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "online-payments",
+    "statuses": [],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "transactions",
+    "statuses": [
+      "",
+      "SUCCESS",
+      "REJECTED"
+    ],
+    "detail": true,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "discounts",
+    "statuses": [
+      "",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "announcements",
+    "statuses": [
+      "",
+      "DRAFT",
+      "PUBLISHED"
+    ],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "student-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "attendance-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "tuition-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "promotion-report",
+    "statuses": [],
+    "detail": false,
+    "form": false
+  },
+  {
+    "account": "vosinh",
+    "module": "dashboard"
+  },
+  {
+    "account": "vosinh",
+    "module": "profile"
+  }
+]

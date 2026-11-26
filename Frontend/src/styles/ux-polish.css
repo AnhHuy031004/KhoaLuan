@@ -1,0 +1,1157 @@
+/* ============================================================================
+ * UX & UI Polish Layer (v2.2.0)
+ * - WCAG AA/AAA focus-visible & keyboard accessibility (Light & Dark Navy)
+ * - Payment Confirmations, Cash Confirm Modal, Admin Exception Monitor
+ * - Responsive Mobile & Tablet Ergonomics (44-48px touch targets)
+ * - Clean @media print for Official Tuition Receipts
+ * ============================================================================ */
+
+:is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2.5px solid var(--primary, #2563eb);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+/* Reconcile / Payment Confirmations Toolbar */
+.reconcile-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.reconcile-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reconcile-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.25));
+  background: var(--surface, #fff);
+  color: var(--text, #0f172a);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.12s ease;
+}
+
+.reconcile-tab:hover {
+  border-color: var(--primary, #2563eb);
+}
+
+.reconcile-tab.active {
+  background: var(--primary, #2563eb);
+  border-color: var(--primary, #2563eb);
+  color: #fff;
+}
+
+.reconcile-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.reconcile-tab.active .reconcile-tab-count {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.reconcile-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.reconcile-note {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-muted, #64748b);
+  max-width: 260px;
+  line-height: 1.35;
+}
+
+.btn-inline-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.3));
+  background: var(--surface, #fff);
+  color: var(--text, #0f172a);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-inline-action:hover:not(:disabled) {
+  border-color: var(--primary, #2563eb);
+  color: var(--primary, #2563eb);
+}
+
+.btn-inline-action.tone-success {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #059669;
+}
+
+.btn-inline-action.tone-danger {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.32);
+  color: #dc2626;
+}
+
+[data-theme='dark'] .btn-inline-action.tone-success {
+  color: #34d399;
+}
+
+[data-theme='dark'] .btn-inline-action.tone-danger {
+  color: #f87171;
+}
+
+/* Cash Confirmation Modal */
+.cash-confirm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cash-confirm-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface-alt, rgba(148, 163, 184, 0.1));
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.2));
+}
+
+.cash-confirm-summary span {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted, #64748b);
+  margin-bottom: 4px;
+}
+
+.cash-confirm-money {
+  font-size: 1.25rem;
+  color: var(--primary, #2563eb);
+}
+
+.cash-confirm-warning {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: var(--text, #0f172a);
+}
+
+.cash-confirm-warning svg {
+  flex-shrink: 0;
+  color: #d97706;
+  margin-top: 2px;
+}
+
+.cash-confirm-warning p {
+  margin: 4px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.cash-confirm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cash-confirm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.22));
+}
+
+.cash-confirm-item small {
+  display: block;
+  color: var(--text-muted, #64748b);
+  margin-top: 2px;
+}
+
+.cash-confirm-item-amount {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cash-confirm-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-muted, #64748b);
+}
+
+/* Reject Modal */
+.reject-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reject-modal-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--text, #0f172a);
+  font-size: 0.9rem;
+}
+
+/* Dashboard Admin Exception Monitor & Agenda Quick Actions */
+.exception-panel {
+  border-left: 4px solid #f59e0b;
+}
+
+.exception-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.exception-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.24));
+  background: var(--surface-alt, rgba(148, 163, 184, 0.06));
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.16s ease, transform 0.14s ease;
+}
+
+.exception-card:hover {
+  border-color: var(--primary, #2563eb);
+  transform: translateY(-1px);
+}
+
+.exception-card.has-alert {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.exception-card strong {
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.exception-card small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted, #64748b);
+}
+
+.agenda-row-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.agenda-row-wrap .agenda-item {
+  flex: 1;
+}
+
+.agenda-quick-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 9px;
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--primary, #2563eb);
+  font-weight: 600;
+  font-size: 0.84rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.agenda-quick-cta:hover {
+  background: var(--primary, #2563eb);
+  color: #fff;
+}
+
+/* Official Printable Tuition Receipt */
+.receipt-print-sheet {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.3));
+  background: var(--surface, #fff);
+  color: var(--text, #0f172a);
+}
+
+.receipt-print-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border, rgba(148, 163, 184, 0.25));
+}
+
+.receipt-print-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.receipt-print-brand img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.receipt-print-brand small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted, #64748b);
+}
+
+.receipt-print-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.14);
+  color: #059669;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.receipt-print-title {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.receipt-print-title h3 {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+  letter-spacing: 0.03em;
+}
+
+.receipt-print-title p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted, #64748b);
+}
+
+.receipt-print-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  margin: 0 0 16px;
+}
+
+.receipt-print-grid dt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--text-muted, #64748b);
+  margin-bottom: 3px;
+}
+
+.receipt-print-grid dd {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.receipt-print-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.08);
+  margin-bottom: 14px;
+}
+
+.receipt-print-total strong {
+  font-size: 1.35rem;
+  color: var(--primary, #2563eb);
+}
+
+.receipt-print-note {
+  margin: 0 0 14px;
+  font-size: 0.88rem;
+  color: var(--text-muted, #64748b);
+}
+
+.receipt-print-signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  text-align: center;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border, rgba(148, 163, 184, 0.35));
+}
+
+.receipt-print-signatures small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted, #64748b);
+  font-size: 0.78rem;
+  padding-bottom: 34px;
+}
+
+/* Responsive Mobile Ergonomics */
+@media (max-width: 768px) {
+  .reconcile-toolbar,
+  .reconcile-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .receipt-print-grid,
+  .cash-confirm-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .agenda-row-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .agenda-quick-cta {
+    justify-content: center;
+  }
+
+  .table-wrap,
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Official Print Media Rules */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #printable-receipt,
+  #printable-receipt * {
+    visibility: visible !important;
+  }
+
+  #printable-receipt {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    padding: 24px !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ============================================================================
+ * v2.3.0 Polish: Recurring Schedules, Student Rejection Notice & Dark Navy WCAG
+ * ============================================================================ */
+
+.schedules-page-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.schedules-quick-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.25));
+  background: var(--surface, #fff);
+}
+
+.schedules-quick-bar small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted, #64748b);
+}
+
+.recurring-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.recurring-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+}
+
+.recurring-weekdays > span {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.weekday-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.weekday-chip {
+  min-width: 48px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.35));
+  background: var(--surface, #fff);
+  color: var(--text, #0f172a);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.weekday-chip.active {
+  background: var(--primary, #2563eb);
+  border-color: var(--primary, #2563eb);
+  color: #ffffff;
+}
+
+.recurring-preview-box {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.25));
+  background: var(--surface-alt, rgba(148, 163, 184, 0.08));
+}
+
+.recurring-preview-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.recurring-preview-header strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recurring-preview-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.recurring-preview-list li {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(148, 163, 184, 0.25));
+  background: var(--surface, #fff);
+  font-size: 0.86rem;
+}
+
+.recurring-preview-list li small {
+  display: block;
+  color: var(--text-muted, #64748b);
+}
+
+.recurring-preview-list li.is-duplicate {
+  opacity: 0.65;
+  text-decoration: line-through;
+}
+
+.student-reject-notice {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.student-reject-notice strong {
+  color: #dc2626;
+}
+
+.student-reject-notice p {
+  margin: 6px 0 4px;
+  font-size: 0.9rem;
+}
+
+.student-reject-notice small {
+  color: var(--text-muted, #64748b);
+}
+
+.student-receipt-bar {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.muted-dash {
+  color: var(--text-muted, #94a3b8);
+}
+
+/* Dark Navy WCAG AA/AAA contrast refinements */
+[data-theme='dark'] .student-reject-notice strong {
+  color: #fca5a5;
+}
+
+[data-theme='dark'] .reconcile-note,
+[data-theme='dark'] .exception-card small,
+[data-theme='dark'] .schedules-quick-bar small,
+[data-theme='dark'] .recurring-preview-list li small,
+[data-theme='dark'] .cash-confirm-item small,
+[data-theme='dark'] .cash-confirm-hint {
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .reconcile-tab,
+[data-theme='dark'] .weekday-chip,
+[data-theme='dark'] .btn-inline-action {
+  border-color: rgba(148, 163, 184, 0.38);
+}
+
+@media (max-width: 768px) {
+  .recurring-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ==========================================================================
+   Vovinam Management v2.4.0 — UI Polish, Tabular Numerals & Batch Invoice UI
+   ========================================================================== */
+.data-table td,
+.metric-card strong,
+.count-pill,
+.cash-confirm-money,
+.batch-preview-stat strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table tbody tr {
+  transition: background-color 0.14s ease;
+}
+
+.data-table tbody td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  vertical-align: middle;
+}
+
+.pending-transfer-pill {
+  border-color: var(--warning-border);
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.pending-transfer-pill:hover {
+  border-color: var(--warning);
+  filter: brightness(1.04);
+}
+
+.batch-invoice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.batch-invoice-preview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+.batch-preview-stat span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.batch-preview-stat strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: var(--heading);
+}
+
+.batch-preview-stat strong.is-positive {
+  color: var(--positive);
+}
+
+.batch-preview-stat strong.is-money {
+  color: var(--primary);
+}
+
+.batch-invoice-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--warning-soft);
+  border: 1px solid var(--warning-border);
+  color: var(--warning);
+  font-size: 13.5px;
+}
+
+@media (max-width: 640px) {
+  .batch-invoice-grid,
+  .batch-invoice-preview {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ==========================================================================
+   Vovinam Management v2.4.1 — UI01 Actions Alignment & UI03 Labelled Action Button
+   ========================================================================== */
+.data-table th.actions-col,
+.data-table td.actions-col,
+.data-table th.action-cell,
+.data-table td.action-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.data-table td.actions-col .row-actions,
+.data-table td.action-cell .row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.review-action.btn-with-label {
+  width: auto !important;
+  min-width: max-content !important;
+  padding: 0 12px !important;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   Vovinam Management v2.4.2 — Search Field, Cell Stack & Form Field Polish
+   (Fixes floating icon & double focus ring on PaymentConfirmationsPage)
+   ========================================================================== */
+.search-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+  flex: 1 1 280px;
+  max-width: 420px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--field);
+  color: var(--muted);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.search-field svg {
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: color 0.18s ease;
+}
+
+.search-field input,
+.search-field input[type='search'] {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--heading);
+  font-size: 14px;
+}
+
+.search-field input::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+.search-field:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.search-field:focus-within svg {
+  color: var(--primary);
+}
+
+.reconcile-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cell-stack strong {
+  color: var(--heading);
+  font-weight: 600;
+}
+
+.cell-stack small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.form-field span {
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.form-field textarea,
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--field);
+  color: var(--heading);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.form-field textarea:focus,
+.form-field input:focus,
+.form-field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+@media (max-width: 640px) {
+  .search-field {
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* Unified Reports Hub Tabs (v2.4.3) */
+.unified-reports-tabs {
+  margin-bottom: 18px;
+}
+
+
+/* ==========================================================================
+   Vovinam Management v2.5.0 — Belt Journey Roadmap & Mobile-First Attendance
+   ========================================================================== */
+.belt-roadmap-panel {
+  padding: 22px 24px;
+  margin-bottom: 20px;
+}
+
+.belt-roadmap-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.belt-roadmap-head h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.belt-progress-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.belt-roadmap-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.belt-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+
+.belt-step.is-current {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.belt-step-swatch {
+  display: block;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.belt-step-body small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.belt-step-body strong {
+  display: block;
+  font-size: 15px;
+  color: var(--heading);
+  margin: 2px 0 6px;
+}
+
+.belt-step-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.belt-step.is-current .belt-step-state {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.belt-step.is-completed .belt-step-state {
+  color: var(--positive);
+}
+
+.belt-journey-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.belt-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 12px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.belt-history-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+.belt-history-list strong {
+  display: block;
+  color: var(--heading);
+  font-size: 14.5px;
+}
+
+.belt-history-list small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.belt-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.belt-exam-icon {
+  color: var(--gold);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Mobile-First Attendance 44px touch targets for outdoor dojo use */
+@media (max-width: 640px) {
+  .belt-journey-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-attendance-present,
+  .btn-attendance-undo,
+  .att-filter-tab {
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
+
+
+/* ==========================================================================
+   Vovinam Management v2.5.1 — Header Back Button & Modal Footer Bar
+   ========================================================================== */
+.header-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px 0 10px;
+  margin-right: 6px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--heading);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.12s ease;
+}
+
+.header-back-btn:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.header-back-btn:active {
+  transform: translateX(-1px);
+}
+
+a.breadcrumb-root {
+  text-decoration: none;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+
+a.breadcrumb-root:hover {
+  color: var(--primary);
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .header-back-btn span {
+    display: none;
+  }
+  .header-back-btn {
+    padding: 0 9px;
+  }
+}

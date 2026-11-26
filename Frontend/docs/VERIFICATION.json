@@ -1,0 +1,126 @@
+{
+  "version": "2.1.0",
+  "verifiedAt": "2026-11-19",
+  "delivery": "Professional frontend UI; BE handoff; production HTTP build",
+  "testCommand": "npm test",
+  "tests": {
+    "passed": 162,
+    "failed": 0,
+    "skipped": 0
+  },
+  "httpUi": {
+    "adminModulesRendered": 31,
+    "additionalFlows": [
+      "learner leave/payment",
+      "manager organization",
+      "permissions edit",
+      "profile edit",
+      "login/reset",
+      "notifications error/retry",
+      "chart palette fallback",
+      "identity scope isolation and late hierarchy response",
+      "visible/searchable grouped navigation",
+      "mobile focus isolation, Tab trap and Escape",
+      "named table regions and responsive field labels",
+      "empty birthdate on creation"
+    ]
+  },
+  "contract": {
+    "openapi": "3.1.0",
+    "modules": 31,
+    "paths": 101,
+    "operations": 164,
+    "schemas": 140,
+    "jsonSchemaValidation": "AJV2020 + formats; HTTP module responses, supplied examples, conditional DTOs and error forms"
+  },
+  "install": "npm ci --ignore-scripts passed",
+  "buildHttp": "passed",
+  "buildFixtures": "passed; excluded from delivered dist",
+  "productionAssets": "No fixture seed/account/banner/recovery/legacy API domain markers",
+  "gateway": {
+    "passed": true,
+    "checks": [
+      {
+        "path": "/auth/login",
+        "status": 200
+      },
+      {
+        "path": "/app/attendance?date=2030-01-15",
+        "status": 200
+      },
+      {
+        "path": "/assets/missing-file.js",
+        "status": 404
+      },
+      {
+        "path": "/backend/auth/me",
+        "status": 200
+      },
+      {
+        "path": "/backend/students?limit=1",
+        "status": 200
+      },
+      {
+        "path": "/backend/permissions",
+        "status": 200
+      },
+      {
+        "path": "/backend/organization/navigation?module=classes",
+        "status": 200
+      },
+      {
+        "path": "/backend/health",
+        "proxyDisabled": true,
+        "status": 503
+      }
+    ]
+  },
+  "auditRuntime": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "auditAll": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "visualQa": {
+    "browser": "Chrome",
+    "desktopViewport": 1366,
+    "mobileIframeWidth": 390,
+    "observed": [
+      "dashboard",
+      "student list",
+      "student form",
+      "mobile menu and navigation",
+      "mobile labelled record cards",
+      "dark theme",
+      "attendance",
+      "student report",
+      "organization navigator",
+      "invoices"
+    ],
+    "limits": "Development fixtures used for visual review; not physical-device or project-BE acceptance. Temporary QA entrypoints excluded from delivery."
+  },
+  "backendIntegration": "verified with isolated HTTP fixture server and same-origin gateway, not an unavailable project BE",
+  "auditContext": {
+    "checkedDate": "2026-11-19",
+    "picomatchVersion": "4.0.7",
+    "priorAdvisory": "GHSA-fc5q-39xc-vjpf",
+    "currentStatus": "withdrawn on 2026-11-18 per GitHub Advisory Database",
+    "source": "https://github.com/advisories/GHSA-fc5q-39xc-vjpf",
+    "interpretation": "Audit count changed; not a claim of installing a picomatch security patch."
+  },
+  "evidence": {
+    "tests": "validation/tests-ui-2.1.0.log",
+    "build": "validation/build-ui-2.1.0.log",
+    "contracts": "validation/contracts-ui-2.1.0.json"
+  }
+}

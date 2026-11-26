@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "path": "/auth/login",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/app/students?status=ACTIVE",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/assets/unknown.js",
+      "method": "GET",
+      "status": 404
+    },
+    {
+      "path": "/backend/health",
+      "method": "GET",
+      "status": 503
+    },
+    {
+      "path": "/",
+      "method": "POST",
+      "status": 405
+    }
+  ]
+}

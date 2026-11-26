@@ -1,0 +1,3867 @@
+{
+  "info": {
+    "name": "Vovinam FE-BE 2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "id",
+      "value": ""
+    },
+    {
+      "key": "studentId",
+      "value": ""
+    },
+    {
+      "key": "classId",
+      "value": ""
+    },
+    {
+      "key": "clubId",
+      "value": ""
+    },
+    {
+      "key": "wardId",
+      "value": ""
+    },
+    {
+      "key": "provinceId",
+      "value": ""
+    },
+    {
+      "key": "rankId",
+      "value": ""
+    },
+    {
+      "key": "instructorId",
+      "value": ""
+    },
+    {
+      "key": "invoiceId",
+      "value": ""
+    },
+    {
+      "key": "examId",
+      "value": ""
+    },
+    {
+      "key": "currentPassword",
+      "value": ""
+    },
+    {
+      "key": "newPassword",
+      "value": ""
+    },
+    {
+      "key": "confirm",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "code",
+      "value": ""
+    },
+    {
+      "key": "mfaToken",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "GET /wards",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/wards",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "wards"
+          ]
+        },
+        "description": "Danh sách · Quản lý phường; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /wards/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/wards/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "wards",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Quản lý phường; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /wards",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"provinceId\": \"{{provinceId}}\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/wards",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "wards"
+          ]
+        },
+        "description": "Tạo · Quản lý phường; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /wards/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"provinceId\": \"{{provinceId}}\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/wards/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "wards",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Quản lý phường; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /wards/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/wards/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "wards",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Quản lý phường; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /clubs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/clubs",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "clubs"
+          ]
+        },
+        "description": "Danh sách · Quản lý câu lạc bộ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /clubs/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/clubs/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "clubs",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Quản lý câu lạc bộ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /clubs",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"wardId\": \"{{wardId}}\",\n  \"address\": \"Nội dung cần nhập\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/clubs",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "clubs"
+          ]
+        },
+        "description": "Tạo · Quản lý câu lạc bộ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /clubs/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"wardId\": \"{{wardId}}\",\n  \"address\": \"Nội dung cần nhập\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/clubs/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "clubs",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Quản lý câu lạc bộ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /clubs/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/clubs/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "clubs",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Quản lý câu lạc bộ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        },
+        "description": "Danh sách · Tài khoản người dùng; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /users/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Tài khoản người dùng; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /users",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"{{email}}\",\n  \"role\": \"ADMIN\",\n  \"masterLevel\": \"PROVINCE\",\n  \"wardId\": \"{{wardId}}\",\n  \"clubId\": \"{{clubId}}\",\n  \"password\": \"{{password}}\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        },
+        "description": "Tạo · Tài khoản người dùng; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /users/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"{{email}}\",\n  \"role\": \"ADMIN\",\n  \"masterLevel\": \"PROVINCE\",\n  \"wardId\": \"{{wardId}}\",\n  \"clubId\": \"{{clubId}}\",\n  \"password\": \"{{password}}\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Tài khoản người dùng; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /users/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Tài khoản người dùng; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /roles",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/roles",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "roles"
+          ]
+        },
+        "description": "Danh sách · Vai trò & phân quyền; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /roles/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/roles/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "roles",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Vai trò & phân quyền; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /roles",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"description\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/roles",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "roles"
+          ]
+        },
+        "description": "Tạo · Vai trò & phân quyền; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /roles/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"description\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/roles/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "roles",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Vai trò & phân quyền; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /roles/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/roles/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "roles",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Vai trò & phân quyền; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /students",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/students",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "students"
+          ]
+        },
+        "description": "Danh sách · Hồ sơ võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /students/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/students/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "students",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Hồ sơ võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /students",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"dob\": \"2010-01-01\",\n  \"gender\": \"MALE\",\n  \"phone\": \"Nội dung cần nhập\",\n  \"email\": \"{{email}}\",\n  \"classId\": \"{{classId}}\",\n  \"rankId\": \"{{rankId}}\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/students",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "students"
+          ]
+        },
+        "description": "Tạo · Hồ sơ võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /students/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"dob\": \"2010-01-01\",\n  \"gender\": \"MALE\",\n  \"phone\": \"Nội dung cần nhập\",\n  \"email\": \"{{email}}\",\n  \"classId\": \"{{classId}}\",\n  \"rankId\": \"{{rankId}}\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/students/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "students",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Hồ sơ võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /students/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/students/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "students",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Hồ sơ võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /masters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/masters",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "masters"
+          ]
+        },
+        "description": "Danh sách · Đội ngũ võ sư; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /masters/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/masters/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "masters",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Đội ngũ võ sư; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /masters",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"{{email}}\",\n  \"phone\": \"Nội dung cần nhập\",\n  \"qualification\": \"Nội dung cần nhập\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/masters",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "masters"
+          ]
+        },
+        "description": "Tạo · Đội ngũ võ sư; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /masters/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"{{email}}\",\n  \"phone\": \"Nội dung cần nhập\",\n  \"qualification\": \"Nội dung cần nhập\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/masters/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "masters",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Đội ngũ võ sư; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /masters/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/masters/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "masters",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Đội ngũ võ sư; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /instructors",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/instructors",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "instructors"
+          ]
+        },
+        "description": "Danh sách · Huấn luyện viên; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /instructors/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/instructors/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "instructors",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Huấn luyện viên; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /instructors",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clubId\": \"{{clubId}}\",\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"{{email}}\",\n  \"phone\": \"Nội dung cần nhập\",\n  \"qualification\": \"Nội dung cần nhập\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/instructors",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "instructors"
+          ]
+        },
+        "description": "Tạo · Huấn luyện viên; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /instructors/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clubId\": \"{{clubId}}\",\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"{{email}}\",\n  \"phone\": \"Nội dung cần nhập\",\n  \"qualification\": \"Nội dung cần nhập\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/instructors/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "instructors",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Huấn luyện viên; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /instructors/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/instructors/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "instructors",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Huấn luyện viên; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /classes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/classes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "classes"
+          ]
+        },
+        "description": "Danh sách · Quản lý lớp học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /classes/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/classes/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "classes",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Quản lý lớp học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /classes",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clubId\": \"{{clubId}}\",\n  \"name\": \"Nội dung cần nhập\",\n  \"instructorId\": \"{{instructorId}}\",\n  \"location\": \"Nội dung cần nhập\",\n  \"capacity\": 30,\n  \"tuition\": 1,\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/classes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "classes"
+          ]
+        },
+        "description": "Tạo · Quản lý lớp học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /classes/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clubId\": \"{{clubId}}\",\n  \"name\": \"Nội dung cần nhập\",\n  \"instructorId\": \"{{instructorId}}\",\n  \"location\": \"Nội dung cần nhập\",\n  \"capacity\": 30,\n  \"tuition\": 1,\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/classes/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "classes",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Quản lý lớp học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /classes/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/classes/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "classes",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Quản lý lớp học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /enrollments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/enrollments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "enrollments"
+          ]
+        },
+        "description": "Danh sách · Phân lớp võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /enrollments/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/enrollments/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "enrollments",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Phân lớp võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /enrollments",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"joinedAt\": \"2030-01-15\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/enrollments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "enrollments"
+          ]
+        },
+        "description": "Tạo · Phân lớp võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /enrollments/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"joinedAt\": \"2030-01-15\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/enrollments/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "enrollments",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Phân lớp võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /enrollments/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/enrollments/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "enrollments",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Phân lớp võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /schedules",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/schedules",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedules"
+          ]
+        },
+        "description": "Danh sách · Lịch tập; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /schedules/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/schedules/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedules",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Lịch tập; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /schedules",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"sessionDate\": \"2030-01-15\",\n  \"startTime\": \"18:00\",\n  \"endTime\": \"19:30\",\n  \"location\": \"Nội dung cần nhập\",\n  \"status\": \"SCHEDULED\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/schedules",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedules"
+          ]
+        },
+        "description": "Tạo · Lịch tập; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /schedules/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"sessionDate\": \"2030-01-15\",\n  \"startTime\": \"18:00\",\n  \"endTime\": \"19:30\",\n  \"location\": \"Nội dung cần nhập\",\n  \"status\": \"SCHEDULED\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/schedules/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedules",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Lịch tập; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /schedules/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/schedules/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedules",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Lịch tập; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /attendance",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/attendance",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance"
+          ]
+        },
+        "description": "Danh sách · Điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /attendance/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/attendance/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /leaves",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/leaves",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "leaves"
+          ]
+        },
+        "description": "Danh sách · Đơn xin nghỉ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /leaves/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/leaves/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "leaves",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Đơn xin nghỉ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /leaves",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"sessionDate\": \"2030-01-15\",\n  \"reason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/leaves",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "leaves"
+          ]
+        },
+        "description": "Tạo · Đơn xin nghỉ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /leaves/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"sessionDate\": \"2030-01-15\",\n  \"reason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/leaves/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "leaves",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Đơn xin nghỉ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /leaves/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/leaves/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "leaves",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Đơn xin nghỉ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /leaves/{id}/actions/approve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/leaves/{{id}}/actions/approve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "leaves",
+            "{{id}}",
+            "actions",
+            "approve"
+          ]
+        },
+        "description": "approve · Đơn xin nghỉ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /leaves/{id}/actions/reject",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/leaves/{{id}}/actions/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "leaves",
+            "{{id}}",
+            "actions",
+            "reject"
+          ]
+        },
+        "description": "reject · Đơn xin nghỉ; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /evaluations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/evaluations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "evaluations"
+          ]
+        },
+        "description": "Danh sách · Đánh giá võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /evaluations/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/evaluations/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "evaluations",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Đánh giá võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /evaluations",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"period\": \"2030-01\",\n  \"rating\": 1,\n  \"comment\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/evaluations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "evaluations"
+          ]
+        },
+        "description": "Tạo · Đánh giá võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /evaluations/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"period\": \"2030-01\",\n  \"rating\": 1,\n  \"comment\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/evaluations/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "evaluations",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Đánh giá võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /evaluations/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/evaluations/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "evaluations",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Đánh giá võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /belt-ranks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/belt-ranks",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-ranks"
+          ]
+        },
+        "description": "Danh sách · Danh mục cấp đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /belt-ranks/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/belt-ranks/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-ranks",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Danh mục cấp đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /belt-ranks",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"level\": 1,\n  \"color\": \"#0877c9\",\n  \"description\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/belt-ranks",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-ranks"
+          ]
+        },
+        "description": "Tạo · Danh mục cấp đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /belt-ranks/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"level\": 1,\n  \"color\": \"#0877c9\",\n  \"description\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/belt-ranks/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-ranks",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Danh mục cấp đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /belt-ranks/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/belt-ranks/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-ranks",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Danh mục cấp đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /promotions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/promotions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions"
+          ]
+        },
+        "description": "Danh sách · Đề xuất thi lên đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /promotions/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/promotions/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Đề xuất thi lên đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /promotions",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"studentId\": \"{{studentId}}\",\n  \"rankId\": \"{{rankId}}\",\n  \"reason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/promotions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions"
+          ]
+        },
+        "description": "Tạo · Đề xuất thi lên đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /promotions/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"studentId\": \"{{studentId}}\",\n  \"rankId\": \"{{rankId}}\",\n  \"reason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/promotions/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Đề xuất thi lên đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /promotions/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/promotions/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Đề xuất thi lên đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /promotions/{id}/actions/approve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/promotions/{{id}}/actions/approve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions",
+            "{{id}}",
+            "actions",
+            "approve"
+          ]
+        },
+        "description": "approve · Đề xuất thi lên đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /promotions/{id}/actions/reject",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/promotions/{{id}}/actions/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions",
+            "{{id}}",
+            "actions",
+            "reject"
+          ]
+        },
+        "description": "reject · Đề xuất thi lên đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /belt-exams",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/belt-exams",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-exams"
+          ]
+        },
+        "description": "Danh sách · Kỳ thi thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /belt-exams/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/belt-exams/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-exams",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Kỳ thi thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /belt-exams",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Nội dung cần nhập\",\n  \"examDate\": \"2030-01-15\",\n  \"rankId\": \"{{rankId}}\",\n  \"location\": \"Nội dung cần nhập\",\n  \"fee\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/belt-exams",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-exams"
+          ]
+        },
+        "description": "Tạo · Kỳ thi thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /belt-exams/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Nội dung cần nhập\",\n  \"examDate\": \"2030-01-15\",\n  \"rankId\": \"{{rankId}}\",\n  \"location\": \"Nội dung cần nhập\",\n  \"fee\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/belt-exams/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-exams",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Kỳ thi thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /belt-exams/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/belt-exams/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-exams",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Kỳ thi thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /belt-exams/{id}/actions/approve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/belt-exams/{{id}}/actions/approve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-exams",
+            "{{id}}",
+            "actions",
+            "approve"
+          ]
+        },
+        "description": "approve · Kỳ thi thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /belt-exams/{id}/actions/reject",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/belt-exams/{{id}}/actions/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-exams",
+            "{{id}}",
+            "actions",
+            "reject"
+          ]
+        },
+        "description": "reject · Kỳ thi thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /exam-results",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/exam-results",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exam-results"
+          ]
+        },
+        "description": "Danh sách · Kết quả thi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /exam-results/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/exam-results/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exam-results",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Kết quả thi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /exam-results",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"examId\": \"{{examId}}\",\n  \"quyenScore\": 8,\n  \"theoryFitnessScore\": 8,\n  \"basicScore\": 8,\n  \"sparringScore\": 8,\n  \"note\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/exam-results",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exam-results"
+          ]
+        },
+        "description": "Tạo · Kết quả thi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /exam-results/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"examId\": \"{{examId}}\",\n  \"quyenScore\": 8,\n  \"theoryFitnessScore\": 8,\n  \"basicScore\": 8,\n  \"sparringScore\": 8,\n  \"note\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/exam-results/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exam-results",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Kết quả thi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /exam-results/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/exam-results/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exam-results",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Kết quả thi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /exam-results/{id}/actions/approve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"outcome\": \"PASS\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/exam-results/{{id}}/actions/approve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exam-results",
+            "{{id}}",
+            "actions",
+            "approve"
+          ]
+        },
+        "description": "approve · Kết quả thi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /exam-results/{id}/actions/reject",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/exam-results/{{id}}/actions/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exam-results",
+            "{{id}}",
+            "actions",
+            "reject"
+          ]
+        },
+        "description": "reject · Kết quả thi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /belt-history",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/belt-history",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-history"
+          ]
+        },
+        "description": "Danh sách · Lịch sử cấp đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /belt-history/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/belt-history/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "belt-history",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Lịch sử cấp đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /tuition",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tuition",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition"
+          ]
+        },
+        "description": "Danh sách · Quản lý học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /tuition/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tuition/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Quản lý học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /tuition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"name\": \"Nội dung cần nhập\",\n  \"amount\": 350000,\n  \"period\": \"2030-01\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tuition",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition"
+          ]
+        },
+        "description": "Tạo · Quản lý học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /tuition/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"name\": \"Nội dung cần nhập\",\n  \"amount\": 350000,\n  \"period\": \"2030-01\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tuition/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Quản lý học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /tuition/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/tuition/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Quản lý học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /invoices",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/invoices",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices"
+          ]
+        },
+        "description": "Danh sách · Thu phí khóa học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /invoices/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/invoices/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Thu phí khóa học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /invoices",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"period\": \"2030-01\",\n  \"amount\": 350000,\n  \"dueDate\": \"2030-01-15\",\n  \"discountId\": \"{{discountId}}\",\n  \"priceOverrideReason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/invoices",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices"
+          ]
+        },
+        "description": "Tạo · Thu phí khóa học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /invoices/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"classId\": \"{{classId}}\",\n  \"period\": \"2030-01\",\n  \"amount\": 350000,\n  \"dueDate\": \"2030-01-15\",\n  \"discountId\": \"{{discountId}}\",\n  \"priceOverrideReason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/invoices/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Thu phí khóa học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /invoices/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/invoices/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Thu phí khóa học; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /online-payments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/online-payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "online-payments"
+          ]
+        },
+        "description": "Danh sách · Hóa đơn; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /online-payments/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/online-payments/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "online-payments",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Hóa đơn; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /online-payments",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"invoiceId\": \"{{invoiceId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/online-payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "online-payments"
+          ]
+        },
+        "description": "Tạo · Hóa đơn; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /online-payments/{id}/actions/process",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/online-payments/{{id}}/actions/process",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "online-payments",
+            "{{id}}",
+            "actions",
+            "process"
+          ]
+        },
+        "description": "process · Hóa đơn; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /transactions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/transactions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "transactions"
+          ]
+        },
+        "description": "Danh sách · Lịch sử giao dịch; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /transactions/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/transactions/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "transactions",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Lịch sử giao dịch; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /payment-confirmations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/payment-confirmations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment-confirmations"
+          ]
+        },
+        "description": "Danh sách · Đối soát chuyển khoản; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /payment-confirmations/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/payment-confirmations/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment-confirmations",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Đối soát chuyển khoản; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /payment-confirmations/{id}/actions/approve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/payment-confirmations/{{id}}/actions/approve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment-confirmations",
+            "{{id}}",
+            "actions",
+            "approve"
+          ]
+        },
+        "description": "approve · Đối soát chuyển khoản; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /payment-confirmations/{id}/actions/reject",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/payment-confirmations/{{id}}/actions/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment-confirmations",
+            "{{id}}",
+            "actions",
+            "reject"
+          ]
+        },
+        "description": "reject · Đối soát chuyển khoản; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /tuition-relief",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tuition-relief",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition-relief"
+          ]
+        },
+        "description": "Danh sách · Xem xét miễn giảm học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /tuition-relief/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tuition-relief/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition-relief",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Xem xét miễn giảm học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /tuition-relief",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"studentId\": \"{{studentId}}\",\n  \"reliefType\": \"REDUCTION\",\n  \"percent\": 20,\n  \"period\": \"2030-01\",\n  \"reason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tuition-relief",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition-relief"
+          ]
+        },
+        "description": "Tạo · Xem xét miễn giảm học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /tuition-relief/{id}/actions/approve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tuition-relief/{{id}}/actions/approve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition-relief",
+            "{{id}}",
+            "actions",
+            "approve"
+          ]
+        },
+        "description": "approve · Xem xét miễn giảm học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /tuition-relief/{id}/actions/reject",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tuition-relief/{{id}}/actions/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition-relief",
+            "{{id}}",
+            "actions",
+            "reject"
+          ]
+        },
+        "description": "reject · Xem xét miễn giảm học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /announcements",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/announcements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "announcements"
+          ]
+        },
+        "description": "Danh sách · Thông báo; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /announcements/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/announcements/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "announcements",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Thông báo; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /announcements",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Nội dung cần nhập\",\n  \"body\": \"Nội dung cần nhập\",\n  \"audience\": \"ALL\",\n  \"classId\": \"{{classId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/announcements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "announcements"
+          ]
+        },
+        "description": "Tạo · Thông báo; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /announcements/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Nội dung cần nhập\",\n  \"body\": \"Nội dung cần nhập\",\n  \"audience\": \"ALL\",\n  \"classId\": \"{{classId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/announcements/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "announcements",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Thông báo; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /announcements/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/announcements/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "announcements",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Thông báo; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /announcements/{id}/actions/process",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/announcements/{{id}}/actions/process",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "announcements",
+            "{{id}}",
+            "actions",
+            "process"
+          ]
+        },
+        "description": "process · Thông báo; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /student-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/student-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "student-report"
+          ]
+        },
+        "description": "Danh sách · Báo cáo võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /attendance-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/attendance-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-report"
+          ]
+        },
+        "description": "Danh sách · Báo cáo điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /tuition-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tuition-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tuition-report"
+          ]
+        },
+        "description": "Danh sách · Báo cáo học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /promotion-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/promotion-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotion-report"
+          ]
+        },
+        "description": "Danh sách · Báo cáo thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /settings",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/settings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "settings"
+          ]
+        },
+        "description": "Danh sách · Cài đặt hệ thống; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /settings/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/settings/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "settings",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Cài đặt hệ thống; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /settings",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"value\": \"Nội dung cần nhập\",\n  \"description\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/settings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "settings"
+          ]
+        },
+        "description": "Tạo · Cài đặt hệ thống; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /settings/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nội dung cần nhập\",\n  \"value\": \"Nội dung cần nhập\",\n  \"description\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/settings/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "settings",
+            "{{id}}"
+          ]
+        },
+        "description": "Sửa · Cài đặt hệ thống; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "DELETE /settings/{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/settings/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "settings",
+            "{{id}}"
+          ]
+        },
+        "description": "Xóa · Cài đặt hệ thống; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /audit",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/audit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "audit"
+          ]
+        },
+        "description": "Danh sách · Nhật ký hệ thống; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /audit/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/audit/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "audit",
+            "{{id}}"
+          ]
+        },
+        "description": "Chi tiết · Nhật ký hệ thống; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /auth/login",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Đăng nhập; xem schema bắt buộc trong contracts/openapi.json"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const result=pm.response.json();",
+              "if(result.data && result.data.tokens) pm.collectionVariables.set(\"accessToken\",result.data.tokens.accessToken);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST /auth/mfa/login-verify",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mfaToken\": \"{{mfaToken}}\",\n  \"code\": \"{{code}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/mfa/login-verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "mfa",
+            "login-verify"
+          ]
+        },
+        "description": "Xác thực bước hai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /auth/refresh-token",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/refresh-token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "refresh-token"
+          ]
+        },
+        "description": "Đổi access token; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /auth/me",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "me"
+          ]
+        },
+        "description": "Hồ sơ phiên hiện tại; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /auth/logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        },
+        "description": "Đăng xuất; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /auth/profile",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"phone\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "profile"
+          ]
+        },
+        "description": "Cập nhật liên hệ của tài khoản; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /auth/change-password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPassword\": \"{{currentPassword}}\",\n  \"newPassword\": \"{{newPassword}}\",\n  \"confirm\": \"{{confirm}}\",\n  \"code\": \"{{code}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/change-password",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "change-password"
+          ]
+        },
+        "description": "Đổi mật khẩu; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /auth/forgot-password",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/forgot-password",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "forgot-password"
+          ]
+        },
+        "description": "Gửi email khôi phục; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /auth/reset-password",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"{{token}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/reset-password",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "reset-password"
+          ]
+        },
+        "description": "Đặt lại mật khẩu từ liên kết email; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /permissions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/permissions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "permissions"
+          ]
+        },
+        "description": "Quyền và danh mục vai trò; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "PATCH /permissions",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"matrix\": {}\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/permissions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "permissions"
+          ]
+        },
+        "description": "Lưu ma trận quyền; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /organization/navigation",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/organization/navigation",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "organization",
+            "navigation"
+          ]
+        },
+        "description": "Cây đơn vị được truy cập; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /lookups",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/lookups",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lookups"
+          ]
+        },
+        "description": "Danh mục chọn theo phạm vi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /dashboard",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/dashboard",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "dashboard"
+          ]
+        },
+        "description": "Tổng quan theo vai trò và đơn vị; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /notifications",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/notifications",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "notifications"
+          ]
+        },
+        "description": "Thông báo của tài khoản; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /notifications/read-one",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{id}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/notifications/read-one",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "notifications",
+            "read-one"
+          ]
+        },
+        "description": "Đánh dấu đã đọc một thông báo; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /notifications/read-all",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/notifications/read-all",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "notifications",
+            "read-all"
+          ]
+        },
+        "description": "Đánh dấu đã đọc tất cả; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /exports/system",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/exports/system",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "exports",
+            "system"
+          ]
+        },
+        "description": "Snapshot xuất Excel theo quyền; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /report-charts/student-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/report-charts/student-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "report-charts",
+            "student-report"
+          ]
+        },
+        "description": "Biểu đồ · Báo cáo võ sinh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /report-charts/attendance-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/report-charts/attendance-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "report-charts",
+            "attendance-report"
+          ]
+        },
+        "description": "Biểu đồ · Báo cáo điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /report-charts/tuition-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/report-charts/tuition-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "report-charts",
+            "tuition-report"
+          ]
+        },
+        "description": "Biểu đồ · Báo cáo học phí; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /report-charts/promotion-report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/report-charts/promotion-report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "report-charts",
+            "promotion-report"
+          ]
+        },
+        "description": "Biểu đồ · Báo cáo thăng đai; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /attendance-workflow/dates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/attendance-workflow/dates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-workflow",
+            "dates"
+          ]
+        },
+        "description": "Các ngày có lịch trong phạm vi; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /attendance-workflow/sessions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/attendance-workflow/sessions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-workflow",
+            "sessions"
+          ]
+        },
+        "description": "Buổi tập theo ngày; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "GET /attendance-workflow/sessions/{id}",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/attendance-workflow/sessions/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-workflow",
+            "sessions",
+            "{{id}}"
+          ]
+        },
+        "description": "Xem roster; không tạo snapshot/khóa lịch; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /attendance-workflow/sessions/{id}/present",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentIds\": [\n    \"{{studentId}}\"\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/attendance-workflow/sessions/{{id}}/present",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-workflow",
+            "sessions",
+            "{{id}}",
+            "present"
+          ]
+        },
+        "description": "present · điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /attendance-workflow/sessions/{id}/close",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"confirm\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/attendance-workflow/sessions/{{id}}/close",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-workflow",
+            "sessions",
+            "{{id}}",
+            "close"
+          ]
+        },
+        "description": "close · điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /attendance-workflow/sessions/{id}/undo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"reason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/attendance-workflow/sessions/{{id}}/undo",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-workflow",
+            "sessions",
+            "{{id}}",
+            "undo"
+          ]
+        },
+        "description": "undo · điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /attendance-workflow/sessions/{id}/correct",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"status\": \"PRESENT\",\n  \"reason\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/attendance-workflow/sessions/{{id}}/correct",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "attendance-workflow",
+            "sessions",
+            "{{id}}",
+            "correct"
+          ]
+        },
+        "description": "correct · điểm danh; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /promotions/bulk-review",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"classId\": \"{{classId}}\",\n  \"ids\": [\n    \"{{id}}\"\n  ],\n  \"action\": \"approve\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/promotions/bulk-review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "promotions",
+            "bulk-review"
+          ]
+        },
+        "description": "Duyệt đề xuất theo lớp, nguyên tử cho toàn bộ ids; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /invoices/{id}/collect-cash",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idempotencyKey\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/invoices/{{id}}/collect-cash",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices",
+            "{{id}}",
+            "collect-cash"
+          ]
+        },
+        "description": "Ghi nhận thu học phí tiền mặt (yêu cầu quyền P hoặc E, tự động đóng yêu cầu chuyển khoản chờ); xem schema bắt buộc trong contracts/openapi.json"
+      }
+    },
+    {
+      "name": "POST /invoices/{id}/pay-online",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idempotencyKey\": \"Nội dung cần nhập\",\n  \"note\": \"Nội dung cần nhập\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/invoices/{{id}}/pay-online",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices",
+            "{{id}}",
+            "pay-online"
+          ]
+        },
+        "description": "Gửi yêu cầu đối soát chuyển khoản ngân hàng cho hóa đơn; xem schema bắt buộc trong contracts/openapi.json"
+      }
+    }
+  ]
+}

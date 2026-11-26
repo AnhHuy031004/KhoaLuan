@@ -1,10 +1,11 @@
+import { MOCK_PASSWORD } from '../mock/users.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMockFetch,DB_KEY} from '../mock/api.js';
 async function setup(){
  const map=new Map(),storage={getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v)},fetch=createMockFetch({storage});
  const raw=async(path,method='GET',body,token)=>{const res=await fetch('/backend'+path,{method,headers:token?{Authorization:'Bearer '+token}:{},...(body?{body:JSON.stringify(body)}:{})});return {status:res.status,...await res.json()};};
- const login=async(email)=>{const result=await raw('/auth/login','POST',{email:email+'@vovinam.test',password:'Vovinam123!'});assert.equal(result.status,200,result.message);return (p,m,b)=>raw(p,m,b,result.data.tokens.accessToken);};
+ const login=async(email,password=MOCK_PASSWORD)=>{const result=await raw('/auth/login','POST',{email:email+'@vovinam.test',password});assert.equal(result.status,200,result.message);return (p,m,b)=>raw(p,m,b,result.data.tokens.accessToken);};
  return {admin:await login('admin'),province:await login('vosu'),ward:await login('vosuphuong'),club:await login('vosuclb'),login,db:()=>JSON.parse(storage.getItem(DB_KEY)),write:db=>storage.setItem(DB_KEY,JSON.stringify(db))};
 }
 const newClass=(clubId)=>({name:'Lớp thử nghiệm',clubId,instructorId:'u-coach',location:'Võ đường',capacity:30,tuition:400000,status:'ACTIVE'});
@@ -30,7 +31,7 @@ test('ward master only reads own ward, its clubs, classes and finances',async()=
 test('club master manages local teaching and staff, while finance and provincial administration remain blocked',async()=>{
  const s=await setup(),list=(await s.club('/classes')).data;
  assert.deepEqual(list.items.map(c=>c.id),['c-1','c-2']);assert(list.items.every(c=>c.tuition===undefined&&c.roster.length>0));
- for(const path of ['/wards','/users','/roles','/invoices','/tuition-relief','/report-charts/tuition-report'])assert.equal((await s.club(path)).status,403,path);
+ for(const path of ['/wards','/users','/roles','/invoices','/report-charts/tuition-report'])assert.equal((await s.club(path)).status,403,path);assert.equal((await s.club('/tuition-relief')).status,200);
  for(const path of ['/students','/instructors','/dashboard','/attendance-workflow/dates'])assert.equal((await s.club(path)).status,200,path);
  assert.equal((await s.club('/classes/c-1','PATCH',newClass('club-1'))).status,200);
  const lookups=(await s.club('/lookups?module=classes')).data;
@@ -43,10 +44,10 @@ test('admin validates master assignments and immediately revokes sessions when s
  const s=await setup(),body={fullName:'Võ sư thử nghiệm',email:'newmaster@vovinam.test',password:'Vovinam123!',role:'MASTER',masterLevel:'CLUB',wardId:'ward-1',clubId:'club-3',status:'ACTIVE'};
  assert.equal((await s.admin('/users','POST',body)).status,403);
  const added=await s.admin('/users','POST',{...body,clubId:'club-2'});assert.equal(added.status,200,added.message);
- const current=await s.login('newmaster');assert.equal((await current('/classes')).data.total,1);
+ const current=await s.login('newmaster','Vovinam123!');assert.equal((await current('/classes')).data.total,1);
  assert.equal((await s.admin('/users/'+added.data.id,'PATCH',{...body,masterLevel:'WARD',clubId:'',password:''})).status,200);
  assert.equal((await current('/classes')).status,401);
- const updated=await s.login('newmaster');assert.equal((await updated('/classes')).data.total,3);
+ const updated=await s.login('newmaster','Vovinam123!');assert.equal((await updated('/classes')).data.total,3);
  assert.equal(s.db().masters.find(m=>m.userId===added.data.id).masterLevel,'WARD');
 });
 test('ward cannot review outside proposals, even with a guessed id or bulk operation',async()=>{
@@ -61,7 +62,7 @@ test('attendance and notices use assigned units, including recipient filtering f
  assert.equal((await s.ward('/attendance-workflow/sessions/'+lesson.id)).status,404);
  const coach=await s.login('hlv');const result=await coach('/tuition-relief','POST',{classId:'c-1',studentId:'s-1',reliefType:'REDUCTION',percent:20,period:'2035-01',reason:'Hỗ trợ học tập'});assert.equal(result.status,200,result.message);
  const recipients=s.db().announcements.find(n=>n.reliefId===result.data.id).recipientUserIds;
- assert(recipients.includes('u-admin'));assert(recipients.includes('u-master'));assert(recipients.includes('u-master-ward'));assert(!recipients.includes('u-master-club'));
+ assert(recipients.includes('u-admin'));assert(recipients.includes('u-master'));assert(recipients.includes('u-master-ward'));assert(recipients.includes('u-master-club'));
  const db2=s.db();db2.users.find(u=>u.id==='u-master-ward').wardId='ward-2';s.write(db2);
  assert.equal((await s.ward('/notifications')).data.filter(n=>n.reliefId===result.data.id).length,0);
 });

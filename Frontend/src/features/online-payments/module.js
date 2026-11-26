@@ -1,13 +1,14 @@
 export default {
   id: 'online-payments',
-  title: 'Thanh toán online',
+  title: 'Biên lai & Thanh toán',
+  navTitle: 'Biên lai đã thu',
   group: 'TÀI CHÍNH',
   icon: 'CreditCard',
   permissions: {
     ADMIN: 'V',
     MASTER: 'V',
-    INSTRUCTOR: '',
-    STUDENT: 'CP',
+    INSTRUCTOR: 'V',
+    STUDENT: 'VCP',
   },
   fields: [
     {
@@ -17,8 +18,8 @@ export default {
       required: true,
     },
   ],
-  columns: ['code', 'invoiceId', 'amount', 'status', 'createdAt'],
-  description: 'Tạo và xử lý giao dịch thanh toán học phí.',
+  columns: ['code', 'studentId', 'invoiceId', 'amount', 'method', 'status', 'createdAt'],
+  description: 'Tổng hợp toàn bộ hóa đơn thanh toán Chuyển khoản và Tiền mặt.',
   endpoint: '/online-payments',
   custom: 'online-payments',
   component: 'OnlinePaymentsPage',

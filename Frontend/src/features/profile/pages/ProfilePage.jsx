@@ -1,49 +1,100 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { UserRound, LockKeyhole, Save, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { useToast } from '../../../contexts/ToastContext.jsx';
-import { ROLES, roleLabel } from '../../../utils/permissions.js';
-import { initials } from '../../../utils/format.js';
-import { api, IS_MOCK } from '../../../services/api.js';
+import { roleLabel } from '../../../utils/permissions.js';
+import { initials, accountCredentials } from '../../../utils/format.js';
+import { api } from '../../../services/api.js';
 import Button from '../../../components/common/Button.jsx';
 import ErrorState from '../../../components/common/ErrorState.jsx';
+
+const PHONE_REGEX = /^(\+84|0)\d{8,10}$/;
+
 export default function ProfilePage() {
-  const { user, updateUser } = useAuth(),
-    toast = useToast();
-  const [name, setName] = useState(user.fullName),
-    [phone, setPhone] = useState(user.phone || ''),
-    [passwords, setPasswords] = useState({}),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState(null);
+  const { user, updateUser } = useAuth();
+  const toast = useToast();
+  const [name, setName] = useState(user.fullName);
+  const [phone, setPhone] = useState(user.phone || '');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [passwords, setPasswords] = useState({});
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const credentials = accountCredentials(user);
+
+  useEffect(() => {
+    const target =
+      location.hash === '#account-security'
+        ? 'account-security'
+        : location.hash === '#account-info'
+          ? 'account-info'
+          : '';
+    if (!target) return;
+    const section = document.getElementById(target);
+    section?.scrollIntoView?.({ block: 'start', behavior: 'auto' });
+    section?.querySelector('input')?.focus({ preventScroll: true });
+  }, [location.hash]);
+
   async function save(e, security = false) {
     e.preventDefault();
-    setBusy(true);
     setError(null);
-    try {
-      if (security) {
-        if (passwords.newPassword !== passwords.confirm)
-          throw Error('Mật khẩu xác nhận chưa khớp.');
-        await api.request('/auth/change-password', {
-          method: 'POST',
-          body: passwords,
-        });
-        setPasswords({});
-        toast('Đã đổi mật khẩu. Vui lòng đăng nhập lại.');if(!IS_MOCK){api.clear();window.dispatchEvent(new Event('vovinam:expired'));}
-      } else {
-        updateUser(
-          await api.request('/auth/profile', {
-            method: 'PATCH',
-            body: { fullName: name, phone },
-          }),
-        );
-        toast('Đã cập nhật hồ sơ.');
+    setFieldErrors({});
+
+    if (!security) {
+      const nextErrors = {};
+      const cleanedName = String(name || '').replace(/\s+/g, ' ').trim();
+      const cleanedPhone = String(phone || '').replace(/[\s.-]/g, '').trim();
+
+      if (cleanedName.length < 2) {
+        nextErrors.fullName = 'Họ và tên phải có ít nhất 2 ký tự hợp lệ.';
       }
-    } catch (e) {
-      setError(e);
+      if (cleanedPhone && !PHONE_REGEX.test(cleanedPhone)) {
+        nextErrors.phone =
+          'Số điện thoại không hợp lệ (ví dụ: 0901234567 hoặc +84901234567).';
+      }
+      if (Object.keys(nextErrors).length) {
+        setFieldErrors(nextErrors);
+        return;
+      }
+
+      setBusy(true);
+      try {
+        const updated = await api.request('/auth/profile', {
+          method: 'PATCH',
+          body: { fullName: cleanedName, phone: cleanedPhone },
+        });
+        setName(updated.fullName || cleanedName);
+        setPhone(updated.phone || cleanedPhone);
+        updateUser(updated);
+        toast('Đã cập nhật hồ sơ.');
+      } catch (err) {
+        setError(err);
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
+
+    setBusy(true);
+    try {
+      if (passwords.newPassword !== passwords.confirm)
+        throw Error('Mật khẩu xác nhận chưa khớp.');
+      await api.request('/auth/change-password', {
+        method: 'POST',
+        body: passwords,
+      });
+      setPasswords({});
+      toast('Đã đổi mật khẩu. Vui lòng đăng nhập lại.');
+      api.clear();
+      window.dispatchEvent(new Event('vovinam:expired'));
+    } catch (err) {
+      setError(err);
     } finally {
       setBusy(false);
     }
   }
+
   return (
     <>
       <div className="page-heading">
@@ -68,42 +119,90 @@ export default function ProfilePage() {
           </span>
         </div>
       </div>
+      {credentials.teaching && (
+        <section
+          className="panel account-professional-panel"
+          aria-label="Thông tin chuyên môn"
+        >
+          <h2>Thông tin chuyên môn</h2>
+          <div>
+            <span>Cấp đai / đẳng</span>
+            <strong className={credentials.rank ? '' : 'account-needs-info'}>
+              {credentials.rank || 'Cần bổ sung'}
+            </strong>
+          </div>
+          <div>
+            <span>Bằng cấp / chứng chỉ</span>
+            <strong
+              className={credentials.certificate ? '' : 'account-needs-info'}
+            >
+              {credentials.certificate || 'Cần bổ sung'}
+            </strong>
+          </div>
+        </section>
+      )}
       {error && <ErrorState error={error} />}
       <div className="dashboard-grid">
-        <section className="panel">
+        <section className="panel" id="account-info">
           <div className="panel-heading">
             <h2>
               <UserRound size={19} />
               Thông tin cá nhân
             </h2>
           </div>
-          {!IS_MOCK&&<div className="info-note">Thông tin tên và email do máy chủ quản lý. Cập nhật thông tin liên hệ tại Hồ sơ võ sinh.</div>}<form onSubmit={save} className="stack-form">
+          <form onSubmit={save} className="stack-form" noValidate>
             <label className="field">
               <span>Họ và tên</span>
               <input
                 value={name}
                 required
-                disabled={!IS_MOCK}
-                onChange={(e) => setName(e.target.value)}
+                minLength={2}
+                aria-invalid={fieldErrors.fullName ? 'true' : undefined}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (fieldErrors.fullName)
+                    setFieldErrors((v) => ({ ...v, fullName: undefined }));
+                }}
               />
+              {fieldErrors.fullName && (
+                <small role="alert" style={{ color: 'var(--danger, #f87171)' }}>
+                  {fieldErrors.fullName}
+                </small>
+              )}
             </label>
             <label className="field">
               <span>Số điện thoại</span>
-              <input value={phone} disabled={!IS_MOCK} onChange={(e) => setPhone(e.target.value)} />
+              <input
+                type="tel"
+                inputMode="tel"
+                placeholder="0901234567"
+                value={phone}
+                aria-invalid={fieldErrors.phone ? 'true' : undefined}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  if (fieldErrors.phone)
+                    setFieldErrors((v) => ({ ...v, phone: undefined }));
+                }}
+              />
+              {fieldErrors.phone && (
+                <small role="alert" style={{ color: 'var(--danger, #f87171)' }}>
+                  {fieldErrors.phone}
+                </small>
+              )}
             </label>
             <label className="field">
               <span>Địa chỉ email</span>
               <input value={user.email} disabled />
             </label>
             <div>
-              <Button disabled={busy||!IS_MOCK}>
+              <Button disabled={busy}>
                 <Save size={16} />
                 Lưu thay đổi
               </Button>
             </div>
           </form>
         </section>
-        <section className="panel">
+        <section className="panel" id="account-security">
           <div className="panel-heading">
             <h2>
               <LockKeyhole size={19} />
@@ -134,7 +233,19 @@ export default function ProfilePage() {
                 />
               </label>
             ))}
-            {user.mfaEnabled&&<label className="field"><span>Mã xác thực hai bước</span><input autoComplete="one-time-code" required value={passwords.code||''} onChange={e=>setPasswords(v=>({...v,code:e.target.value}))}/></label>}
+            {user.mfaEnabled && (
+              <label className="field">
+                <span>Mã xác thực hai bước</span>
+                <input
+                  autoComplete="one-time-code"
+                  required
+                  value={passwords.code || ''}
+                  onChange={(e) =>
+                    setPasswords((v) => ({ ...v, code: e.target.value }))
+                  }
+                />
+              </label>
+            )}
             <div>
               <Button disabled={busy}>Đổi mật khẩu</Button>
             </div>

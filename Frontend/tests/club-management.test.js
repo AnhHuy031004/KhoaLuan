@@ -1,3 +1,4 @@
+import { MOCK_PASSWORD } from '../mock/users.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMockFetch,DB_KEY} from '../mock/api.js';
@@ -6,7 +7,7 @@ import {CLUB_PERMISSIONS} from '../src/config/clubPermissions.js';
 async function setup(){
  const map=new Map(),storage={getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v)},fetch=createMockFetch({storage});
  const raw=async(path,method='GET',body,token)=>{const r=await fetch('/backend'+path,{method,headers:token?{Authorization:'Bearer '+token}:{},...(body?{body:JSON.stringify(body)}:{})});return {status:r.status,...await r.json()};};
- const login=async email=>{const r=await raw('/auth/login','POST',{email:email.includes('@')?email:email+'@vovinam.test',password:'Vovinam123!'});assert.equal(r.status,200,r.message);return (p,m,b)=>raw(p,m,b,r.data.tokens.accessToken);};
+ const login=async(email,password=MOCK_PASSWORD)=>{const r=await raw('/auth/login','POST',{email:email.includes('@')?email:email+'@vovinam.test',password});assert.equal(r.status,200,r.message);return (p,m,b)=>raw(p,m,b,r.data.tokens.accessToken);};
  return {admin:await login('admin'),province:await login('vosu'),ward:await login('vosuphuong'),club:await login('vosuclb'),otherClub:await login('vosuclb3'),login,raw,db:()=>JSON.parse(storage.getItem(DB_KEY)),write:db=>storage.setItem(DB_KEY,JSON.stringify(db))};
 }
 const profile=(clubId,email='hlvmoi@example.test')=>({clubId,fullName:'HLV kiểm thử',email,phone:'0901234567',qualification:'Hoàng đai',status:'ACTIVE'});
@@ -19,9 +20,9 @@ test('club manager receives an operational function hub with caps independent of
  assert.deepEqual((await s.club('/classes')).data.items.map(c=>c.id),['c-1','c-2']);
  const permissions=(await s.club('/permissions')).data.matrix;
  assert.equal(permissions.instructors.MASTER,'VCE');assert.equal(permissions.leaves.MASTER,'VA');
- for(const id of ['users','roles','invoices','discounts','settings'])assert.equal(permissions[id].MASTER,'');
+ for(const id of ['users','roles','invoices','settings'])assert.equal(permissions[id].MASTER,'');assert.equal(permissions.discounts.MASTER,'VCA');
  const db=s.db();for(const rights of Object.values(db.permissions))rights.MASTER='VCEDAP';s.write(db);
- for(const id of ['users','roles','settings','invoices','tuition-relief'])assert.equal((await s.club('/'+id)).status,403,id);
+ for(const id of ['users','roles','settings','invoices'])assert.equal((await s.club('/'+id)).status,403,id);assert.equal((await s.club('/tuition-relief')).status,200);
  const capped=(await s.club('/permissions')).data.matrix;
  for(const [id,actions] of Object.entries(CLUB_PERMISSIONS))assert([...capped[id].MASTER].every(a=>actions.includes(a)));
  const revoked=s.db();revoked.permissions.instructors.MASTER='V';s.write(revoked);assert.equal((await s.club('/instructors','POST',profile('club-1'))).status,403);
@@ -77,7 +78,7 @@ test('inactive, duplicate and linked instructor records are protected; Admin can
  assert.equal((await s.club('/classes','POST',klass('club-1',created.data.id))).status,200);
  assert.equal((await s.club('/instructors/'+created.data.id,'PATCH',{...profile('club-1'),status:'PAUSED'})).status,409);
  assert.equal((await s.admin('/instructors/'+created.data.id,'DELETE')).status,409);
- const coach=await s.login('hlvmoi@example.test');assert.equal((await coach('/classes')).data.total,1);
+ const coach=await s.login('hlvmoi@example.test','Vovinam123!');assert.equal((await coach('/classes')).data.total,1);
 });
 
 test('club reviews leave and promotion once, marks attendance, and never approves exam results',async()=>{
@@ -100,7 +101,7 @@ test('exports, forms and reports contain local training data and no finance or f
  assert.equal(lookups.invoices.length,0);assert(lookups.classes.every(c=>c.tuition===undefined));
  const exported=(await s.club('/exports/system')).data;
  for(const id of ['students','instructors','classes','leaves','promotions'])assert(exported.sheets.some(t=>t.id===id));
- for(const id of ['users','invoices','tuition','transactions','discounts','permission-matrix'])assert(!exported.sheets.some(t=>t.id===id));
+ for(const id of ['users','invoices','tuition','transactions','permission-matrix'])assert(!exported.sheets.some(t=>t.id===id));assert(exported.sheets.some(t=>t.id==='discounts'));
  assert(exported.sheets.find(t=>t.id==='classes').rows.every(c=>c.clubId==='club-1'&&c.tuition===undefined));
  const report=(await s.club('/report-charts/student-report')).data;assert.equal(report.recordCount,8);
  assert.equal((await s.club('/report-charts/student-report?classId=c-3')).data.recordCount,0);

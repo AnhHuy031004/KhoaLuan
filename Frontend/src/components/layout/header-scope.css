@@ -2,18 +2,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(16, 38, 62, 0.7);
-  border: 1px solid rgba(53, 87, 114, 0.6);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 4px 8px;
-  backdrop-filter: blur(8px);
   margin-left: 12px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .header-scope-selector:hover {
-  border-color: rgba(76, 166, 223, 0.7);
-  box-shadow: 0 2px 12px rgba(10, 25, 45, 0.35);
+  border-color: var(--primary);
+  box-shadow: var(--shadow);
 }
 
 .scope-pill {
@@ -21,31 +20,31 @@
   align-items: center;
   gap: 6px;
   position: relative;
-  background: rgba(22, 50, 78, 0.6);
-  border: 1px solid rgba(56, 92, 122, 0.5);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0 8px;
   height: 32px;
-  color: #d7e7f6;
+  color: var(--text);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .scope-pill:hover {
-  background: rgba(28, 62, 95, 0.85);
-  border-color: #4da3db;
-  color: #fff;
+  background: var(--surface-raised);
+  border-color: var(--primary);
+  color: var(--heading);
 }
 
 .scope-pill.is-active {
-  background: rgba(24, 79, 122, 0.75);
-  border-color: #3b9fe0;
-  color: #fff;
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--heading);
 }
 
 .scope-pill-icon {
-  color: #e5bc62;
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -61,7 +60,7 @@
   border: none;
   color: inherit;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   padding-right: 20px;
   cursor: pointer;
   outline: none;
@@ -71,8 +70,8 @@
 }
 
 .scope-select option {
-  background: #0d2238;
-  color: #d8e9f8;
+  background: var(--surface);
+  color: var(--text);
   padding: 8px;
 }
 
@@ -80,14 +79,14 @@
   position: absolute;
   right: 0;
   pointer-events: none;
-  color: #8da9c4;
+  color: var(--muted);
   transition: transform 0.2s;
 }
 
 .scope-divider {
   width: 1px;
   height: 18px;
-  background: rgba(56, 92, 122, 0.4);
+  background: var(--border);
 }
 
 .scope-badge-static {
@@ -96,12 +95,12 @@
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #c7def2;
+  color: var(--text);
   padding: 0 6px;
 }
 
 .scope-badge-static strong {
-  color: #fff;
+  color: var(--heading);
 }
 
 .scope-stats-chip {
@@ -109,9 +108,11 @@
   align-items: center;
   gap: 5px;
   font-size: 12px;
-  color: #e5bc62;
-  background: rgba(229, 188, 98, 0.12);
-  border: 1px solid rgba(229, 188, 98, 0.25);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+  background: var(--gold-soft);
+  border: 1px solid var(--warning-border);
   border-radius: 6px;
   padding: 3px 8px;
   white-space: nowrap;
@@ -121,20 +122,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: none;
-  background: rgba(169, 79, 94, 0.3);
-  color: #f1b3bc;
+  border: 1px solid var(--negative-border);
+  background: var(--negative-soft);
+  color: var(--negative);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s, color 0.2s;
   padding: 0;
 }
 
 .scope-reset-btn:hover {
-  background: rgba(169, 79, 94, 0.8);
-  color: #fff;
+  background: var(--negative);
+  color: var(--on-brand);
 }
 
 @media (max-width: 1100px) {
@@ -148,14 +149,20 @@
 
 @media (max-width: 860px) {
   .header-scope-selector {
-    display: none;
+    margin-left: 0;
+    padding: 3px 6px;
+    max-width: 185px;
+  }
+  .scope-select {
+    max-width: 110px;
+    font-size: 12px;
   }
 }
 
-/* Quick Jump in Global Search */
+/* Quick Jump in Global Search — fully theme-aware for Light & Dark Navy */
 .search-group {
   padding: 6px 0;
-  border-bottom: 1px solid rgba(56, 92, 122, 0.35);
+  border-bottom: 1px solid var(--border);
 }
 
 .search-group:last-child {
@@ -167,32 +174,33 @@
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: #e5bc62;
-  padding: 4px 12px 6px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  padding: 6px 12px 4px;
 }
 
 .search-item-unit {
-  display: flex !important;
+  display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 9px 12px;
   text-align: left;
   border: none;
   background: transparent;
-  color: #d7e8f7;
+  color: var(--text);
   cursor: pointer;
-  transition: background 0.15s ease;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .search-item-unit:hover {
-  background: rgba(28, 66, 102, 0.8) !important;
-  color: #fff;
+  background: var(--primary-soft);
+  color: var(--heading);
 }
 
 .search-item-icon {
-  color: #e5bc62;
+  color: var(--primary);
   flex-shrink: 0;
 }
 
@@ -203,12 +211,13 @@
 
 .search-item-unit strong {
   display: block;
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.3;
+  color: var(--heading);
 }
 
 .search-item-unit small {
   display: block;
-  font-size: 11px;
-  color: #8da9c4;
+  font-size: 12px;
+  color: var(--muted);
 }

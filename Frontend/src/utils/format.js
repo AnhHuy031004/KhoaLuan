@@ -11,6 +11,18 @@ export const formatDate = (value) => {
     ? String(value)
     : d.toLocaleDateString('vi-VN');
 };
+export const formatDateTime = (value) => {
+  if (!value) return '—';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return String(value);
+  return d.toLocaleString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
 export const initials = (name) =>
   String(name || 'VV')
     .split(' ')
@@ -56,6 +68,7 @@ export const statusLabels = {
   LATE: 'Đi muộn',
   EXCUSED: 'Có phép',
   PENDING: 'Chờ duyệt',
+  PENDING_VERIFICATION: 'Chờ đối soát',
   APPROVED: 'Đã duyệt',
   REJECTED: 'Từ chối',
   PAID: 'Đã thanh toán',
@@ -69,11 +82,52 @@ export const statusLabels = {
   DRAFT: 'Bản nháp',
   PUBLISHED: 'Đã phát hành',
 };
-Object.assign(statusLabels,{OVERDUE:'Quá hạn',REFUNDED:'Đã hoàn tiền',DISPUTED:'Cần đối chiếu',RESULT_PASS:'Đạt',RESULT_FAIL:'Chưa đạt',OPEN:'Mở đăng ký',CLOSED:'Đóng đăng ký',REGISTERED:'Đã đăng ký',ARCHIVED:'Đã lưu trữ',LEFT:'Đã nghỉ'});
-Object.assign(labels,{emailVerified:'Xác minh email',mfaEnabled:'Xác thực hai bước',weekdayLabel:'Thứ',effectiveFrom:'Hiệu lực từ',effectiveTo:'Hiệu lực đến',rankGroup:'Nhóm đai',amountOff:'Giảm theo số tiền'});
+Object.assign(statusLabels, {
+  OVERDUE: 'Quá hạn',
+  REFUNDED: 'Đã hoàn tiền',
+  DISPUTED: 'Cần đối chiếu',
+  RESULT_PASS: 'Đạt',
+  RESULT_FAIL: 'Chưa đạt',
+  OPEN: 'Mở đăng ký',
+  CLOSED: 'Đóng đăng ký',
+  REGISTERED: 'Đã đăng ký',
+  ARCHIVED: 'Đã lưu trữ',
+  LEFT: 'Đã nghỉ',
+});
+Object.assign(labels, {
+  emailVerified: 'Xác minh email',
+  mfaEnabled: 'Xác thực hai bước',
+  weekdayLabel: 'Thứ',
+  effectiveFrom: 'Hiệu lực từ',
+  effectiveTo: 'Hiệu lực đến',
+  rankGroup: 'Nhóm đai',
+  amountOff: 'Giảm theo số tiền',
+});
 
-Object.assign(labels,{reviewedBy:'ID người xử lý',reviewedName:'Người xử lý',reviewedRole:'Vai trò người xử lý',reviewedAt:'Thời điểm xử lý'});
+Object.assign(labels, {
+  reviewedBy: 'ID người xử lý',
+  reviewedName: 'Người xử lý',
+  reviewedRole: 'Vai trò người xử lý',
+  reviewedAt: 'Thời điểm xử lý',
+});
 
-Object.assign(labels,{masterLevel:'Cấp quản lý',provinceId:'Tỉnh',wardId:'Phường',clubId:'Câu lạc bộ',studentCount:'Học viên đang học',roster:'Học viên trong lớp'});
+Object.assign(labels, {
+  masterLevel: 'Cấp quản lý',
+  provinceId: 'Tỉnh',
+  wardId: 'Phường',
+  clubId: 'Câu lạc bộ',
+  studentCount: 'Võ sinh đang học',
+  roster: 'Võ sinh trong lớp',
+});
 
-Object.assign(labels,{reviewedMasterLevel:'Cấp Võ sư duyệt'});
+Object.assign(labels, { reviewedMasterLevel: 'Cấp Võ sư duyệt' });
+
+// Professional information displayed by the signed-in account.
+export function accountCredentials(user) {
+  const supplied = (value) => typeof value === 'string' && value.trim() && !/^(chưa cập nhật|chưa có|cần bổ sung|—)$/i.test(value.trim());
+  const qualification = supplied(user?.qualification) ? user.qualification.trim() : '';
+  const rank = [user?.rankTitle, user?.rankName, /đai|đẳng/i.test(qualification) ? qualification : ''].find(supplied) || '';
+  const certificates = Array.isArray(user?.certificates) ? user.certificates.filter(supplied).join('; ') : user?.certificates;
+  const certificate = [user?.certificate, user?.certification, user?.degree, certificates, !/đai|đẳng/i.test(qualification) ? qualification : ''].find(supplied) || '';
+  return { teaching: ['MASTER', 'INSTRUCTOR'].includes(user?.role), rank, certificate };
+}

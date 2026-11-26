@@ -1,0 +1,53 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, copyFile, rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { createMockServer } from '../tools/mock-server.mjs';
+import { MOCK_PASSWORD } from '../mock/users.js';
+test('production gateway serves CSP-compatible boot script and forwards login/permissions to configured API', async () => {
+  const previousCwd = process.cwd();
+  const dir = await mkdtemp(join(tmpdir(), 'vovinam-gateway-'));
+  const { mkdir } = await import('node:fs/promises');
+  await mkdir(join(dir, 'dist'));
+  await copyFile(new URL('../index.html', import.meta.url), join(dir, 'dist/index.html'));
+  await copyFile(new URL('../public/boot.js', import.meta.url), join(dir, 'dist/boot.js'));
+  const backend = createMockServer();
+  await new Promise((resolve) => backend.listen(0, '127.0.0.1', resolve));
+  process.env.API_PROXY_TARGET = 'http://127.0.0.1:' + backend.address().port;
+  process.env.API_PROXY_PATH = '/api/v1';
+  process.env.ENABLE_API_PROXY = 'true';
+  process.env.PORT = '0';
+  process.env.HOST = '127.0.0.1';
+  process.env.QR_IMAGE_ORIGINS = 'https://qr.example';
+  process.chdir(dir);
+  let server;
+  try {
+    ({ server } = await import('../server.mjs'));
+    if (!server.listening) await new Promise((resolve) => server.once('listening', resolve));
+    const base = 'http://127.0.0.1:' + server.address().port;
+    const page = await fetch(base + '/app/online-payments');
+    const html = await page.text();
+    assert.equal(page.status, 200);
+    assert.doesNotMatch(html, /<script(?:\s[^>]*)?>(?!\s*<\/script>)/);
+    assert.match(html, /<script src="\/boot.js"><\/script>/);
+    assert.match(page.headers.get('content-security-policy'), /script-src 'self'/);
+    assert.match(page.headers.get('content-security-policy'), /img-src 'self' data: https:\/\/qr.example;/);
+    const boot = await fetch(base + '/boot.js');
+    assert.equal(boot.status, 200);
+    assert.match(await boot.text(), /dataset.theme/);
+    const login = await fetch(base + '/backend/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'admin@vovinam.test', password: MOCK_PASSWORD }) });
+    assert.equal(login.status, 200);
+    const session = (await login.json()).data;
+    const permissions = await fetch(base + '/backend/permissions', { headers: { Authorization: 'Bearer ' + session.tokens.accessToken } });
+    assert.equal(permissions.status, 200);
+    assert((await permissions.json()).data.matrix);
+  } finally {
+    server?.closeAllConnections();
+    if (server) await new Promise((resolve) => server.close(resolve));
+    backend.closeAllConnections();
+    await new Promise((resolve) => backend.close(resolve));
+    process.chdir(previousCwd);
+    await rm(dir, { recursive: true, force: true });
+  }
+});

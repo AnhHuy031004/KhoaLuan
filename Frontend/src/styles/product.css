@@ -1,0 +1,340 @@
+.scope-context {
+  font-size: 14px;
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+.demo-notice {
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  background: var(--warning-soft);
+  border: 1px solid var(--warning-border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--heading);
+}
+.demo-notice a {
+  text-decoration: underline;
+  margin-left: 8px;
+}
+.recovery-page {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 20px;
+}
+summary.nav-caption {
+  cursor: pointer;
+  padding: 12px 10px;
+  list-style: disclosure-closed;
+}
+details[open] > summary.nav-caption {
+  list-style: disclosure-open;
+}
+.row-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 170px;
+}
+.row-actions .icon-btn {
+  width: auto;
+  min-width: 38px;
+  padding: 8px;
+  font-size: 12px;
+  gap: 4px;
+}
+.row-actions .danger-icon {
+  margin-left: 10px;
+}
+.field-error {
+  color: var(--negative);
+  font-weight: 600;
+}
+input[aria-invalid='true'],
+select[aria-invalid='true'],
+textarea[aria-invalid='true'] {
+  border-color: var(--negative) !important;
+}
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+.modal-actions {
+  position: sticky;
+  bottom: 0;
+  background: var(--surface);
+  padding: 16px 0;
+  z-index: 2;
+}
+.table-scroll table th:nth-child(2),
+.table-scroll table td:nth-child(2) {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+.workspace {
+  background: var(--canvas) !important;
+}
+.panel,
+.metric-card {
+  box-shadow: none !important;
+}
+.global-search {
+  display: flex;
+}
+.topbar {
+  height: auto !important;
+  min-height: 68px;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-block: 10px !important;
+}
+.topbar .header-right {
+  flex-wrap: wrap;
+}
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+.quick-links > a {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--heading);
+}
+.stat-grid > .panel {
+  padding: 18px;
+}
+.stat-grid h2 {
+  font-size: 15px;
+}
+.stat-grid strong {
+  font-size: 24px;
+}
+.news-item p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-width: 1000px) {
+  .global-search {
+    display: flex !important;
+  }
+  .topbar .header-right {
+    width: 100%;
+  }
+  .header-scope-wrap {
+    max-width: 100%;
+  }
+  .header-scope-trigger-copy strong {
+    max-width: 220px;
+  }
+  .sidebar nav .nav-item {
+    font-size: 14px;
+  }
+  .modal {
+    max-height: 90dvh;
+  }
+}
+@media (max-width: 760px) {
+  .topbar {
+    position: relative;
+  }
+  .header-scope-wrap,
+  .global-search {
+    width: 100%;
+    max-width: 100%;
+  }
+  .global-search input {
+    min-width: 0;
+  }
+  .header-profile {
+    margin-left: auto;
+  }
+  .workspace-body {
+    padding: 16px !important;
+  }
+  .filter-bar,
+  .filter-controls,
+  .heading-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filter-controls > select,
+  .filter-controls > input {
+    min-height: 44px;
+    max-width: 100%;
+  }
+  .modal {
+    width: 96vw !important;
+    padding: 18px !important;
+  }
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .attendance-table {
+    display: block;
+    min-width: 0 !important;
+  }
+  .attendance-table thead {
+    display: none;
+  }
+  .attendance-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+  .attendance-table tr {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .attendance-table td {
+    border: 0;
+    padding: 8px !important;
+    white-space: normal !important;
+  }
+  .attendance-table td:nth-child(2) {
+    display: none;
+  }
+  .attendance-table td:nth-child(n + 4) {
+    grid-column: 2;
+  }
+  .attendance-table td:nth-child(3) {
+    min-width: 0;
+  }
+  .attendance-table .student-name {
+    min-width: 0;
+  }
+  .attendance-table td:last-child button {
+    min-height: 44px;
+  }
+  .attendance-status-tabs {
+    flex-wrap: wrap;
+  }
+  .attendance-filter-toolbar {
+    gap: 12px;
+  }
+  .attendance-search-box {
+    min-width: 0;
+    width: 100%;
+  }
+  .org-command-panel {
+    display: none;
+  }
+  .btn,
+  .icon-btn {
+    min-height: 40px;
+  }
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+  .quick-links > a {
+    flex: 1 1 160px;
+  }
+  .data-panel-title {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+.form-section-title {
+  grid-column: 1/-1;
+  padding-top: 12px;
+  margin: 8px 0 0;
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+  color: var(--heading);
+}
+.correction-history {
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.correction-history article {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.correction-history p {
+  margin: 5px 0;
+}
+.correction-history summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .attendance-table td {
+    position: static !important;
+  }
+  .invoices-table {
+    display: block;
+    min-width: 0 !important;
+  }
+  .invoices-table thead {
+    display: none;
+  }
+  .invoices-table tbody {
+    display: grid;
+    gap: 14px;
+  }
+  .invoices-table tr {
+    display: block;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .invoices-table td {
+    position: static !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border: 0;
+    white-space: normal !important;
+    padding: 9px 0 !important;
+    min-width: 0;
+  }
+  .invoices-table td:before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .invoices-table .index-cell {
+    display: none;
+  }
+  .invoices-table td.action-cell {
+    display: block;
+  }
+  .invoices-table .row-actions {
+    margin-top: 8px;
+  }
+  .invoices-table .person-cell .avatar {
+    display: none;
+  }
+}
+
+.row-more {
+  font-size: 12px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.row-more summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.row-more[open] .icon-btn {
+  display: flex;
+  margin: 8px 0 0;
+}
+.row-more .danger-icon {
+  color: var(--negative);
+}

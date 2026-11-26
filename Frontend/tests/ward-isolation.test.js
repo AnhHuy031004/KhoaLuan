@@ -1,3 +1,4 @@
+import { MOCK_PASSWORD } from '../mock/users.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMockFetch,DB_KEY} from '../mock/api.js';
@@ -11,7 +12,7 @@ async function setup(){
   return {status:response.status,...await response.json()};
  };
  const login=async email=>{
-  const result=await raw('/auth/login','POST',{email:email.includes('@')?email:email+'@vovinam.test',password:'Vovinam123!'});assert.equal(result.status,200,result.message);
+  const result=await raw('/auth/login','POST',{email:email.includes('@')?email:email+'@vovinam.test',password:MOCK_PASSWORD});assert.equal(result.status,200,result.message);
   return (p,m,b)=>raw(p,m,b,result.data.tokens.accessToken);
  };
  return {ward1:await login('vosuphuong'),ward2:await login('vosuphuong2'),admin:await login('admin'),province:await login('vosu'),coach:await login('hlv'),coach2:await login('tuan@example.test'),db:()=>JSON.parse(storage.getItem(DB_KEY)),write:db=>storage.setItem(DB_KEY,JSON.stringify(db)),fetch,storage};
@@ -78,7 +79,7 @@ test('reports and full export aggregate every local record without including the
  }
  assert.deepEqual(exported.lookups.wards.map(w=>w.id),['ward-1']);
  assert(exported.lookups.clubs.every(c=>c.wardId==='ward-1'));
- assert(!JSON.stringify(exported).includes('Vovinam123!'));
+ assert(!JSON.stringify(exported).includes('"password"'));
 });
 
 test('existing sessions immediately follow the stricter boundary without resetting data or custom rights',async()=>{

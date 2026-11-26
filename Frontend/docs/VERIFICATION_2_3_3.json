@@ -1,0 +1,35 @@
+{
+  "version": "2.3.3",
+  "date": "2026-11-26",
+  "input": "Frontend(20261126-070011).zip",
+  "checks": {
+    "lint": "passed",
+    "tests": {
+      "total": 186,
+      "passed": 186,
+      "failed": 0,
+      "skipped": 0
+    },
+    "production_build": "passed",
+    "contract": {
+      "checked": true,
+      "modules": 31,
+      "paths": 103,
+      "operations": 166,
+      "schemas": 140
+    }
+  },
+  "scope": "frontend source, DOM tests, fixture HTTP, Node gateway",
+  "not_verified": [
+    "visual layout on real devices",
+    "Docker/Nginx runtime",
+    "production backend/DB/bank/email",
+    "production load/performance"
+  ],
+  "delivery": {
+    "root": "Frontend",
+    "nested_source_copy": false,
+    "node_modules": false,
+    "fresh_http_dist": true
+  }
+}

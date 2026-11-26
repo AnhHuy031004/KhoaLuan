@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import {
   ArrowLeftRight,
   Award,
@@ -10,6 +10,9 @@ import {
   CalendarOff,
   ChartNoAxesCombined,
   ChevronsUpDown,
+  ChevronDown,
+  Search,
+  X,
   ClipboardCheck,
   CreditCard,
   FileCheck2,
@@ -36,7 +39,11 @@ import { modules } from '../../routes/routeConfig.js';
 import { canOpen, ROLES, roleLabel } from '../../utils/permissions.js';
 import { initials } from '../../utils/format.js';
 import { useAuth } from '../../contexts/AuthContext.jsx';
-import { organizationQuery, ORGANIZATION_MODULES } from '../../features/organization/navigation.js';
+import {
+  organizationQuery,
+  matchesOrganizationSearch,
+  ORGANIZATION_MODULES,
+} from '../../features/organization/navigation.js';
 
 const icons = {
   Star: UserRoundCheck,
@@ -71,10 +78,78 @@ const icons = {
   Wallet,
 };
 
-export default function Sidebar({ open, onClose }) {
-  const { user, logout, selectedWard, selectedClub, activeWard, activeClub, hierarchy } = useAuth();
+export default function Sidebar({ open, mobile, onClose }) {
+  const {
+    user,
+    logout,
+    selectedWard,
+    selectedClub,
+    activeWard,
+    activeClub,
+    hierarchy,
+  } = useAuth();
 
-  const available = modules.filter((m) => canOpen(m, user?.role));
+  const location = useLocation();
+  const drawer = useRef(null);
+  const [query, setQuery] = useState('');
+  const [closed, setClosed] = useState({});
+  useEffect(() => {
+    const group = modules.find((m) =>
+      location.pathname.startsWith('/app/' + m.id),
+    )?.group;
+    if (group) setClosed((value) => ({ ...value, [group]: false }));
+  }, [location.pathname]);
+  useEffect(() => {
+    if (!open || !mobile) return;
+    const previous = document.activeElement;
+    drawer.current?.querySelector('button')?.focus();
+    const keyboard = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+      }
+      if (event.key !== 'Tab') return;
+      const nodes = [
+        ...drawer.current.querySelectorAll('a, button, input'),
+      ].filter((node) => !node.closest('[hidden]') && !node.disabled);
+      const first = nodes[0],
+        last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    document.addEventListener('keydown', keyboard);
+    return () => {
+      document.removeEventListener('keydown', keyboard);
+      previous?.focus();
+    };
+  }, [open, mobile, onClose]);
+  const ScopeTag = ['ADMIN', 'MASTER'].includes(user?.role) ? Link : 'div';
+  const hasAnyReport = modules.some(
+    (m) => m.group === 'BÁO CÁO' && canOpen(m, user?.role),
+  );
+  const available = modules
+    .filter(
+      (m) =>
+        !m.hiddenInNav &&
+        m.group !== 'BÁO CÁO' &&
+        !(user?.role === 'STUDENT' && m.group === 'TÀI CHÍNH' && m.id !== 'online-payments') &&
+        canOpen(m, user?.role) &&
+        (!query ||
+          matchesOrganizationSearch({ name: m.navTitle || m.title }, query)),
+    )
+    .map((m) => ({
+      ...m,
+      displayGroup: m.group,
+      displayTitle:
+        user?.role === 'STUDENT' && m.id === 'online-payments'
+          ? 'Học phí & Thanh toán'
+          : m.navTitle || m.title,
+    }));
   const groups = [
     'TỔ CHỨC',
     'ĐÀO TẠO',
@@ -85,7 +160,15 @@ export default function Sidebar({ open, onClose }) {
     'HỆ THỐNG',
   ];
 
-  const currentScopeQuery = organizationQuery({ wardId: selectedWard, clubId: selectedClub });
+  const selectNavigation = () => {
+    setQuery('');
+    onClose();
+  };
+
+  const currentScopeQuery = organizationQuery({
+    wardId: selectedWard,
+    clubId: selectedClub,
+  });
 
   const scopeTitle = activeClub?.name
     ? activeClub.name
@@ -95,8 +178,23 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      <aside className={'sidebar ' + (open ? 'open' : '')}>
-        <Link className="brand" to="/app/dashboard" onClick={onClose}>
+      <aside
+        id="workspace-navigation"
+        ref={drawer}
+        role={mobile ? 'dialog' : undefined}
+        aria-modal={mobile && open ? true : undefined}
+        inert={mobile && !open ? true : undefined}
+        aria-label="Menu chức năng"
+        className={'sidebar ' + (open ? 'open' : '')}
+      >
+        <button
+          className="sidebar-close icon-btn"
+          aria-label="Đóng menu điều hướng"
+          onClick={selectNavigation}
+        >
+          <X size={20} />
+        </button>
+        <Link className="brand" to="/app/dashboard" onClick={selectNavigation}>
           <img src="/assets/vovinam-logo.png" alt="Logo Vovinam" />
           <span>
             <strong>
@@ -107,11 +205,19 @@ export default function Sidebar({ open, onClose }) {
         </Link>
 
         {/* Workspace scope header with quick link to management */}
-        <Link
-          to={'/app/management' + currentScopeQuery}
+        <ScopeTag
+          to={
+            ['ADMIN', 'MASTER'].includes(user?.role)
+              ? '/app/management' + currentScopeQuery
+              : '/app/dashboard'
+          }
           className="workspace-switch"
-          onClick={onClose}
-          title="Chuyển đến Trung tâm điều hành đơn vị"
+          onClick={selectNavigation}
+          title={
+            ['ADMIN', 'MASTER'].includes(user?.role)
+              ? 'Mở đơn vị quản lý'
+              : 'Đơn vị được phân công'
+          }
         >
           <span className="workspace-symbol">
             <Building2 size={18} />
@@ -120,21 +226,73 @@ export default function Sidebar({ open, onClose }) {
             <strong>{scopeTitle}</strong>
             <small>{roleLabel(user)}</small>
           </span>
-          <ChevronsUpDown size={14} />
-        </Link>
+          {['ADMIN', 'MASTER'].includes(user?.role) && (
+            <ChevronsUpDown size={14} />
+          )}
+        </ScopeTag>
 
+        <label className="nav-search">
+          <Search size={16} />
+          <input
+            aria-label="Tìm trong menu"
+            placeholder="Tìm trong menu…"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          {query && (
+            <button aria-label="Xóa tìm kiếm menu" onClick={() => setQuery('')}>
+              <X size={14} />
+            </button>
+          )}
+        </label>
         <nav aria-label="Điều hướng chính">
           <div className="nav-section">
             <span className="nav-caption">KHÔNG GIAN LÀM VIỆC</span>
-            <NavLink to="/app/dashboard" onClick={onClose} className="nav-item">
+            <NavLink
+              to="/app/dashboard"
+              onClick={selectNavigation}
+              className="nav-item"
+            >
               <LayoutDashboard size={18} />
-              <span>Tổng quan</span>
+              <span>
+                {user.role === 'STUDENT'
+                  ? 'Trang của tôi'
+                  : user.role === 'INSTRUCTOR'
+                    ? 'Hôm nay'
+                    : 'Tổng quan'}
+              </span>
               <span className="nav-active-dot" />
             </NavLink>
             {['ADMIN', 'MASTER'].includes(user?.role) && (
-              <NavLink to={'/app/management' + currentScopeQuery} onClick={onClose} className="nav-item">
+              <NavLink
+                to={'/app/management' + currentScopeQuery}
+                onClick={selectNavigation}
+                className="nav-item"
+              >
                 <Network size={18} />
                 <span>Đơn vị quản lý</span>
+                <span className="nav-active-dot" />
+              </NavLink>
+            )}
+            {hasAnyReport && (
+              <NavLink
+                to={'/app/reports' + currentScopeQuery}
+                onClick={selectNavigation}
+                className="nav-item"
+              >
+                <ChartNoAxesCombined size={18} />
+                <span>Báo cáo tổng hợp</span>
+                <span className="nav-active-dot" />
+              </NavLink>
+            )}
+            {user?.role === 'STUDENT' && (
+              <NavLink
+                to="/app/belt-journey"
+                onClick={selectNavigation}
+                className="nav-item"
+              >
+                <Medal size={18} />
+                <span>Hành trình cấp đai</span>
                 <span className="nav-active-dot" />
               </NavLink>
             )}
@@ -144,56 +302,80 @@ export default function Sidebar({ open, onClose }) {
             .filter((g) => available.some((m) => m.group === g))
             .map((group) => (
               <section className="nav-section" key={group}>
-                <h2 className="nav-caption">{group}</h2>
-                {available
-                  .filter((m) => m.group === group)
-                  .map((m) => {
-                    const Icon = icons[m.icon] || Layers;
-                    const path = '/app/' + m.id + (ORGANIZATION_MODULES.includes(m.id) ? currentScopeQuery : '');
-                    return (
-                      <NavLink
-                        key={m.id}
-                        to={path}
-                        className="nav-item"
-                        onClick={onClose}
-                      >
-                        <Icon size={17} />
-                        <span>{m.navTitle || m.title}</span>
-                        <span className="nav-active-dot" />
-                      </NavLink>
-                    );
-                  })}
+                <button
+                  type="button"
+                  className="nav-group-toggle"
+                  aria-expanded={!!query || !closed[group]}
+                  aria-controls={'nav-group-' + groups.indexOf(group)}
+                  onClick={() =>
+                    setClosed((value) => ({ ...value, [group]: !value[group] }))
+                  }
+                >
+                  <span>{group}</span>
+                  <span className="nav-group-count">
+                    {available.filter((m) => m.group === group).length}
+                  </span>
+                  <ChevronDown size={15} />
+                </button>
+                <div
+                  id={'nav-group-' + groups.indexOf(group)}
+                  hidden={!query && !!closed[group]}
+                >
+                  {available
+                    .filter((m) => m.group === group)
+                    .map((m) => {
+                      const Icon = icons[m.icon] || Layers;
+                      const path =
+                        '/app/' +
+                        m.id +
+                        (ORGANIZATION_MODULES.includes(m.id)
+                          ? currentScopeQuery
+                          : '');
+                      return (
+                        <NavLink
+                          key={m.id}
+                          to={path}
+                          className="nav-item"
+                          onClick={selectNavigation}
+                        >
+                          <Icon size={17} />
+                          <span>
+                            {user.role === 'STUDENT'
+                              ? {
+                                  students: 'Hồ sơ của tôi',
+                                  attendance: 'Điểm danh của tôi',
+                                  schedules: 'Lịch tập của tôi',
+                                  invoices: 'Thu phí khóa học',
+                                  'online-payments': 'Thanh toán học phí online',
+                                }[m.id] ||
+                                m.navTitle ||
+                                m.title
+                              : m.navTitle || m.title}
+                          </span>
+                          <span className="nav-active-dot" />
+                        </NavLink>
+                      );
+                    })}
+                </div>
               </section>
             ))}
+          {query && !available.length && (
+            <p className="nav-no-results">Không tìm thấy chức năng.</p>
+          )}
         </nav>
 
         <div className="sidebar-bottom">
           <div className="sidebar-motto">
             <span>Kỷ luật · Bản lĩnh · Nhân ái</span>
           </div>
-          <div className="sidebar-account">
-            <Link to="/app/profile" onClick={onClose}>
-              <span className="avatar">{initials(user?.fullName || '')}</span>
-              <span>
-                <strong>{user?.fullName}</strong>
-                <small>{roleLabel(user)}</small>
-              </span>
-            </Link>
-            <button
-              className="icon-btn"
-              aria-label="Đăng xuất"
-              onClick={logout}
-            >
-              <LogOut size={17} />
-            </button>
-          </div>
+
         </div>
       </aside>
       {open && (
         <button
           className="sidebar-scrim"
           aria-label="Đóng menu"
-          onClick={onClose}
+          onClick={selectNavigation}
         />
       )}
     </>
